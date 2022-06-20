@@ -3,23 +3,17 @@ import { WindowManager } from "./ui/WindowManager";
 export class Application extends EventEmitter {
   constructor() {
     super();
-    this.isReady = false;
+    // this.isReady = false;
     this.init();
   }
-  init() {}
-  start(page, options) {
-    const win = this.showPage(page, options);
-    win.once("ready-to-show", () => {
-      this.isReady = true;
-      this.emit("ready");
-    });
+  init() {
+    this.windowManager = new WindowManager();
   }
-  showPage(page, options = {}) {
-    const { openedAtLogin } = options;
-    // const autoHideWindow = this.configManager.getUserConfig('auto-hide-window')
-    return this.windowManager.openWindow(page, {
-      hidden: openedAtLogin,
-      // hidden: openedAtLogin || autoHideWindow
+  startApp(page, options) {
+    const win = this.windowManager.openWindow(page, options);
+    win.once("ready-to-show", () => {
+      // this.isReady = true;
+      this.emit("ready");
     });
   }
 }

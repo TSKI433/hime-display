@@ -1,3 +1,4 @@
+import { resolve } from "path";
 export const windowsOptions = {
   controlPanel: {
     title: "Hime Display 控制面板",
@@ -20,18 +21,23 @@ export const windowsOptions = {
     },
   },
   displayFullScreen: {
-    title: "Hime Display",
-    frame: false, //去除边框
-    hasShadow: false, //live2d模型会动，导致阴影出问题，所以干脆不要了
-    transparent: true, //让窗口透明
-    autoHideMenuBar: true,
-    skipTaskbar: true,
-    webPreferences: {
-      // nodeIntegration: true,
-      // contextIsolation: false,
-      // webSecurity: false,
-      devTools: import.meta.env.DEV,
+    attrs: {
+      title: "Hime Display",
+      frame: false, //去除边框
+      hasShadow: false, //live2d模型会动，导致阴影出问题，所以干脆不要了
+      transparent: true, //让窗口透明
+      autoHideMenuBar: true,
+      skipTaskbar: true,
+      webPreferences: {
+        // nodeIntegration: true,
+        // contextIsolation: false,
+        // webSecurity: false,
+        devTools: import.meta.env.DEV,
+      },
     },
+    url: import.meta.env.DEV
+      ? "http://localhost:3000/config.html"
+      : "file://" + path.resolve(__dirname, "../renderer/config.html"),
   },
   displayWindowed: {},
 };

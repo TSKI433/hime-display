@@ -8,7 +8,10 @@ export class WindowManager extends EventEmitter {
   }
   openWindow(page, options) {
     const pageOptions = windowsOptions[page];
-    this.windows[page] = new BrowserWindow(pageOptions);
+    this.windows[page] = new BrowserWindow(pageOptions.attrs);
+    if (pageOptions.url) {
+      window.loadURL(pageOptions.url);
+    }
     return this.windows[page];
   }
 }
