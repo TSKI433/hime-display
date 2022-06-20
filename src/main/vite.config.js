@@ -1,4 +1,4 @@
-import * as path from "path";
+import { resolve } from "path";
 import { defineConfig } from "vite";
 import autoExternal from "rollup-plugin-auto-external";
 
@@ -6,16 +6,18 @@ import autoExternal from "rollup-plugin-auto-external";
 export default defineConfig({
   build: {
     lib: {
-      entry: path.resolve(__dirname, "./index.ts"),
+      entry: resolve(__dirname, "./index.js"),
       name: "main",
       formats: ["cjs"],
     },
     rollupOptions: {
       plugins: [
         autoExternal({
-          packagePath: path.resolve(__dirname, "./package.json"),
+          packagePath: resolve(__dirname, "./package.json"),
         }),
       ],
+      external: ["@shared/constants"],
+      // external: ["../shared/constants.js"],
     },
   },
   resolve: {

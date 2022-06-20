@@ -37,7 +37,7 @@ export const windowsOptions = {
     },
     url: import.meta.env.DEV
       ? "http://localhost:3000/config.html"
-      : "file://" + path.resolve(__dirname, "../renderer/config.html"),
+      : "file://" + resolve(__dirname, "../renderer/config.html"),
   },
   displayWindowed: {},
 };

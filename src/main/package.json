@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "dependencies": {
     "electron": "^19.0.4",
+    "electron-is": "^3.0.0",
+    "electron-log": "^4.4.7",
     "electron-store": "^8.0.2",
     "vite": "^2.9.12"
   },
