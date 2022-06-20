@@ -16,13 +16,12 @@ export default defineConfig({
           packagePath: resolve(__dirname, "./package.json"),
         }),
       ],
-      external: ["@shared/constants"],
-      // external: ["../shared/constants.js"],
+      external: ["@shared/constants.js"],
     },
   },
   resolve: {
     alias: {
-      "@": resolve(__dirname, ".."),
+      "@shared": resolve(__dirname, "../shared"),
     },
   },
 });
