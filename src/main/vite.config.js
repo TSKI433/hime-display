@@ -16,7 +16,6 @@ export default defineConfig({
           packagePath: resolve(__dirname, "./package.json"),
         }),
       ],
-      external: ["@shared/constants.js"],
     },
   },
   resolve: {

@@ -32,7 +32,7 @@ export class Launcher extends EventEmitter {
         openedAtLogin: this.openedAtLogin,
       });
       this.application.on("ready", () => {
-        this.sendFileToApplication();
+        // this.sendFileToApplication();
       });
     });
     app.on("activate", () => {
@@ -46,8 +46,9 @@ export class Launcher extends EventEmitter {
     app.on("will-quit", () => {
       logger.info("[Hime Display] will-quit");
       if (this.application) {
-        this.application.stop();
+        this.application.quitApp();
       }
     });
+    // app.on("window-all-closed", () => {});
   }
 }

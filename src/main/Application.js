@@ -16,4 +16,5 @@ export class Application extends EventEmitter {
       this.emit("ready");
     });
   }
+  quitApp() {}
 }

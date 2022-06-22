@@ -1,24 +1,30 @@
 import { resolve } from "path";
+import { DEV_SERVER_PORT } from "../../../scripts/constants";
 export const windowsOptions = {
   controlPanel: {
-    title: "Hime Display 控制面板",
-    // Windows下会有一个菜单栏的高度
-    height: 519 + (process.platform == "win32" ? 55 : 0),
-    width: 560,
-    titleBarStyle: "hidden",
-    vibrancy: "window",
-    autoHideMenuBar: true,
-    titleBarOverlay: true,
-    // visualEffectState: "active",
-    autoHideMenuBar: true,
-    // skipTaskbar: true,
-    show: false,
-    webPreferences: {
-      // nodeIntegration: true,
-      // contextIsolation: false,
-      // webSecurity: false,
-      devTools: import.meta.env.DEV,
+    attrs: {
+      title: "Hime Display 控制面板",
+      // Windows下会有一个菜单栏的高度
+      height: 519 + (process.platform == "win32" ? 55 : 0),
+      width: 560,
+      titleBarStyle: "hidden",
+      vibrancy: "window",
+      autoHideMenuBar: true,
+      titleBarOverlay: true,
+      // visualEffectState: "active",
+      autoHideMenuBar: true,
+      // skipTaskbar: true,
+      // show: false,
+      webPreferences: {
+        // nodeIntegration: true,
+        // contextIsolation: false,
+        // webSecurity: false,
+        devTools: import.meta.env.DEV,
+      },
     },
+    url: import.meta.env.DEV
+      ? "http://localhost:3000/index.html"
+      : "file://" + resolve(__dirname, "../renderer/index.html"),
   },
   displayFullScreen: {
     attrs: {
@@ -36,7 +42,7 @@ export const windowsOptions = {
       },
     },
     url: import.meta.env.DEV
-      ? "http://localhost:3000/config.html"
+      ? `http://localhost:${DEV_SERVER_PORT}/config.html`
       : "file://" + resolve(__dirname, "../renderer/config.html"),
   },
   displayWindowed: {},
