@@ -4,3 +4,4 @@ export const APP_THEME = {
   LIGHT: "light",
   DARK: "dark",
 };
+export const DEV_SERVER_PORT = 3000;
