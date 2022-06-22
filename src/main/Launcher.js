@@ -14,10 +14,10 @@ export class Launcher extends EventEmitter {
 
   init() {
     this.exceptionHandler = new ExceptionHandler();
-    this.openedAtLogin = is.macOS()
-      ? app.getLoginItemSettings().wasOpenedAtLogin
-      : false;
-    logger.info("[Hime Display] openedAtLogin:", this.openedAtLogin);
+    // this.openedAtLogin = is.macOS()
+    //   ? app.getLoginItemSettings().wasOpenedAtLogin
+    //   : false;
+    // logger.info("[Hime Display] openedAtLogin:", this.openedAtLogin);
     this.handleAppEvents();
   }
   handleAppEvents() {
@@ -28,9 +28,7 @@ export class Launcher extends EventEmitter {
   handelAppReady() {
     app.on("ready", () => {
       this.application = new Application();
-      this.application.startApp("controlPanel", {
-        openedAtLogin: this.openedAtLogin,
-      });
+      this.application.startApp();
       this.application.on("ready", () => {
         // this.sendFileToApplication();
       });

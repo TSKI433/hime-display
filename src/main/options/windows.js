@@ -20,6 +20,7 @@ export const windowsOptions = {
         // contextIsolation: false,
         // webSecurity: false,
         devTools: import.meta.env.DEV,
+        preload: resolve(__dirname, "./preload.cjs.js"),
       },
     },
     url: import.meta.env.DEV

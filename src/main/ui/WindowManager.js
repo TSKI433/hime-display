@@ -6,7 +6,7 @@ export class WindowManager extends EventEmitter {
     super();
     this.windows = {};
   }
-  openWindow(page, options) {
+  openWindow(page) {
     const pageOptions = windowsOptions[page];
     const window = new BrowserWindow(pageOptions.attrs);
     this.windows[page] = window;
