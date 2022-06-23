@@ -10,11 +10,14 @@ export class Application extends EventEmitter {
     this.windowManager = new WindowManager();
   }
   startApp() {
-    const win = this.windowManager.openWindow("controlPanel");
+    const win = this.openWindow("controlPanel");
     win.once("ready-to-show", () => {
       // this.isReady = true;
       this.emit("ready");
     });
+  }
+  openWindow(windowName) {
+    return this.windowManager.openWindow(windowName);
   }
   quitApp() {}
 }

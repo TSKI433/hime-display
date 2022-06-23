@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import { app } from "electron";
-import is from "electron-is";
+// import is from "electron-is";
 import { ExceptionHandler } from "./core/ExceptionHandler";
 import { logger } from "./core/Logger";
 import { Application } from "./Application";
@@ -36,7 +36,7 @@ export class Launcher extends EventEmitter {
     app.on("activate", () => {
       if (this.application) {
         logger.info("[Hime Display] activate");
-        this.application.showPage("controlPanel");
+        this.application.openWindow("controlPanel");
       }
     });
   }
