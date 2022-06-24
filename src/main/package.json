@@ -5,8 +5,7 @@
     "electron": "^19.0.4",
     "electron-is": "^3.0.0",
     "electron-log": "^4.4.7",
-    "electron-store": "^8.0.2",
-    "vite": "^2.9.12"
+    "lowdb": "1.0.0"
   },
   "devDependencies": {
     "rollup-plugin-auto-external": "^2.0.0",
