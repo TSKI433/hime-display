@@ -1,6 +1,7 @@
-import is from "electron-is";
-import Store from "electron-store";
-export class ConsfigManager {
+import low from "lowdb";
+import lowFilrSync from "lowdb/adapters/FileSync";
+import { APP_DATA_PATH } from "@shared/paths";
+export class ConfigManager {
   constructor() {
     this.systemConfig = {};
     this.userConfig = {};

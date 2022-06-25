@@ -1,5 +1,5 @@
 import { resolve } from "path";
-import { DEV_SERVER_PORT } from "@shared/constants.js";
+import { DEV_SERVER_PORT } from "@shared/constants";
 export const windowsOptions = {
   controlPanel: {
     attrs: {
