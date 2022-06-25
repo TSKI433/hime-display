@@ -1,16 +1,19 @@
 import low from "lowdb";
-import lowFilrSync from "lowdb/adapters/FileSync";
-import { APP_DATA_PATH } from "@shared/paths";
+import lowFileSync from "lowdb/adapters/FileSync";
+import { APP_CONFIG_PATH } from "@shared/paths";
+const defaultConfig = {
+  "open-control-at-launch": true,
+  "open-display-at-launch": true,
+};
 export class ConfigManager {
   constructor() {
-    this.systemConfig = {};
-    this.userConfig = {};
     this.init();
   }
   init() {
-    this.initSystemConfig();
-    this.initUserConfig();
+    this.configDB = low(new lowFileSync(APP_CONFIG_PATH));
+    this.reset();
   }
-  initSystemConfig() {}
-  initUserConfig() {}
+  reset() {
+    this.configDB.defaults(defaultConfig).write();
+  }
 }
