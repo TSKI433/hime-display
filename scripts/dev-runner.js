@@ -3,7 +3,12 @@ const chalk = require("chalk");
 const electron = require("electron");
 const { spawn } = require("child_process");
 const { createServer, createLogger, build } = require("vite");
-const { MAIN_ROOT, MAIN_PRELOAD_ROOT, RENDERER_ROOT } = require("./constants");
+const {
+  MAIN_ROOT,
+  MAIN_CONTROL_PRELOAD_ROOT,
+  MAIN_DISPLAY_PRELOAD_ROOT,
+  RENDERER_ROOT,
+} = require("./constants");
 
 let manualRestart;
 let electronProcess;
@@ -79,7 +84,12 @@ async function start() {
   const RENDERER_URL = `http${https ? "s" : ""}://localhost:${port}`;
 
   const mainWatcher = await watchMainProcess(MAIN_ROOT);
-  const mainPreloadWatcher = await watchMainProcess(MAIN_PRELOAD_ROOT);
+  const mainControlPreloadWatcher = await watchMainProcess(
+    MAIN_CONTROL_PRELOAD_ROOT
+  );
+  const mainDisplayPreloadWatcher = await watchMainProcess(
+    MAIN_DISPLAY_PRELOAD_ROOT
+  );
 
   startElectron(RENDERER_URL);
 
@@ -101,7 +111,8 @@ async function start() {
   };
 
   mainWatcher.on("event", manageElectronProcess);
-  mainPreloadWatcher.on("event", manageElectronProcess);
+  mainControlPreloadWatcher.on("event", manageElectronProcess);
+  mainDisplayPreloadWatcher.on("event", manageElectronProcess);
 }
 
 start();

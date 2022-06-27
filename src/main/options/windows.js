@@ -20,7 +20,7 @@ export const windowsOptions = {
         // contextIsolation: false,
         // webSecurity: false,
         devTools: import.meta.env.DEV,
-        preload: resolve(__dirname, "./preload.cjs.js"),
+        preload: resolve(__dirname, "./control-preload.cjs.js"),
       },
     },
     url: import.meta.env.DEV
@@ -40,6 +40,7 @@ export const windowsOptions = {
         // contextIsolation: false,
         // webSecurity: false,
         devTools: import.meta.env.DEV,
+        preload: resolve(__dirname, "./display-preload.cjs.js"),
       },
     },
     url: import.meta.env.DEV
@@ -59,6 +60,7 @@ export const windowsOptions = {
         // contextIsolation: false,
         // webSecurity: false,
         devTools: import.meta.env.DEV,
+        preload: resolve(__dirname, "./display-preload.cjs.js"),
       },
     },
     url: import.meta.env.DEV

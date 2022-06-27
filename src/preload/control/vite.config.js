@@ -9,11 +9,12 @@ export default defineConfig({
       entry: path.resolve(__dirname, "./index.js"),
       name: "main",
       formats: ["cjs"],
+      fileName: (format) => `control-preload.${format}.js`,
     },
     rollupOptions: {
       plugins: [
         autoExternal({
-          packagePath: path.resolve(__dirname, "./package.json"),
+          packagePath: path.resolve(__dirname, "../package.json"),
         }),
       ],
     },
