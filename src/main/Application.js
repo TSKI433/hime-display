@@ -1,6 +1,9 @@
 import { EventEmitter } from "events";
 import { WindowManager } from "./ui/WindowManager";
-import { ConfigManager } from "./core/ConfigManager";
+import low from "lowdb";
+import lowFileSync from "lowdb/adapters/FileSync";
+import { APP_CONFIG_PATH } from "@shared/paths";
+import { defaultConfig } from "./options/configs";
 export class Application extends EventEmitter {
   constructor() {
     super();
@@ -9,19 +12,28 @@ export class Application extends EventEmitter {
   }
   init() {
     this.windowManager = new WindowManager();
-    this.configManager = new ConfigManager();
+    this.initConfigDB();
   }
   startApp() {
-    if (this.configManager.configDB.get("open-control-at-launch").value()) {
-      const win = this.openWindow("controlPanel");
-      win.once("ready-to-show", () => {
-        // this.isReady = true;
-        this.emit("ready");
-      });
+    if (this.configDB.get("open-control-at-launch").value()) {
+      this.openWindow("controlPanel");
     }
+
+    if (this.configDB.get("open-display-at-launch").value()) {
+      this.openWindow(this.configDB.get("display-mode").value());
+    }
+
+    // win.once("ready-to-show", () => {
+    // this.isReady = true;
+    // this.emit("ready");
+    // });
   }
   openWindow(windowName) {
     return this.windowManager.openWindow(windowName);
+  }
+  initConfigDB() {
+    this.configDB = low(new lowFileSync(APP_CONFIG_PATH));
+    this.configDB.defaults(defaultConfig).write();
   }
   quitApp() {}
 }

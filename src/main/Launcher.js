@@ -29,9 +29,9 @@ export class Launcher extends EventEmitter {
     app.on("ready", () => {
       this.application = new Application();
       this.application.startApp();
-      this.application.on("ready", () => {
-        // this.sendFileToApplication();
-      });
+      // this.application.on("ready", () => {
+      // this.sendFileToApplication();
+      // });
     });
     app.on("activate", () => {
       if (this.application) {
