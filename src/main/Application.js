@@ -2,8 +2,9 @@ import { EventEmitter } from "events";
 import { WindowManager } from "./ui/WindowManager";
 import low from "lowdb";
 import lowFileSync from "lowdb/adapters/FileSync";
-import { APP_CONFIG_PATH } from "@shared/paths";
-import { defaultConfig } from "./options/configs";
+import { APP_CONFIG_PATH, APP_DATABASE_PATH } from "./options/paths";
+import { defaultConfig } from "./options/defaultConfig";
+import { ipcMain } from "electron";
 export class Application extends EventEmitter {
   constructor() {
     super();
@@ -13,6 +14,7 @@ export class Application extends EventEmitter {
   init() {
     this.windowManager = new WindowManager();
     this.initConfigDB();
+    this.handleIpcMessages();
   }
   startApp() {
     if (this.configDB.get("open-control-at-launch").value()) {
@@ -34,6 +36,12 @@ export class Application extends EventEmitter {
   initConfigDB() {
     this.configDB = low(new lowFileSync(APP_CONFIG_PATH));
     this.configDB.defaults(defaultConfig).write();
+  }
+  handleIpcMessages() {
+    // 向子进程提供数据库存储目录
+    ipcMain.on("query-database-path", (event) => {
+      event.returnValue = APP_DATABASE_PATH;
+    });
   }
   quitApp() {}
 }

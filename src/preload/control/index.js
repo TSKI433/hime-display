@@ -1,4 +1,5 @@
 import { contextBridge } from "electron";
-contextBridge.exposeInMainWorld("NodeAPI", {
-  abc: "123",
+import * as database from "./Database";
+contextBridge.exposeInMainWorld("nodeAPI", {
+  database,
 });

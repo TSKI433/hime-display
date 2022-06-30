@@ -1,4 +1,4 @@
 import { contextBridge } from "electron";
-contextBridge.exposeInMainWorld("NodeAPI", {
+contextBridge.exposeInMainWorld("nodeAPI", {
   abc: "456",
 });
