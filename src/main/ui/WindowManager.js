@@ -13,6 +13,11 @@ export class WindowManager extends EventEmitter {
     if (pageOptions.url) {
       window.loadURL(pageOptions.url);
     }
+    if (import.meta.env.DEV) {
+      if (pageOptions.dev.autoOpenDevTool) {
+        window.webContents.openDevTools();
+      }
+    }
     // window.once("ready-to-show", () => {
     //   window.show();
     // });

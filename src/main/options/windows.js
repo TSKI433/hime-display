@@ -26,6 +26,9 @@ export const windowsOptions = {
     url: import.meta.env.DEV
       ? `http://localhost:${DEV_SERVER_PORT}/control/control.html`
       : "file://" + resolve(__dirname, "../control/control.html"),
+    dev: {
+      autoOpenDevTool: true,
+    },
   },
   displayFullScreen: {
     attrs: {
@@ -46,6 +49,9 @@ export const windowsOptions = {
     url: import.meta.env.DEV
       ? `http://localhost:${DEV_SERVER_PORT}/display/display.html`
       : "file://" + resolve(__dirname, "../renderer/display/display.html"),
+    dev: {
+      autoOpenDevTool: false,
+    },
   },
   displayWindowed: {
     attrs: {
@@ -66,5 +72,8 @@ export const windowsOptions = {
     url: import.meta.env.DEV
       ? `http://localhost:${DEV_SERVER_PORT}/display/display.html`
       : "file://" + resolve(__dirname, "../renderer/display/display.html"),
+    dev: {
+      autoOpenDevTool: false,
+    },
   },
 };
