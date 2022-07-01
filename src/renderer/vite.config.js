@@ -1,3 +1,4 @@
+import { resolve } from "path";
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { DEV_SERVER_PORT } from "../shared/constants";
@@ -28,5 +29,11 @@ export default defineConfig({
   server: {
     strictPort: true,
     port: DEV_SERVER_PORT,
+  },
+  resolve: {
+    alias: {
+      "@control": resolve(__dirname, "control"),
+      "@display": resolve(__dirname, "display"),
+    },
   },
 });
