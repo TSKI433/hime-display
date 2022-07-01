@@ -29,32 +29,33 @@
 
   <button @click="count++">count is: {{ count }}</button>
   <button @click="clickPreload">Call preload function</button>
+  <el-button type="primary">Primary</el-button>
   <p>
     Edit
     <code>components/HelloWorld.vue</code> to test hot module replacement.
   </p>
 </template>
 
-<script lang="ts">
-import { ref, defineComponent } from 'vue'
+<script>
+import { ref, defineComponent } from "vue";
 export default defineComponent({
-  name: 'HelloWorld',
+  name: "HelloWorld",
   props: {
     msg: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   setup: () => {
-    const count = ref(0)
-    return { count }
+    const count = ref(0);
+    return { count };
   },
   methods: {
     async clickPreload() {
-      await window.api.showDialog('Hello!')
-    }
-  }
-})
+      await window.api.showDialog("Hello!");
+    },
+  },
+});
 </script>
 
 <style scoped>

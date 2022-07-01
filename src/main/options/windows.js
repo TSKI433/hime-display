@@ -4,9 +4,8 @@ export const windowsOptions = {
   controlPanel: {
     attrs: {
       title: "Hime Display 控制面板",
-      // Windows下会有一个菜单栏的高度
-      height: 519 + (process.platform == "win32" ? 55 : 0),
-      width: 560,
+      height: 600,
+      width: 850,
       titleBarStyle: "hidden",
       vibrancy: "window",
       autoHideMenuBar: true,
