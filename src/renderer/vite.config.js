@@ -13,7 +13,13 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
     Components({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [
+        ElementPlusResolver(),
+        // 颜色主题配置预留
+        //   {
+        //   importStyle: "sass",
+        // }
+      ],
     }),
   ],
   root: "./src/renderer",
@@ -36,4 +42,10 @@ export default defineConfig({
       "@display": resolve(__dirname, "display"),
     },
   },
+  // 颜色主题配置预留
+  // css: {
+  //   preprocessorOptions: {
+  //     scss: { additionalData: `@use "@control/styles/index.scss" as *;` },
+  //   },
+  // },
 });
