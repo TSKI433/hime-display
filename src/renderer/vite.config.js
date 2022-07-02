@@ -42,10 +42,12 @@ export default defineConfig({
       "@display": resolve(__dirname, "display"),
     },
   },
-  // 颜色主题配置预留
   // css: {
   //   preprocessorOptions: {
-  //     scss: { additionalData: `@use "@control/styles/index.scss" as *;` },
+  //     scss: {
+  // 颜色主题配置预留
+  // additionalData: `@use "@control/styles/el-theme.scss" as *;`
+  //     },
   //   },
   // },
 });

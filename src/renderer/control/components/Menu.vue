@@ -1,7 +1,13 @@
 <template>
-  <el-button>test</el-button>
+  <el-aside>
+    <el-button style="margin-top: 50px">test</el-button>
+  </el-aside>
 </template>
 
 <script setup></script>
 
-<style></style>
+<style lang="scss">
+.el-aside {
+  width: 220px;
+}
+</style>

@@ -7,7 +7,7 @@ export const windowsOptions = {
       height: 600,
       width: 850,
       titleBarStyle: "hidden",
-      vibrancy: "window",
+      vibrancy: "menu",
       autoHideMenuBar: true,
       titleBarOverlay: true,
       // visualEffectState: "active",
