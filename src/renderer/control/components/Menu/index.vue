@@ -12,7 +12,7 @@
 
 <script setup>
 import HimeMenuItem from "./MenuItem.vue";
-const menuItems = ["Gernal", "Control", "Model", "Display", "Source", "About"];
+const menuItems = ["General", "Control", "Model", "Display", "Source", "About"];
 </script>
 
 <style lang="scss">
