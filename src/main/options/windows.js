@@ -5,7 +5,7 @@ export const windowsOptions = {
     attrs: {
       title: "Hime Display 控制面板",
       height: 600,
-      width: 850,
+      width: 700,
       titleBarStyle: "hidden",
       vibrancy: "menu",
       autoHideMenuBar: true,

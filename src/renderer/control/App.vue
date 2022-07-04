@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import HimeMenu from "@control/components/Menu.vue";
+import HimeMenu from "@control/components/Menu/index.vue";
 import HimeMain from "@control/components/Main.vue";
 </script>
 
@@ -25,7 +25,7 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  height: 50px;
+  height: 40px;
   width: 100%;
   -webkit-app-region: drag;
 }

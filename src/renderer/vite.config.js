@@ -5,6 +5,7 @@ import { DEV_SERVER_PORT } from "../shared/constants";
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
+import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -20,6 +21,12 @@ export default defineConfig({
         //   importStyle: "sass",
         // }
       ],
+    }),
+    createSvgIconsPlugin({
+      // 指定需要缓存的图标文件夹
+      iconDirs: [resolve(__dirname, "control/icons")],
+      // 指定symbolId格式
+      symbolId: "icon-[dir]-[name]",
     }),
   ],
   root: "./src/renderer",
@@ -42,12 +49,13 @@ export default defineConfig({
       "@display": resolve(__dirname, "display"),
     },
   },
-  // css: {
-  //   preprocessorOptions: {
-  //     scss: {
-  // 颜色主题配置预留
-  // additionalData: `@use "@control/styles/el-theme.scss" as *;`
-  //     },
-  //   },
-  // },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        // 颜色主题配置预留
+        // additionalData: `@use "@control/styles/el-theme.scss" as *;`
+        additionalData: `@use "@control/styles/Variables.scss" as *;`,
+      },
+    },
+  },
 });
