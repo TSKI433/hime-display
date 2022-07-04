@@ -27,16 +27,17 @@ const appStore = useAppStore();
   align-items: center;
   flex-direction: column;
   font-weight: bold;
-  font-size: small;
+  font-size: 0.7rem;
   border-radius: 10px;
-  padding: 8px 0 5px;
+  padding: 8px 0;
   div {
     color: $menu-color;
     user-select: none;
   }
   svg {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
+    margin-bottom: 3px;
     use {
       fill: $menu-color;
     }
