@@ -21,7 +21,8 @@ const props = defineProps({
   font-weight: bold;
   font-size: small;
   color: $menu-color;
-  margin-bottom: 18px;
+  border-radius: 10px;
+  padding: 8px 0 5px;
   svg {
     width: 32px;
     height: 32px;
@@ -29,5 +30,14 @@ const props = defineProps({
       fill: $menu-color;
     }
   }
+}
+.menu-item.active {
+  color: var(--el-color-primary);
+  svg {
+    use {
+      fill: var(--el-color-primary);
+    }
+  }
+  background-color: $menu-background-color-active;
 }
 </style>

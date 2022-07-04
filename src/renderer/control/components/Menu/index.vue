@@ -18,6 +18,6 @@ const menuItems = ["Gernal", "Control", "Model", "Display", "Source", "About"];
 <style lang="scss">
 .el-aside {
   width: 72px;
-  padding: 40px 10px;
+  padding: 40px 8px;
 }
 </style>
