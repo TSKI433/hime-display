@@ -1,16 +1,24 @@
 <template>
-  <div class="menu-item">
+  <div
+    class="menu-item"
+    :class="{ active: appStore.activeMenuItem === itemName }"
+    @click="appStore.activeMenuItem = itemName"
+  >
     <svg-icon :name="'menu-' + svgIconName"></svg-icon>
-    {{ itemName }}
+    <div>
+      {{ itemName }}
+    </div>
   </div>
 </template>
 
 <script setup>
 import SvgIcon from "@control/components/SvgIcon.vue";
+import { useAppStore } from "@control/store/app";
 const props = defineProps({
   itemName: String,
   svgIconName: String,
 });
+const appStore = useAppStore();
 </script>
 
 <style lang="scss">
@@ -20,9 +28,12 @@ const props = defineProps({
   flex-direction: column;
   font-weight: bold;
   font-size: small;
-  color: $menu-color;
   border-radius: 10px;
   padding: 8px 0 5px;
+  div {
+    color: $menu-color;
+    user-select: none;
+  }
   svg {
     width: 32px;
     height: 32px;
@@ -32,7 +43,9 @@ const props = defineProps({
   }
 }
 .menu-item.active {
-  color: var(--el-color-primary);
+  div {
+    color: var(--el-color-primary);
+  }
   svg {
     use {
       fill: var(--el-color-primary);
