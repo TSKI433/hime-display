@@ -2,12 +2,12 @@
   "name": "@app/main",
   "version": "0.0.0",
   "dependencies": {
-    "electron": "^19.0.4",
     "electron-is": "^3.0.0",
     "electron-log": "^4.4.7",
     "lowdb": "1.0.0"
   },
   "devDependencies": {
+    "electron": "^19.0.4",
     "rollup-plugin-auto-external": "^2.0.0",
     "vite": "^2.9.12"
   }
