@@ -1,9 +1,11 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import App from "./App.vue";
+import i18n from "./i18n";
 import "virtual:svg-icons-register";
 // import "@control/styles/index.scss";
 import "element-plus/theme-chalk/dark/css-vars.css";
 const app = createApp(App);
 app.use(createPinia());
+i18n(app);
 app.mount("#app");

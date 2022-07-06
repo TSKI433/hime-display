@@ -47,6 +47,7 @@ export default defineConfig({
     alias: {
       "@control": resolve(__dirname, "control"),
       "@display": resolve(__dirname, "display"),
+      "@shared": resolve(__dirname, "../shared"),
     },
   },
   css: {

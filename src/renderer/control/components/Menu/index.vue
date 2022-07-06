@@ -2,9 +2,9 @@
   <el-aside>
     <div class="menu">
       <hime-menu-item
-        v-for="itemName in menuItems"
-        :item-name="itemName"
-        :svg-icon-name="itemName"
+        v-for="menuItem in menuItems"
+        :item-name="$t('menu.' + menuItem)"
+        :svg-icon-name="menuItem"
       ></hime-menu-item>
     </div>
   </el-aside>
@@ -12,7 +12,7 @@
 
 <script setup>
 import HimeMenuItem from "./MenuItem.vue";
-const menuItems = ["General", "Control", "Model", "Display", "Source", "About"];
+const menuItems = ["general", "display", "control", "model", "source", "about"];
 </script>
 
 <style lang="scss">
