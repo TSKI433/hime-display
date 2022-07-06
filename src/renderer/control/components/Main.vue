@@ -32,7 +32,6 @@ const contentComponents = {
 const contentComponentNow = computed(() => {
   return contentComponents["Hime" + _.capitalize(appStore.activeMenuItem)];
 });
-console.log();
 </script>
 
 <style lang="scss">
