@@ -37,5 +37,6 @@ const contentComponentNow = computed(() => {
 <style lang="scss">
 .el-main {
   background-color: var(--el-fill-color-lighter);
+  padding-top: 40px;
 }
 </style>
