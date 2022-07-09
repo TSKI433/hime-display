@@ -12,7 +12,18 @@ import HimeMain from "@control/components/Main.vue";
 </script>
 
 <style lang="scss">
+:root {
+  height: 100%;
+  font-family: var(--el-font-family);
+  font-size: var(--el-font-size-base);
+  color: var(--el-text-color-regular);
+  user-select: none;
+  table {
+    font-size: var(--el-font-size-base);
+  }
+}
 body {
+  height: 100%;
   margin: 0;
 }
 #app {
@@ -29,4 +40,12 @@ body {
   width: 100%;
   -webkit-app-region: drag;
 }
+// 貌似是element plus的问题，自动引入时，深色模式下显示popover的效果不对劲
+// https://github.com/element-plus/element-plus/issues/8113
+// https://github.com/element-plus/element-plus/pull/8133
+// 已在2.2.7修复
+// .el-popper.is-light {
+//   background: var(--el-bg-color-overlay);
+//   border: 1px solid var(--el-border-color-light);
+// }
 </style>

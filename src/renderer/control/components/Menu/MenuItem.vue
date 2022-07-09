@@ -27,9 +27,9 @@ const props = defineProps({
 });
 const itemNameFontSize = computed(() => {
   if (["デイスプレー", "コントロール"].includes(props.itemName)) {
-    return "0.5rem";
+    return "0.6rem";
   }
-  return "0.7rem";
+  return "0.85rem";
 });
 const appStore = useAppStore();
 </script>
@@ -45,7 +45,6 @@ const appStore = useAppStore();
   padding: 8px 0;
   div {
     color: $menu-color;
-    user-select: none;
   }
   svg {
     width: 24px;
