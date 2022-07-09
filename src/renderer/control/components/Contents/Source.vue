@@ -104,7 +104,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-button>添加来源</el-button>
+      <el-button @click="addSourePath">添加来源</el-button>
       <el-button>全部重新检索</el-button>
     </el-form-item>
     <el-form-item label="数据信息">
@@ -137,6 +137,22 @@ function showInFolder(path) {
 }
 function deleteSourcePath(index) {
   appStore.database.sourcePathList.splice(index, 1);
+}
+function addSourePath() {
+  window.nodeAPI.ipc.selectPath().then((path) => {
+    appStore.database.sourcePathList.push({
+      path,
+      tagName: "",
+      sourceTypes: {
+        live2d: true,
+        spine: true,
+        mmd: true,
+        vrm: true,
+        motion3D: true,
+        audio3D: true,
+      },
+    });
+  });
 }
 </script>
 

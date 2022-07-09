@@ -5,7 +5,7 @@ import low from "lowdb";
 import lowFileSync from "lowdb/adapters/FileSync";
 import { APP_CONFIG_PATH, APP_DATABASE_PATH } from "./options/paths";
 import { defaultConfig } from "./options/defaultConfig";
-import { ipcMain } from "electron";
+import { ipcMain, dialog } from "electron";
 export class Application extends EventEmitter {
   constructor() {
     super();
@@ -56,6 +56,11 @@ export class Application extends EventEmitter {
     });
     ipcMain.on("application:query-system-theme", (event) => {
       event.returnValue = this.themeManager.getSystemTheme();
+    });
+    ipcMain.handle("application:select-path", (windowName) => {
+      return dialog.showOpenDialogSync(this.windowManager.windows[windowName], {
+        properties: ["openDirectory"],
+      });
     });
   }
   quitApp() {}
