@@ -40,6 +40,10 @@ body {
   width: 100%;
   -webkit-app-region: drag;
 }
+// 默认的表头背景色和底色不搭
+.el-table th.el-table__cell {
+  background-color: rgba(0, 0, 0, 0);
+}
 // 貌似是element plus的问题，自动引入时，深色模式下显示popover的效果不对劲
 // https://github.com/element-plus/element-plus/issues/8113
 // https://github.com/element-plus/element-plus/pull/8133

@@ -1,31 +1,31 @@
 <template>
-  <el-form label-position="top">
+  <el-form label-position="top" class="form--source">
     <hime-title-with-divider>{{ $t("menu.source") }}</hime-title-with-divider>
     <el-form-item label="数据源">
-      <!-- row-key用于辨识row，解决expend输入内容后自动折叠的问题 -->
+      <!-- row-key用于辨识row，解决expand输入内容后自动折叠的问题 -->
       <el-table
-        :data="tableData"
+        :data="sourceData"
         :border="true"
         row-key="path"
         ref="sourceTable"
-        class="source-table"
+        class="el-table--source-path--hime"
         size="small"
         tooltip-effect="light"
       >
         <!-- 使用width="1"隐藏默认小箭头 -->
         <el-table-column type="expand" width="1">
           <template #default="props">
-            <div style="padding: 5px 20px">
+            <div class="el-table__expanded-container--hime">
               <el-form
                 label-position="top"
-                class="source-expend-form"
+                class="el-form--expanded--hime"
                 :inline="true"
               >
                 <el-form-item label="来源标签">
                   <el-input
                     placeholder="来源标签"
                     v-model="props.row.tagName"
-                    style="width: 75px; margin-top: 2px"
+                    class="el-table__expanded-input--tag--hime"
                   />
                 </el-form-item>
                 <el-form-item label="数据类型">
@@ -76,8 +76,8 @@
               <template #default>
                 <svg-icon-el-button
                   size="small"
-                  name="edit"
-                  @click="expendRow(props.row)"
+                  :name="lastname"
+                  @click="expandRow(props.row)"
                 ></svg-icon-el-button>
               </template>
               <template #content> 编辑路径信息 </template>
@@ -85,6 +85,8 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-button>添加来源</el-button>
+      <el-button>全部重新检索</el-button>
     </el-form-item>
     <el-form-item label="数据信息">
       <el-table> </el-table>
@@ -98,13 +100,15 @@ import SvgIconElButton from "@control/components/Common/SvgIconElButton.vue";
 import HimeTitleWithDivider from "@control/components/Common/TitleWithDivider.vue";
 const sourceTypes = ["live2d", "spine", "vrm", "mmd", "motion3D", "audio3D"];
 const sourceTable = ref();
-function expendRow(row) {
+const lastname = ref("edit");
+function expandRow(row) {
   sourceTable.value.toggleRowExpansion(row);
+  lastname.value = lastname.value === "edit" ? "close" : "edit";
   // 这不是script setup里的用法
   // console.log(this.$refs);
   // this.$refs.sourceTable.toggleRowExpansion(row);
 }
-const tableData = reactive([
+const sourceData = reactive([
   {
     path: "Lorem ipsum dolor sit amet.",
     tagName: "vrm",
@@ -133,25 +137,35 @@ const tableData = reactive([
 </script>
 
 <style lang="scss">
+.el-table--source-path--hime {
+  margin-bottom: 10px;
+  .el-table__expand-icon {
+    // 配合上方的width="1"使用，可以隐藏默认的小箭头
+    color: transparent;
+  }
+  .el-table__expanded-cell {
+    .el-table__expanded-container--hime {
+      padding: 5px 0 5px 20px;
+    }
+    .el-table__expanded-input--tag--hime {
+      width: 75px;
+      margin-top: 2px;
+    }
+  }
+}
+.form--source > .el-form-item > .el-form-item__label {
+  font-size: var(--el-font-size-extra-large);
+  line-height: initial;
+}
+// 直接将size设为small就行了
 // .el-table .el-table__cell {
 //   padding: 6px 0;
 // }
-.el-table th.el-table__cell {
-  background-color: rgba(0, 0, 0, 0);
-}
 //element plus的样式里有一个.el-form-item .el-form-item选择器会把margin-bottom设为0，这里覆盖一下
-// .el-form-item .source-expend-form .el-form-item {
+// .el-form-item .source--form .el-form-item {
 //   margin-bottom: 18px;
 // }
-// 配合上方的width="1"使用，可以隐藏默认的小箭头
-.source-table .el-table__expand-icon {
-  color: transparent;
-}
-// .source-expend-form input {
+// .el-form--expanded--hime input {
 //   width: 80px;
-// }
-// .el-form--default.el-form--label-top .el-form-item .el-form-item__label {
-//   font-size: var(--el-font-size-extra-large);
-//   line-height: initial;
 // }
 </style>
