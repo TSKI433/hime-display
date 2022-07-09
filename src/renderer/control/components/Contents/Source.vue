@@ -4,7 +4,7 @@
     <el-form-item label="数据源">
       <!-- row-key用于辨识row，解决expand输入内容后自动折叠的问题 -->
       <el-table
-        :data="sourceData"
+        :data="appStore.database.sourcePathList"
         :border="true"
         row-key="path"
         ref="sourceTable"
@@ -74,13 +74,16 @@
             </el-tooltip>
             <el-tooltip :show-after="600" effect="light">
               <template #default>
+                <!-- 发现props里有个文档里没说的expanded属性，正好可以拿来用 -->
                 <svg-icon-el-button
                   size="small"
-                  :name="lastname"
+                  :name="props.expanded ? 'close' : 'edit'"
                   @click="expandRow(props.row)"
                 ></svg-icon-el-button>
               </template>
-              <template #content> 编辑路径信息 </template>
+              <template #content>
+                {{ props.expanded ? "结束编辑" : "编辑路径信息" }}
+              </template>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -95,45 +98,24 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { watch, ref, toRaw } from "vue";
 import SvgIconElButton from "@control/components/Common/SvgIconElButton.vue";
 import HimeTitleWithDivider from "@control/components/Common/TitleWithDivider.vue";
+import { useAppStore } from "../../store/app";
+const appStore = useAppStore();
 const sourceTypes = ["live2d", "spine", "vrm", "mmd", "motion3D", "audio3D"];
 const sourceTable = ref();
-const lastname = ref("edit");
 function expandRow(row) {
   sourceTable.value.toggleRowExpansion(row);
-  lastname.value = lastname.value === "edit" ? "close" : "edit";
   // 这不是script setup里的用法
   // console.log(this.$refs);
   // this.$refs.sourceTable.toggleRowExpansion(row);
 }
-const sourceData = reactive([
-  {
-    path: "Lorem ipsum dolor sit amet.",
-    tagName: "vrm",
-    sourceTypes: {
-      live2d: false,
-      spine: false,
-      mmd: false,
-      vrm: false,
-      motion3D: false,
-      audio3D: false,
-    },
-  },
-  {
-    path: "Lorem ipsum dolor sit amet consectetur adipisicing.",
-    tagName: "mmd",
-    sourceTypes: {
-      live2d: false,
-      spine: false,
-      mmd: false,
-      vrm: false,
-      motion3D: false,
-      audio3D: false,
-    },
-  },
-]);
+// 实时更新数据库
+watch(appStore.database.sourcePathList, (newValue) => {
+  // 这里没办法只有把整个source数据传过去
+  window.nodeAPI.database.write("sourcePath", toRaw(newValue));
+});
 </script>
 
 <style lang="scss">

@@ -1,6 +1,20 @@
 import { defineStore } from "pinia";
-export const useAppStore = defineStore("app", {
+const defineAppStore = defineStore("app", {
   state: () => ({
-    activeMenuItem: "general",
+    initialized: false,
+    ui: {
+      activeMenuItem: "source",
+    },
+    database: {
+      sourcePathList: [],
+    },
   }),
 });
+export const useAppStore = function () {
+  const appStore = defineAppStore();
+  if (!appStore.initialized) {
+    const database = window.nodeAPI.database;
+    appStore.database.sourcePathList = database.get("sourcePath");
+  }
+  return appStore;
+};

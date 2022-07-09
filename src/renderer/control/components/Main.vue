@@ -30,7 +30,7 @@ const contentComponents = {
   HimeAbout,
 };
 const contentComponentNow = computed(() => {
-  return contentComponents["Hime" + _.capitalize(appStore.activeMenuItem)];
+  return contentComponents["Hime" + _.capitalize(appStore.ui.activeMenuItem)];
 });
 </script>
 

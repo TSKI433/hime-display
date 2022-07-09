@@ -19,3 +19,9 @@ export function read() {
 export function get(value) {
   return db.get(value).value();
 }
+export function push(value, data) {
+  return db.get(value).push(data).write();
+}
+export function write(value, data) {
+  return db.set(value, data).write();
+}

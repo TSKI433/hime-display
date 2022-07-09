@@ -1,8 +1,8 @@
 <template>
   <div
     class="menu-item"
-    :class="{ active: appStore.activeMenuItem === svgIconName }"
-    @click="appStore.activeMenuItem = svgIconName"
+    :class="{ active: appStore.ui.activeMenuItem === svgIconName }"
+    @click="appStore.ui.activeMenuItem = svgIconName"
   >
     <svg-icon :name="svgIconName"></svg-icon>
     <div :style="{ 'font-size': itemNameFontSize }">
