@@ -51,14 +51,33 @@
             </el-scrollbar>
           </template>
         </el-table-column> -->
-        <el-table-column label="来源标签" prop="tagName" width="130" />
-        <el-table-column label="操作" width="160" align="center">
+        <el-table-column
+          label="来源标签"
+          prop="tagName"
+          width="100"
+          align="center"
+        />
+        <el-table-column label="操作" width="210" align="center">
           <template #default="props">
+            <el-tooltip :show-after="600" effect="light">
+              <template #default>
+                <!-- 发现props里有个文档里没说的expanded属性，正好可以拿来用 -->
+                <svg-icon-el-button
+                  size="small"
+                  :name="props.expanded ? 'close' : 'edit'"
+                  @click="expandRow(props.row)"
+                ></svg-icon-el-button>
+              </template>
+              <template #content>
+                {{ props.expanded ? "结束编辑" : "编辑路径信息" }}
+              </template>
+            </el-tooltip>
             <el-tooltip :show-after="600" effect="light">
               <template #default>
                 <svg-icon-el-button
                   size="small"
                   name="source"
+                  @click="showInFolder(props.row.path)"
                 ></svg-icon-el-button>
               </template>
               <template #content> 在文件浏览器中显示 </template>
@@ -74,16 +93,13 @@
             </el-tooltip>
             <el-tooltip :show-after="600" effect="light">
               <template #default>
-                <!-- 发现props里有个文档里没说的expanded属性，正好可以拿来用 -->
                 <svg-icon-el-button
                   size="small"
-                  :name="props.expanded ? 'close' : 'edit'"
-                  @click="expandRow(props.row)"
+                  name="delete"
+                  @click="deleteSourcePath(props.$index)"
                 ></svg-icon-el-button>
               </template>
-              <template #content>
-                {{ props.expanded ? "结束编辑" : "编辑路径信息" }}
-              </template>
+              <template #content> 删除该数据源 </template>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -99,23 +115,29 @@
 
 <script setup>
 import { watch, ref, toRaw } from "vue";
+import { useAppStore } from "../../store/app";
 import SvgIconElButton from "@control/components/Common/SvgIconElButton.vue";
 import HimeTitleWithDivider from "@control/components/Common/TitleWithDivider.vue";
-import { useAppStore } from "../../store/app";
 const appStore = useAppStore();
 const sourceTypes = ["live2d", "spine", "vrm", "mmd", "motion3D", "audio3D"];
 const sourceTable = ref();
+// 实时更新数据库
+watch(appStore.database.sourcePathList, (newValue) => {
+  // 这里没办法只有把整个source数据传过去
+  window.nodeAPI.database.write("sourcePath", toRaw(newValue));
+});
 function expandRow(row) {
   sourceTable.value.toggleRowExpansion(row);
   // 这不是script setup里的用法
   // console.log(this.$refs);
   // this.$refs.sourceTable.toggleRowExpansion(row);
 }
-// 实时更新数据库
-watch(appStore.database.sourcePathList, (newValue) => {
-  // 这里没办法只有把整个source数据传过去
-  window.nodeAPI.database.write("sourcePath", toRaw(newValue));
-});
+function showInFolder(path) {
+  window.nodeAPI.showInFolder(path);
+}
+function deleteSourcePath(index) {
+  appStore.database.sourcePathList.splice(index, 1);
+}
 </script>
 
 <style lang="scss">

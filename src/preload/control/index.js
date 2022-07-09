@@ -1,9 +1,13 @@
 import { contextBridge, ipcRenderer } from "electron";
+import { shell } from "electron";
 import * as database from "./Database";
 contextBridge.exposeInMainWorld("nodeAPI", {
   database,
+  showInFolder,
 });
-
+function showInFolder(path) {
+  shell.showItemInFolder(path);
+}
 // document.addEventListener("DOMContentLoaded", () => {
 //   ipcRenderer.invoke("application:query-system-theme").then((theme) => {
 // updateTheme(theme);
