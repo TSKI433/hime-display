@@ -4,7 +4,7 @@
     <el-form-item label="数据源">
       <!-- row-key用于辨识row，解决expand输入内容后自动折叠的问题 -->
       <el-table
-        :data="appStore.database.sourcePathList"
+        :data="appStore.database.sourcePath"
         :border="true"
         row-key="path"
         ref="sourceTable"
@@ -87,6 +87,7 @@
                 <svg-icon-el-button
                   size="small"
                   name="refresh"
+                  @click="loadFromSourcePath(props.row.path)"
                 ></svg-icon-el-button>
               </template>
               <template #content> 重新检索 </template>
@@ -105,7 +106,7 @@
         </el-table-column>
       </el-table>
       <el-button @click="addSourePath">添加来源</el-button>
-      <el-button>全部重新检索</el-button>
+      <el-button @click="loadFromSourcePathAll">全部重新检索</el-button>
     </el-form-item>
     <el-form-item label="数据信息">
       <el-table> </el-table>
@@ -122,7 +123,7 @@ const appStore = useAppStore();
 const sourceTypes = ["live2d", "spine", "vrm", "mmd", "motion3D", "audio3D"];
 const sourceTable = ref();
 // 实时更新数据库
-watch(appStore.database.sourcePathList, (newValue) => {
+watch(appStore.database.sourcePath, (newValue) => {
   // 这里没办法只有把整个source数据传过去
   window.nodeAPI.database.write("sourcePath", toRaw(newValue));
 });
@@ -136,22 +137,38 @@ function showInFolder(path) {
   window.nodeAPI.showInFolder(path);
 }
 function deleteSourcePath(index) {
-  appStore.database.sourcePathList.splice(index, 1);
+  appStore.database.sourcePath.splice(index, 1);
 }
 function addSourePath() {
   window.nodeAPI.ipc.selectPath().then((path) => {
-    appStore.database.sourcePathList.push({
-      path,
-      tagName: "",
-      sourceTypes: {
-        live2d: true,
-        spine: true,
-        mmd: true,
-        vrm: true,
-        motion3D: true,
-        audio3D: true,
-      },
-    });
+    if (path.length > 0) {
+      appStore.database.sourcePath.push({
+        path: path[0],
+        tagName: "",
+        sourceTypes: {
+          live2d: true,
+          spine: true,
+          mmd: true,
+          vrm: true,
+          motion3D: true,
+          audio3D: true,
+        },
+      });
+    }
+  });
+}
+function loadFromSourcePath(sourcePath) {
+  window.nodeAPI.database.loadFromSourcePath(sourcePath).then(() => {
+    appStore.syncDatabase();
+  });
+}
+function loadFromSourcePathAll() {
+  const promises = [];
+  appStore.database.sourcePath.forEach((sourcePath) => {
+    promises.push(window.nodeAPI.database.loadFromSourcePath(sourcePath.path));
+  });
+  Promise.all(promises).then(() => {
+    appStore.syncDatabase();
   });
 }
 </script>

@@ -6,15 +6,27 @@ const defineAppStore = defineStore("app", {
       activeMenuItem: "source",
     },
     database: {
-      sourcePathList: [],
+      sourcePath: [],
+      model: [],
+      motion3D: [],
+      audio3D: [],
     },
   }),
+  actions: {
+    syncDatabase() {
+      const database = window.nodeAPI.database;
+      this.database.sourcePath = database.get("sourcePath");
+      this.database.model = database.get("model");
+      this.database.motion3D = database.get("motion3D");
+      this.database.audio3D = database.get("audio3D");
+    },
+  },
 });
 export const useAppStore = function () {
   const appStore = defineAppStore();
   if (!appStore.initialized) {
-    const database = window.nodeAPI.database;
-    appStore.database.sourcePathList = database.get("sourcePath");
+    appStore.initialized = true;
+    appStore.syncDatabase();
   }
   return appStore;
 };
