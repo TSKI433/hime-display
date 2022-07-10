@@ -26,42 +26,47 @@ export function push(value, data) {
 export function write(value, data) {
   return db.set(value, data).write();
 }
-export async function loadFromSourcePath(sourcePath) {
+export async function loadDataFromSourcePathInfo(sourcePathInfo) {
+  await loadDataFromPath(sourcePathInfo.sourcePath, sourcePathInfo.sourceTypes);
+}
+async function loadDataFromPath(dataPath, sourceTypes) {
   //根据文件路径读取文件，返回文件列表
   // 全部使用箭头函数，确保this对象可以传进去
-  const files = await util.promisify(fs.readdir)(sourcePath);
+  const files = await util.promisify(fs.readdir)(dataPath);
   let promises = [];
   //遍历读取到的文件列表
   // 为了保证顶级的Promise在所有目录读取结束后再返回，这里无法使用forEach，因为这样以来就无法await了，直接在里面forEach里面async整活也做不到让顶级的一步函数等着
   for (const filename of files) {
     //获取当前文件的绝对路径
-    const fileDir = path.join(sourcePath, filename);
+    const dir = path.join(dataPath, filename);
     //根据文件路径获取文件信息，返回一个fs.Stats对象
-    const stats = await util.promisify(fs.stat)(fileDir);
+    const stats = await util.promisify(fs.stat)(dir);
     const isFile = stats.isFile(); //是文件
     const isDir = stats.isDirectory(); //是文件夹
     if (isFile) {
       //是文件
-      detectDatabaseItem(fileDir);
+      detectDatabaseItem(dir, sourceTypes);
     }
     if (isDir) {
       //递归，如果是文件夹，就继续遍历该文件夹下面的文件
       // 这里不能在push里面写await，Promise.all应该接收一个Promise的列表
-      promises.push(loadFromSourcePath(fileDir));
+      promises.push(loadDataFromPath(dir, sourceTypes));
       // 这样写的话和同步都没有区别了
-      // await this.refreshModelDB(fileDir);
+      // await this.refreshModelDB(dir);
     }
   }
   // console.log(sourcePath);
   // 异步的关键
   return Promise.all(promises);
 }
-async function detectDatabaseItem(fileDir) {
+async function detectDatabaseItem(fileDir, sourceTypes) {
   if (path.extname(fileDir) == ".json") {
     // 回调函数往上无法嵌套，转换成Promise
     const fileData = await util.promisify(fs.readFile)(fileDir);
     const fileJson = JSON.parse(fileData.toString());
-    processLive2dJson(fileDir, fileJson);
+    if (sourceTypes["live2d"]) {
+      processLive2dJson(fileDir, fileJson);
+    }
   }
 }
 function processLive2dJson(fileDir, fileJson) {

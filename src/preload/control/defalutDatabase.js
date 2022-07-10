@@ -1,5 +1,5 @@
 export const defalutDatabase = {
-  sourcePath: [],
+  sourcePathInfo: [],
   model: [],
   motion3D: [],
   audio3D: [],

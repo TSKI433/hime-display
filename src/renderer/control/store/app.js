@@ -6,7 +6,7 @@ const defineAppStore = defineStore("app", {
       activeMenuItem: "source",
     },
     database: {
-      sourcePath: [],
+      sourcePathInfo: [],
       model: [],
       motion3D: [],
       audio3D: [],
@@ -15,7 +15,7 @@ const defineAppStore = defineStore("app", {
   actions: {
     syncDatabase() {
       const database = window.nodeAPI.database;
-      this.database.sourcePath = database.get("sourcePath");
+      this.database.sourcePathInfo = database.get("sourcePathInfo");
       this.database.model = database.get("model");
       this.database.motion3D = database.get("motion3D");
       this.database.audio3D = database.get("audio3D");

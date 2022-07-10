@@ -4,7 +4,7 @@
     <el-form-item label="数据源">
       <!-- row-key用于辨识row，解决expand输入内容后自动折叠的问题 -->
       <el-table
-        :data="appStore.database.sourcePath"
+        :data="appStore.database.sourcePathInfo"
         :border="true"
         row-key="path"
         ref="sourceTable"
@@ -40,7 +40,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="路径" prop="path" show-overflow-tooltip />
+        <el-table-column label="路径" prop="sourcePath" show-overflow-tooltip />
         <!-- 备选方案：通过滚动展示过长的路径名
         <el-table-column label="路径" prop="path">
           <template #default="props">
@@ -77,7 +77,7 @@
                 <svg-icon-el-button
                   size="small"
                   name="source"
-                  @click="showInFolder(props.row.path)"
+                  @click="showInFolder(props.row.sourcePath)"
                 ></svg-icon-el-button>
               </template>
               <template #content> 在文件浏览器中显示 </template>
@@ -87,7 +87,7 @@
                 <svg-icon-el-button
                   size="small"
                   name="refresh"
-                  @click="loadFromSourcePath(props.row.path)"
+                  @click="loadFromSourcePath(props.row)"
                 ></svg-icon-el-button>
               </template>
               <template #content> 重新检索 </template>
@@ -123,9 +123,9 @@ const appStore = useAppStore();
 const sourceTypes = ["live2d", "spine", "vrm", "mmd", "motion3D", "audio3D"];
 const sourceTable = ref();
 // 实时更新数据库
-watch(appStore.database.sourcePath, (newValue) => {
+watch(appStore.database.sourcePathInfo, (newValue) => {
   // 这里没办法只有把整个source数据传过去
-  window.nodeAPI.database.write("sourcePath", toRaw(newValue));
+  window.nodeAPI.database.write("sourcePathInfo", toRaw(newValue));
 });
 function expandRow(row) {
   sourceTable.value.toggleRowExpansion(row);
@@ -137,13 +137,13 @@ function showInFolder(path) {
   window.nodeAPI.showInFolder(path);
 }
 function deleteSourcePath(index) {
-  appStore.database.sourcePath.splice(index, 1);
+  appStore.database.sourcePathInfo.splice(index, 1);
 }
 function addSourePath() {
   window.nodeAPI.ipc.selectPath().then((path) => {
     if (path.length > 0) {
-      appStore.database.sourcePath.push({
-        path: path[0],
+      appStore.database.sourcePathInfo.push({
+        sourcePath: path[0],
         tagName: "",
         sourceTypes: {
           live2d: true,
@@ -157,15 +157,19 @@ function addSourePath() {
     }
   });
 }
-function loadFromSourcePath(sourcePath) {
-  window.nodeAPI.database.loadFromSourcePath(sourcePath).then(() => {
-    appStore.syncDatabase();
-  });
+function loadFromSourcePath(sourcePathInfo) {
+  window.nodeAPI.database
+    .loadDataFromSourcePathInfo(toRaw(sourcePathInfo))
+    .then(() => {
+      appStore.syncDatabase();
+    });
 }
 function loadFromSourcePathAll() {
   const promises = [];
-  appStore.database.sourcePath.forEach((sourcePath) => {
-    promises.push(window.nodeAPI.database.loadFromSourcePath(sourcePath.path));
+  appStore.database.sourcePathInfo.forEach((sourcePathInfo) => {
+    promises.push(
+      window.nodeAPI.database.loadDataFromSourcePathInfo(toRaw(sourcePathInfo))
+    );
   });
   Promise.all(promises).then(() => {
     appStore.syncDatabase();
