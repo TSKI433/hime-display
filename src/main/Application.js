@@ -62,6 +62,9 @@ export class Application extends EventEmitter {
         properties: ["openDirectory"],
       });
     });
+    ipcMain.on("application:launch-display-window", () => {
+      this.openWindow(this.configDB.get("display-mode").value());
+    });
   }
   quitApp() {}
 }

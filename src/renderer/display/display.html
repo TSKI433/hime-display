@@ -6,10 +6,23 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- <title>electron-vite</title> -->
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			height: 100%;
+			width: 100%;
+		}
+
+		.display-canvas {
+			/* canvas默认的display为inline，会导致滚动条出现 */
+			display: block;
+		}
+	</style>
 </head>
 
 <body>
-	<div id="app"></div>
+	<canvas class="display-canvas"></canvas>
 	<script type="module" src="./main.js"></script>
 </body>
 

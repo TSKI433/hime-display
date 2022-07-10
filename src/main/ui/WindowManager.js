@@ -14,6 +14,7 @@ export class WindowManager extends EventEmitter {
     const pageOptions = windowsOptions[windowName];
     const window = new BrowserWindow(pageOptions.attrs);
     this.windows[windowName] = window;
+
     if (pageOptions.url) {
       window.loadURL(pageOptions.url);
     }
@@ -21,6 +22,12 @@ export class WindowManager extends EventEmitter {
       if (pageOptions.dev.autoOpenDevTool) {
         window.webContents.openDevTools();
       }
+    }
+    if (windowName === "displayFullScreen") {
+      window.maximize();
+      window.setIgnoreMouseEvents(true, {
+        forward: true,
+      });
     }
     // window.once("ready-to-show", () => {
     //   window.show();

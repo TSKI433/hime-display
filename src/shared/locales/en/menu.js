@@ -1,6 +1,6 @@
 export default {
   general: "General",
-  display: "Diplay",
+  display: "Display",
   control: "Control",
   model: "Model",
   source: "Source",
