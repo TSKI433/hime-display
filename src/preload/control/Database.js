@@ -79,11 +79,12 @@ function processLive2dJson(fileDir, fileJson) {
       .pop()
       .split("\\")
       .pop();
-    live2dModelInfo.version = "moc";
-    live2dModelInfo.entrance_path =
+    live2dModelInfo.modelType = "live2d";
+    live2dModelInfo.extentionName = "moc";
+    live2dModelInfo.entranceFile =
       // Windows下使用file:会导致路径出错，热重载开发环境下不使用file:会导致路径报错
       (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir);
-    live2dModelInfo.has_motion = "motions" in fileJson ? true : false;
+    // live2dModelInfo.has_motion = "motions" in fileJson ? true : false;
     writeModelInfo(live2dModelInfo);
   } else if ("FileReferences" in fileJson) {
     live2dModelInfo.name = path
@@ -92,11 +93,12 @@ function processLive2dJson(fileDir, fileJson) {
       .pop()
       .split("\\")
       .pop();
-    live2dModelInfo.version = "moc3";
-    live2dModelInfo.entrance_path =
+    live2dModelInfo.modelType = "live2d";
+    live2dModelInfo.extentionName = "moc3";
+    live2dModelInfo.entranceFile =
       (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir);
-    live2dModelInfo.has_motion =
-      "Motions" in fileJson.FileReferences ? true : false;
+    // live2dModelInfo.has_motion =
+    //   "Motions" in fileJson.FileReferences ? true : false;
     // console.log(live2dModelInfo);
     writeModelInfo(live2dModelInfo);
   }

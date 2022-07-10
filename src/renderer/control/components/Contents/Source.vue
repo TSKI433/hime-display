@@ -1,5 +1,5 @@
 <template>
-  <el-form label-position="top" class="form--source">
+  <el-form label-position="top" class="el-form--large-label--hime">
     <hime-title-with-divider>{{ $t("menu.source") }}</hime-title-with-divider>
     <el-form-item label="数据源">
       <!-- row-key用于辨识row，解决expand输入内容后自动折叠的问题 -->
@@ -116,9 +116,9 @@
 
 <script setup>
 import { watch, ref, toRaw } from "vue";
-import { useAppStore } from "../../store/app";
 import SvgIconElButton from "@control/components/Common/SvgIconElButton.vue";
 import HimeTitleWithDivider from "@control/components/Common/TitleWithDivider.vue";
+import { useAppStore } from "../../store/app";
 const appStore = useAppStore();
 const sourceTypes = ["live2d", "spine", "vrm", "mmd", "motion3D", "audio3D"];
 const sourceTable = ref();
@@ -194,10 +194,7 @@ function loadFromSourcePathAll() {
     }
   }
 }
-.form--source > .el-form-item > .el-form-item__label {
-  font-size: var(--el-font-size-extra-large);
-  line-height: initial;
-}
+
 // 直接将size设为small就行了
 // .el-table .el-table__cell {
 //   padding: 6px 0;
