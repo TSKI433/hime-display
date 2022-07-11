@@ -13,9 +13,8 @@ export class Application extends EventEmitter {
     this.init();
   }
   init() {
-    this.windowManager = new WindowManager();
+    this.initWindowManager();
     this.initThemeManager();
-
     this.initConfigDB();
     this.handleIpcMessages();
   }
@@ -23,11 +22,9 @@ export class Application extends EventEmitter {
     if (this.configDB.get("open-control-at-launch").value()) {
       this.openWindow("controlPanel");
     }
-
     if (this.configDB.get("open-display-at-launch").value()) {
       this.openWindow(this.configDB.get("display-mode").value());
     }
-
     // win.once("ready-to-show", () => {
     // this.isReady = true;
     // this.emit("ready");
@@ -40,29 +37,33 @@ export class Application extends EventEmitter {
     this.configDB = low(new lowFileSync(APP_CONFIG_PATH));
     this.configDB.defaults(defaultConfig).write();
   }
+  initWindowManager() {
+    this.windowManager = new WindowManager();
+  }
   initThemeManager() {
     this.themeManager = new ThemeManager();
     this.themeManager.on("system-theme-change", (theme) => {
-      this.windowManager.sendMessageToAllWindow(
-        "application:update-theme",
+      this.windowManager.sendMessageToWindow(
+        "control",
+        "main:update-theme",
         theme
       );
     });
   }
   handleIpcMessages() {
     // 向子进程提供数据库存储目录
-    ipcMain.on("application:query-database-path", (event) => {
+    ipcMain.on("control:query-database-path", (event) => {
       event.returnValue = APP_DATABASE_PATH;
     });
-    ipcMain.on("application:query-system-theme", (event) => {
+    ipcMain.on("control:query-system-theme", (event) => {
       event.returnValue = this.themeManager.getSystemTheme();
     });
-    ipcMain.handle("application:select-path", (windowName) => {
+    ipcMain.handle("control:select-path", (windowName) => {
       return dialog.showOpenDialogSync(this.windowManager.windows[windowName], {
         properties: ["openDirectory"],
       });
     });
-    ipcMain.on("application:launch-display-window", () => {
+    ipcMain.on("control:launch-display-window", () => {
       this.openWindow(this.configDB.get("display-mode").value());
     });
   }
