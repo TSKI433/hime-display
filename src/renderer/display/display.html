@@ -14,7 +14,7 @@
 			width: 100%;
 		}
 
-		.display-canvas {
+		#display-canvas {
 			/* canvas默认的display为inline，会导致滚动条出现 */
 			display: block;
 		}
@@ -22,7 +22,18 @@
 </head>
 
 <body>
-	<canvas class="display-canvas"></canvas>
+	<canvas id="display-canvas"></canvas>
+	<!-- 放弃希望了，我感觉做不到让vite能够正确引入pixi-live2d-display的了
+	pixi-live2d-display的自动载入依赖于window下的PIXI对象，这意味着一定要在import pixi.js后将其挂到window后再引入pixi-live2d-display
+	参考文档中防止import被提升，通过require的特性，使用webpack打包实现，然而，vite的开发服务器使用的是真的ESM……require直接无法解析
+	直接import pixi-live2d-display会爆炸的很惨
+	异步import也试过，反正没成功
+	然后我尝试了一下直接通过electron的这个页面引入node环境，的确成功require了，依旧会出现各种问题，而且安全性进一步没有保证了
+	最终发现，还是直接引入js文件最管用，你们随意往window下面挂对象吧，我不管了，打包个寂寞…… -->
+	<script src="./lib/live2d/live2dcubismcore.min.js"></script>
+	<script src="./lib/live2d/live2d.min.js"></script>
+	<script src="./lib/live2d/pixi.min.js"></script>
+	<script src="./lib/live2d/index.min.js"></script>
 	<script type="module" src="./main.js"></script>
 </body>
 

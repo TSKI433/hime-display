@@ -40,7 +40,8 @@ export const windowsOptions = {
       webPreferences: {
         // nodeIntegration: true,
         // contextIsolation: false,
-        // webSecurity: false,
+        // 便于访问本地文件
+        webSecurity: false,
         devTools: import.meta.env.DEV,
         preload: resolve(__dirname, "./display-preload.cjs.js"),
       },

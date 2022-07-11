@@ -28,6 +28,10 @@ export class WindowManager extends EventEmitter {
       window.setIgnoreMouseEvents(true, {
         forward: true,
       });
+      window.setAlwaysOnTop(true, "screen-saver", 1);
+      window.setVisibleOnAllWorkspaces(true, {
+        visibleOnFullScreen: true, //在所有窗口上显示，全屏应用也不例外
+      });
     }
     // window.once("ready-to-show", () => {
     //   window.show();

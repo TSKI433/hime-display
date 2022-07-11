@@ -1,2 +1,2 @@
 import { Launcher } from "./Launcher";
-global.launcher = new Launcher();
+new Launcher();
