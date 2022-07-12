@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
-const defineAppStore = defineStore("app", {
+export const useAppStore = defineStore("app", {
   state: () => ({
-    initialized: false,
+    // initialized: false,
     ui: {
       activeMenuItem: "model",
     },
@@ -11,6 +11,7 @@ const defineAppStore = defineStore("app", {
       motion3D: [],
       audio3D: [],
     },
+    windowIds: {},
   }),
   actions: {
     syncDatabase() {
@@ -22,11 +23,11 @@ const defineAppStore = defineStore("app", {
     },
   },
 });
-export const useAppStore = function () {
-  const appStore = defineAppStore();
-  if (!appStore.initialized) {
-    appStore.initialized = true;
-    appStore.syncDatabase();
-  }
-  return appStore;
-};
+// export const useAppStore = function () {
+//   const appStore = defineAppStore();
+//   if (!appStore.initialized) {
+//     appStore.initialized = true;
+//     appStore.syncDatabase();
+//   }
+//   return appStore;
+// };

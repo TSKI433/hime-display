@@ -1,4 +1,5 @@
 import { contextBridge } from "electron";
+import * as ipc from "./ipc";
 contextBridge.exposeInMainWorld("nodeAPI", {
-  abc: "456",
+  ipc,
 });

@@ -9,6 +9,16 @@
 <script setup>
 import HimeMenu from "@control/components/Menu/Index.vue";
 import HimeMain from "@control/components/Main.vue";
+import { useAppStore } from "@control/store/app";
+const appStore = useAppStore();
+window.appStore = appStore;
+appStore.syncDatabase();
+window.nodeAPI.ipc.handleInfoWindowId((evnet, windowIds) => {
+  appStore.windowIds = windowIds;
+});
+window.nodeAPI.ipc.handleWindowAllReadyToShow(() => {
+  window.nodeAPI.ipc.sendToDisplay(appStore.windowIds.display, "ping");
+});
 </script>
 
 <style lang="scss">

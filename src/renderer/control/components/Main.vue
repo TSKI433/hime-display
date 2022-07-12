@@ -17,8 +17,8 @@ import HimeControl from "@control/components/Contents/Control/index.vue";
 import HimeModel from "@control/components/Contents/Model.vue";
 import HimeSource from "@control/components/Contents/Source.vue";
 import HimeAbout from "@control/components/Contents/About.vue";
-import { useAppStore } from "@control/store/app";
 import { computed } from "vue";
+import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
 // 借助对象完成字符串到组件的映射
 const contentComponents = {

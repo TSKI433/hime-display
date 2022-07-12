@@ -11,7 +11,6 @@ export const windowsOptions = {
       autoHideMenuBar: true,
       titleBarOverlay: true,
       // visualEffectState: "active",
-      autoHideMenuBar: true,
       // skipTaskbar: true,
       // show: false,
       webPreferences: {
@@ -26,8 +25,9 @@ export const windowsOptions = {
       ? `http://localhost:${DEV_SERVER_PORT}/control/control.html`
       : "file://" + resolve(__dirname, "../control/control.html"),
     dev: {
-      autoOpenDevTool: false,
+      autoOpenDevTool: true,
     },
+    pageType: "control",
   },
   displayFullScreen: {
     attrs: {
@@ -52,6 +52,7 @@ export const windowsOptions = {
     dev: {
       autoOpenDevTool: true,
     },
+    pageType: "display",
   },
   displayWindowed: {
     attrs: {
@@ -75,5 +76,6 @@ export const windowsOptions = {
     dev: {
       autoOpenDevTool: false,
     },
+    pageType: "display",
   },
 };
