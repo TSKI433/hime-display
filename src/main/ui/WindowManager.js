@@ -23,6 +23,9 @@ export class WindowManager extends EventEmitter {
       return this.windows[pageType];
     }
     const window = new BrowserWindow(pageOptions.attrs);
+    logger.info(
+      `[Hime Display] new window created, windowName: ${windowName}, ID: ${window.webContents.id}`
+    );
     this.windows[pageType] = window;
     this.windowIds[pageType] = window.webContents.id;
     window.loadURL(pageOptions.url);

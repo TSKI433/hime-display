@@ -16,10 +16,18 @@ window.appStore = appStore;
 appStore.syncDatabase();
 ipcAPI.handleReadyRendererCommunication((evnet, windowIds) => {
   appStore.displayWindowInfo.id = windowIds.display;
-  console.log("Display ID:" + appStore.displayWindowInfo.id);
+  console.log(
+    "[Hime Display] Ready to link display window, ID:" +
+      appStore.displayWindowInfo.id
+  );
   ipcAPI.handleWindowAllReadyToShow(() => {
     appStore.displayWindowInfo.isOpened = true;
     ipcAPI.displayTest(appStore.displayWindowInfo.id);
+  });
+  ipcAPI.handleDisplayWindowClosed(() => {
+    console.log("[Hime Display] Display window closed");
+    appStore.displayWindowInfo.isOpened = false;
+    appStore.displayWindowInfo.id = -1;
   });
 });
 </script>

@@ -66,6 +66,14 @@ export class Application extends EventEmitter {
     ipcMain.on("control:launch-display-window", () => {
       this.openWindow(this.configDB.get("display-mode").value());
     });
+    ipcMain.on("control:relaunch-display-window", () => {
+      // 使用destroy方法，防止使用close导致关闭窗口受阻
+      this.windowManager.windows.display.destroy();
+      this.openWindow(this.configDB.get("display-mode").value());
+    });
+    ipcMain.on("control:close-display-window", () => {
+      this.windowManager.windows.display.destroy();
+    });
   }
   quitApp() {}
 }
