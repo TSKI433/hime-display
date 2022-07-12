@@ -11,7 +11,10 @@ export const useAppStore = defineStore("app", {
       motion3D: [],
       audio3D: [],
     },
-    windowIds: {},
+    displayWindowInfo: {
+      isOpened: false,
+      id: -1,
+    },
   }),
   actions: {
     syncDatabase() {

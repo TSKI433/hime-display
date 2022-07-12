@@ -1,4 +1,4 @@
 import { ipcRenderer } from "electron";
-ipcRenderer.on("ping", () => {
-  console.log("pong");
+ipcRenderer.on("control:test", () => {
+  console.log("control:test");
 });

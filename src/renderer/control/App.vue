@@ -11,13 +11,16 @@ import HimeMenu from "@control/components/Menu/Index.vue";
 import HimeMain from "@control/components/Main.vue";
 import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
+const ipcAPI = window.nodeAPI.ipc;
 window.appStore = appStore;
 appStore.syncDatabase();
-window.nodeAPI.ipc.handleInfoWindowId((evnet, windowIds) => {
-  appStore.windowIds = windowIds;
-});
-window.nodeAPI.ipc.handleWindowAllReadyToShow(() => {
-  window.nodeAPI.ipc.sendToDisplay(appStore.windowIds.display, "ping");
+ipcAPI.handleReadyRendererCommunication((evnet, windowIds) => {
+  appStore.displayWindowInfo.id = windowIds.display;
+  console.log("Display ID:" + appStore.displayWindowInfo.id);
+  ipcAPI.handleWindowAllReadyToShow(() => {
+    appStore.displayWindowInfo.isOpened = true;
+    ipcAPI.displayTest(appStore.displayWindowInfo.id);
+  });
 });
 </script>
 

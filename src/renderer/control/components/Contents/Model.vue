@@ -33,6 +33,7 @@
 import HimeTitleWithDivider from "@control/components/Common/TitleWithDivider.vue";
 import { useAppStore } from "../../store/app";
 const appStore = useAppStore();
+function loadModelNow() {}
 </script>
 
 <style lang="scss">

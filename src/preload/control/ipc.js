@@ -5,12 +5,12 @@ export function selectPath() {
 export function launchDisplayWindow() {
   ipcRenderer.send("control:launch-display-window");
 }
-export function handleInfoWindowId(callback) {
-  ipcRenderer.on("main:info-window-id", callback);
+export function handleReadyRendererCommunication(callback) {
+  ipcRenderer.on("main:ready-renderer-communication", callback);
 }
 export function handleWindowAllReadyToShow(callback) {
-  ipcRenderer.on("main:window-all-ready-to-show", callback);
+  ipcRenderer.once("main:window-all-ready-to-show", callback);
 }
-export function sendToDisplay(...args) {
-  ipcRenderer.sendTo(...args);
+export function displayTest(displayWindowId) {
+  ipcRenderer.sendTo(displayWindowId, "control:test");
 }
