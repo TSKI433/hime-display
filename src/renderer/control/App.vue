@@ -12,6 +12,7 @@ import HimeMain from "@control/components/Main.vue";
 import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
+ipcAPI.controlWindowLoaded();
 window.appStore = appStore;
 appStore.syncDatabase();
 ipcAPI.handleReadyRendererCommunication((evnet, windowIds) => {
@@ -20,6 +21,8 @@ ipcAPI.handleReadyRendererCommunication((evnet, windowIds) => {
     "[Hime Display] Ready to link display window, ID:" +
       appStore.displayWindowInfo.id
   );
+  // 防止刷新页面时判断错误
+  appStore.displayWindowInfo.isOpened = false;
   ipcAPI.handleWindowAllReadyToShow(() => {
     appStore.displayWindowInfo.isOpened = true;
     ipcAPI.displayTest(appStore.displayWindowInfo.id);

@@ -74,6 +74,17 @@ export class Application extends EventEmitter {
     ipcMain.on("control:close-display-window", () => {
       this.windowManager.windows.display.destroy();
     });
+    ipcMain.on("control:control-window-loaded", () => {
+      // 无需判断，因为两窗口若是真的已经连接，必定不会触发loaded事件
+      // if (!this.windowManager.isControlAndDisplayLinked) {
+      this.windowManager.buildControlDisplayLink();
+      // }
+    });
+    ipcMain.on("display:display-window-loaded", () => {
+      // if (!this.windowManager.isControlAndDisplayLinked) {
+      this.windowManager.buildControlDisplayLink();
+      // }
+    });
   }
   quitApp() {}
 }

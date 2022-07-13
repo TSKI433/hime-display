@@ -13,6 +13,10 @@ export class WindowManager extends EventEmitter {
       control: -1,
       display: -1,
     };
+    // 无需再做判断，因为两窗口若是真的已经连接，必定不会触发loaded事件
+    // 不过其实有另一种思路可以用这个变量，让每个窗口加载时主动发送消息判断连接状态，没这么做是因为之前没有考虑到，其实刷新页面后窗口ID不变……现在这个机制即使窗口ID变了都没问题。不过我也担心这种方案在两页面同时启动时会因为一个页面未加载完成导致没有建立连接
+    // this.isControlAndDisplayLinked = false;
+    this.isControlAndDisplayLinking = false;
   }
   openWindow(windowName) {
     const pageOptions = windowsOptions[windowName];
@@ -36,8 +40,10 @@ export class WindowManager extends EventEmitter {
       this.windows[pageType] = null;
       this.windowIds[pageType] = -1;
       if (pageType === "display" && this.windows.control !== null) {
+        // this.isControlAndDisplayLinked = false;
         this.windows.control.webContents.send("main:display-window-closed");
       } else if (pageType === "control" && this.windows.display !== null) {
+        // this.isControlAndDisplayLinked = false;
         this.windows.display.webContents.send("main:control-window-closed");
       }
     });
@@ -59,14 +65,15 @@ export class WindowManager extends EventEmitter {
         }
       });
     }
-    // 见infoWindowIdEachOther函数声明
+    // 见buildControlDisplayLink函数声明
     window.isReadyToShow = false;
     window.once("ready-to-show", () => {
       window.isReadyToShow = true;
     });
-    if (this.windows.control !== null && this.windows.display !== null) {
-      this.infoWindowIdEachOther();
-    }
+    // 为了应对页面没有关闭，而是刷新的情况，重新更改了逻辑
+    // if (this.windows.control !== null && this.windows.display !== null) {
+    //   this.buildControlDisplayLink();
+    // }
     return this.windows[pageType];
   }
   getAllWindows() {
@@ -91,7 +98,16 @@ export class WindowManager extends EventEmitter {
   //   ]);
   // }
   // 告知双方windowId，用于直接建立渲染器进程通信
-  infoWindowIdEachOther() {
+  buildControlDisplayLink() {
+    // 判断isControlAndDisplayLinking主要是为了处理第一个页面触发buildControlDisplayLink时还没完成连接，第二个页面再次出发该函数的情况
+    if (
+      this.isControlAndDisplayLinking ||
+      this.windows.control === null ||
+      this.windows.display === null
+    ) {
+      return;
+    }
+    this.isControlAndDisplayLinking = true;
     logger.info(
       "[Hime Display] Control window and display window are both opened, try to info each other"
     );
@@ -127,8 +143,10 @@ export class WindowManager extends EventEmitter {
     });
     // 必须等双方都完成加载后才能确保两个渲染进程成功通信
     Promise.all(promises).then(() => {
+      // this.isControlAndDisplayLinked = true;
       Object.values(this.windows).forEach((window) => {
         window.webContents.send("main:window-all-ready-to-show");
+        this.isControlAndDisplayLinking = false;
       });
     });
   }
