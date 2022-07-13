@@ -6,10 +6,20 @@ export class Application {
   init() {
     // 来自控制面板的配置项
     this.settings = {};
-    this.canvas = document.getElementById("display-canvas");
     this.nodeAPI = window.nodeAPI;
+    this.canvas = document.getElementById("display-canvas");
+    this.initControlWindowId();
     this.initManagers();
     this.handleIpcMessages();
+  }
+  initControlWindowId() {
+    this.controlWindowId = -1;
+    this.nodeAPI.ipc.queryWindowIds().then((windowIds) => {
+      this.controlWindowId = windowIds.control;
+    });
+    this.nodeAPI.ipc.handleUpdateWindowIds((windowIds) => {
+      this.controlWindowId = windowIds.control;
+    });
   }
   initManagers() {
     this.managers = {

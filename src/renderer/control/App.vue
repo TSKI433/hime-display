@@ -12,26 +12,12 @@ import HimeMain from "@control/components/Main.vue";
 import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
-ipcAPI.controlWindowLoaded();
-window.appStore = appStore;
 appStore.syncDatabase();
-ipcAPI.handleReadyRendererCommunication((evnet, windowIds) => {
-  appStore.displayWindowInfo.id = windowIds.display;
-  console.log(
-    "[Hime Display] Ready to link display window, ID:" +
-      appStore.displayWindowInfo.id
-  );
-  // 防止刷新页面时判断错误
-  appStore.displayWindowInfo.isOpened = false;
-  ipcAPI.handleWindowAllReadyToShow(() => {
-    appStore.displayWindowInfo.isOpened = true;
-    ipcAPI.displayTest(appStore.displayWindowInfo.id);
-  });
-  ipcAPI.handleDisplayWindowClosed(() => {
-    console.log("[Hime Display] Display window closed");
-    appStore.displayWindowInfo.isOpened = false;
-    appStore.displayWindowInfo.id = -1;
-  });
+ipcAPI.queryWindowIds().then((windowIds) => {
+  appStore.displayWindowId = windowIds.display;
+});
+ipcAPI.handleUpdateWindowIds((event, windowIds) => {
+  appStore.displayWindowId = windowIds.display;
 });
 </script>
 

@@ -4,17 +4,17 @@
     <hime-title-with-divider>{{ $t("menu.display") }}</hime-title-with-divider>
     <el-form-item label="展示器状态">
       <el-tag effect="light">
-        {{ appStore.displayWindowInfo.isOpened ? "已启动" : "未启动" }}
+        {{ appStore.displayWindowId !== -1 ? "已启动" : "未启动" }}
       </el-tag>
     </el-form-item>
     <el-form-item label="操作">
       <el-button @click="launchDisplayWindow" plain>{{
-        appStore.displayWindowInfo.isOpened ? "重载" : "启动"
+        appStore.displayWindowId !== -1 ? "重载" : "启动"
       }}</el-button>
       <el-button
         @click="closeDisplayWindow"
         type="danger"
-        :disabled="!appStore.displayWindowInfo.isOpened"
+        :disabled="appStore.displayWindowId === -1"
         plain
         >关闭</el-button
       >
@@ -28,7 +28,7 @@ import { useAppStore } from "../../store/app";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
 function launchDisplayWindow() {
-  if (appStore.displayWindowInfo.isOpened) {
+  if (appStore.displayWindowId !== -1) {
     ipcAPI.relaunchDisplayWindow();
   } else {
     ipcAPI.launchDisplayWindow();
