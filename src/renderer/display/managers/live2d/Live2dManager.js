@@ -1,5 +1,6 @@
 export class Live2dManager {
   constructor(canvas) {
+    this.modelType = "live2d";
     this.canvas = canvas;
     this.model = null;
     this.resolution = 2;

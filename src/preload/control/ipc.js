@@ -23,3 +23,6 @@ export function handleDisplayWindowClosed(callback) {
 export function displayTest(displayWindowId) {
   ipcRenderer.sendTo(displayWindowId, "control:test");
 }
+export function loadModel(displayWindowId, modelInfo) {
+  ipcRenderer.sendTo(displayWindowId, "control:load-model", modelInfo);
+}

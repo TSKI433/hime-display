@@ -4,10 +4,12 @@
     <el-form-item label="模型数据库">
       <el-table
         :data="appStore.database.model"
+        @current-change="changeCurrentModelInfo"
         size="small"
         highlight-current-row
         class="current-row--adjust-bg-color--hime el-table--model--hime"
       >
+        <el-table-column type="index" width="30" />
         <el-table-column label="名称" prop="name" />
         <el-table-column label="类型">
           <template #default="props">
@@ -24,16 +26,37 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-button @click="loadModelNow">载入当前模型</el-button>
+      <el-button
+        @click="loadModelNow()"
+        :disabled="
+          !appStore.displayWindowInfo.isOpened || currentModelInfo === undefined
+        "
+        >载入当前模型</el-button
+      >
     </el-form-item>
   </el-form>
 </template>
 
 <script setup>
 import HimeTitleWithDivider from "@control/components/Common/TitleWithDivider.vue";
+import { ref, toRaw } from "vue";
 import { useAppStore } from "../../store/app";
 const appStore = useAppStore();
-function loadModelNow() {}
+// 本来不需要将currentModelInfo一开始就用成响应式的，直接在changeCurrentModelInfo写成 currentModelInfo = currentRow就好，但因为在载入模型的按钮那里做了个动态判断，所以改成ref了
+// 尝试了一下，ref().value的值为undefined，写成ref(null)可以和null比较但没必要
+let currentModelInfo = ref();
+window.ref = ref;
+const ipcAPI = window.nodeAPI.ipc;
+function changeCurrentModelInfo(currentRow) {
+  currentModelInfo.value = currentRow;
+}
+function loadModelNow() {
+  const rawModelInfo = toRaw(currentModelInfo);
+  ipcAPI.loadModel(appStore.displayWindowInfo.id, rawModelInfo);
+  console.log(
+    `[Hime Display] Load model: name:${rawModelInfo.name}, modelType:${rawModelInfo.modelType}`
+  );
+}
 </script>
 
 <style lang="scss">
