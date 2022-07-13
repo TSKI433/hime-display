@@ -13,7 +13,7 @@ export function value() {
   return db.value();
 }
 export function write(value, data) {
-  return db.set(value, data).write();
+  db.set(value, data).write();
 }
 export async function loadDataFromSourcePathInfo(sourcePathInfo) {
   await loadDataFromPath(sourcePathInfo.sourcePath, sourcePathInfo.sourceTypes);

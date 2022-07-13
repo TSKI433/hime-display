@@ -1,7 +1,8 @@
 export class Live2dManager {
-  constructor(canvas) {
+  constructor(parentApp) {
     this.modelType = "live2d";
-    this.canvas = canvas;
+    this.canvas = parentApp.canvas;
+    this.stats = parentApp.stats;
     this.model = null;
     this.resolution = 2;
   }
@@ -29,7 +30,9 @@ export class Live2dManager {
     if (this.model !== null && !this.model.destroied) {
       this.model.destroy();
     }
-    this.model = await PIXI.live2d.Live2DModel.from(modelInfo.entranceFile);
+    this.model = await PIXI.live2d.Live2DModel.from(modelInfo.entranceFile, {
+      autoUpdate: false,
+    });
     const model = this.model;
     const app = this.app;
     app.stage.addChild(model);
@@ -38,6 +41,21 @@ export class Live2dManager {
     model.scale.set(Math.min(scaleX, scaleY));
     model.x = app.renderer.view.width / this.resolution - model.width;
     model.y = app.renderer.view.height / this.resolution - model.height;
+    let then = performance.now();
+    //  直接用function的话this的指向是错的
+    const tick = (now) => {
+      if (this.stats !== null) {
+        this.stats.begin();
+        this.stats.end();
+      }
+      // 销毁模型后不再调用
+      if (!model.destroyed) {
+        model.update(now - then);
+        then = now;
+        requestAnimationFrame(tick);
+      }
+    };
+    requestAnimationFrame(tick);
     // model.on("hit", (hitAreas) => {
     //   if (hitAreas.includes("body")) {
     //     model.motion("tap_body");

@@ -3,14 +3,16 @@ export class Application {
   constructor() {
     this.init();
   }
-  init() {
+  async init() {
     // 来自控制面板的配置项
     this.settings = {};
     this.nodeAPI = window.nodeAPI;
     this.canvas = document.getElementById("display-canvas");
     this.initControlWindowId();
-    this.initManagers();
     this.handleIpcMessages();
+    this.config = await this.nodeAPI.ipc.queryConfig();
+    this.initStats();
+    this.initManagers();
   }
   initControlWindowId() {
     this.controlWindowId = -1;
@@ -25,9 +27,8 @@ export class Application {
     this.managers = {
       now: null,
     };
-    this.managers.live2d = new Live2dManager(this.canvas);
+    this.managers.live2d = new Live2dManager(this);
   }
-  switchManager() {}
   handleIpcMessages() {
     this.nodeAPI.ipc.handleLoadModel((event, modelInfo) => {
       console.log(
@@ -40,5 +41,12 @@ export class Application {
       }
       this.managers.now.loadModel(modelInfo);
     });
+  }
+  initStats() {
+    this.stats = null;
+    if (this.config.display["show-fps"]) {
+      this.stats = new Stats();
+      document.body.appendChild(this.stats.domElement);
+    }
   }
 }

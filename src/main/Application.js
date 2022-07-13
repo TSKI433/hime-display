@@ -80,6 +80,12 @@ export class Application extends EventEmitter {
     ipcMain.handle("display:query-window-ids", () => {
       return this.windowManager.windowIds;
     });
+    ipcMain.handle("display:query-config", () => {
+      return this.configDB.value();
+    });
+    ipcMain.on("control:update-config", () => {
+      this.configDB.read();
+    });
   }
   quitApp() {}
 }
