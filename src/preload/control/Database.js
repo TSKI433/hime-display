@@ -4,19 +4,13 @@ import lowFileSync from "lowdb/adapters/FileSync";
 import fs from "fs";
 import util from "util";
 import path from "path";
-import { ipcRenderer } from "electron";
 import { defalutDatabase } from "./defalutDatabase";
-// console.time("control:query-database-path");
-// 应用的许多后续操作必须要等到数据库加载完成，若使用异步请求可能有一定概率导致无法访问数据库报错
-const APP_DATABASE_PATH = ipcRenderer.sendSync("control:query-database-path");
-// console.timeEnd("control:query-database-path");
+import { APP_DATA_PATH } from "./paths";
+const APP_DATABASE_PATH = path.join(APP_DATA_PATH, "database.json");
 const db = low(new lowFileSync(APP_DATABASE_PATH));
 db.defaults(defalutDatabase).write();
-export function read() {
-  db.read();
-}
-export function get(value) {
-  return db.get(value).value();
+export function value() {
+  return db.value();
 }
 export function write(value, data) {
   return db.set(value, data).write();

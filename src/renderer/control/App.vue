@@ -13,6 +13,7 @@ import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
 appStore.syncDatabase();
+appStore.syncConfig();
 ipcAPI.queryWindowIds().then((windowIds) => {
   appStore.displayWindowId = windowIds.display;
 });

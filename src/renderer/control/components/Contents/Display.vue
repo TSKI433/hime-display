@@ -19,14 +19,21 @@
         >关闭</el-button
       >
     </el-form-item>
+    <el-form-item label="显示帧率">
+      <el-switch v-model="appStore.config.display['show-fps']" />
+    </el-form-item>
   </el-form>
 </template>
 
 <script setup>
 import HimeTitleWithDivider from "@control/components/Common/TitleWithDivider.vue";
+import { watch, toRaw } from "vue";
 import { useAppStore } from "../../store/app";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
+watch(appStore.config.display, (newValue) => {
+  window.nodeAPI.config.write("display", toRaw(newValue));
+});
 function launchDisplayWindow() {
   if (appStore.displayWindowId !== -1) {
     ipcAPI.relaunchDisplayWindow();

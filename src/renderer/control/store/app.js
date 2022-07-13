@@ -3,23 +3,18 @@ export const useAppStore = defineStore("app", {
   state: () => ({
     // initialized: false,
     ui: {
-      activeMenuItem: "model",
+      activeMenuItem: "source",
     },
-    database: {
-      sourcePathInfo: [],
-      model: [],
-      motion3D: [],
-      audio3D: [],
-    },
+    database: {},
+    config: {},
     displayWindowId: -1,
   }),
   actions: {
     syncDatabase() {
-      const database = window.nodeAPI.database;
-      this.database.sourcePathInfo = database.get("sourcePathInfo");
-      this.database.model = database.get("model");
-      this.database.motion3D = database.get("motion3D");
-      this.database.audio3D = database.get("audio3D");
+      this.database = window.nodeAPI.database.value();
+    },
+    syncConfig() {
+      this.config = window.nodeAPI.config.value();
     },
   },
 });

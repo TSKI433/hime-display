@@ -1,9 +1,11 @@
 import { contextBridge, ipcRenderer } from "electron";
 import { shell } from "electron";
-import * as database from "./Database";
+import * as database from "./database";
+import * as config from "./config";
 import * as ipc from "./ipc";
 contextBridge.exposeInMainWorld("nodeAPI", {
   database,
+  config,
   ipc,
   showInFolder,
 });

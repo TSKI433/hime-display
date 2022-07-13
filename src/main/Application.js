@@ -3,7 +3,7 @@ import { WindowManager } from "./ui/WindowManager";
 import { ThemeManager } from "./ui/ThemeManager";
 import low from "lowdb";
 import lowFileSync from "lowdb/adapters/FileSync";
-import { APP_CONFIG_PATH, APP_DATABASE_PATH } from "./options/paths";
+import { APP_CONFIG_PATH, APP_DATA_PATH } from "./options/paths";
 import { defaultConfig } from "./options/defaultConfig";
 import { ipcMain, dialog } from "electron";
 export class Application extends EventEmitter {
@@ -19,11 +19,11 @@ export class Application extends EventEmitter {
     this.handleIpcMessages();
   }
   startApp() {
-    if (this.configDB.get("open-control-at-launch").value()) {
+    if (this.configDB.get(["general", "open-control-at-launch"]).value()) {
       this.openWindow("controlPanel");
     }
-    if (this.configDB.get("open-display-at-launch").value()) {
-      this.openWindow(this.configDB.get("display-mode").value());
+    if (this.configDB.get(["general", "open-display-at-launch"]).value()) {
+      this.openWindow(this.configDB.get(["general", "display-mode"]).value());
     }
     // win.once("ready-to-show", () => {
     // this.isReady = true;
@@ -52,8 +52,8 @@ export class Application extends EventEmitter {
   }
   handleIpcMessages() {
     // 向子进程提供数据库存储目录
-    ipcMain.on("control:query-database-path", (event) => {
-      event.returnValue = APP_DATABASE_PATH;
+    ipcMain.on("control:query-data-path", (event) => {
+      event.returnValue = APP_DATA_PATH;
     });
     ipcMain.on("control:query-system-theme", (event) => {
       event.returnValue = this.themeManager.getSystemTheme();
@@ -64,12 +64,12 @@ export class Application extends EventEmitter {
       });
     });
     ipcMain.on("control:launch-display-window", () => {
-      this.openWindow(this.configDB.get("display-mode").value());
+      this.openWindow(this.configDB.get(["general", "display-mode"]).value());
     });
     ipcMain.on("control:relaunch-display-window", () => {
       // 使用destroy方法，防止使用close导致关闭窗口受阻
       this.windowManager.windows.display.destroy();
-      this.openWindow(this.configDB.get("display-mode").value());
+      this.openWindow(this.configDB.get(["general", "display-mode"]).value());
     });
     ipcMain.on("control:close-display-window", () => {
       this.windowManager.windows.display.destroy();

@@ -1,5 +1,10 @@
 export const defaultConfig = {
-  "open-control-at-launch": true,
-  "open-display-at-launch": true,
-  "display-mode": "displayFullScreen",
+  general: {
+    "open-control-at-launch": true,
+    "open-display-at-launch": true,
+    "display-mode": "displayFullScreen",
+  },
+  display: {
+    "show-fps": false,
+  },
 };
