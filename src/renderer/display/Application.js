@@ -1,4 +1,5 @@
 import { Live2dManager } from "@display/managers/live2d/Live2dManager";
+import { MmdManager } from "@display/managers/mmd/MmdManager";
 export class Application {
   constructor() {
     this.init();
@@ -28,6 +29,7 @@ export class Application {
       now: null,
     };
     this.managers.live2d = new Live2dManager(this);
+    this.managers.mmd = new MmdManager(this);
   }
   handleIpcMessages() {
     this.nodeAPI.ipc.handleLoadModel((event, modelInfo) => {

@@ -49,48 +49,56 @@ async function loadDataFromPath(dataPath, sourceTypes) {
   return Promise.all(promises);
 }
 async function detectDatabaseItem(fileDir, sourceTypes) {
-  if (path.extname(fileDir) == ".json") {
-    // 回调函数往上无法嵌套，转换成Promise
-    const fileData = await util.promisify(fs.readFile)(fileDir);
-    const fileJson = JSON.parse(fileData.toString());
-    if (sourceTypes["live2d"]) {
-      processLive2dJson(fileDir, fileJson);
+  const extentionName = path.extname(fileDir);
+  switch (extentionName) {
+    case ".json": {
+      // 回调函数往上无法嵌套，转换成Promise
+      const fileData = await util.promisify(fs.readFile)(fileDir);
+      const fileJson = JSON.parse(fileData.toString());
+      if (sourceTypes["live2d"]) {
+        processLive2dJson(fileDir, fileJson);
+      }
+      break;
+    }
+    case ".pmx": {
+      if (sourceTypes["mmd"]) {
+        processPmx(fileDir);
+      }
     }
   }
 }
 function processLive2dJson(fileDir, fileJson) {
-  const live2dModelInfo = {};
+  const modelInfo = {};
   if ("model" in fileJson) {
     // 同时切分Windows和UNIX路径
-    live2dModelInfo.name = path
-      .dirname(fileDir)
-      .split("/")
-      .pop()
-      .split("\\")
-      .pop();
-    live2dModelInfo.modelType = "live2d";
-    live2dModelInfo.extentionName = "moc";
-    live2dModelInfo.entranceFile =
+    modelInfo.name = path.dirname(fileDir).split("/").pop().split("\\").pop();
+    modelInfo.modelType = "live2d";
+    modelInfo.extentionName = "moc";
+    modelInfo.entranceFile =
       // Windows下使用file:会导致路径出错，热重载开发环境下不使用file:会导致路径报错
       (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir);
-    // live2dModelInfo.has_motion = "motions" in fileJson ? true : false;
-    writeModelInfo(live2dModelInfo);
+    // modelInfo.has_motion = "motions" in fileJson ? true : false;
+    writeModelInfo(modelInfo);
   } else if ("FileReferences" in fileJson) {
-    live2dModelInfo.name = path
-      .dirname(fileDir)
-      .split("/")
-      .pop()
-      .split("\\")
-      .pop();
-    live2dModelInfo.modelType = "live2d";
-    live2dModelInfo.extentionName = "moc3";
-    live2dModelInfo.entranceFile =
+    modelInfo.name = path.dirname(fileDir).split("/").pop().split("\\").pop();
+    modelInfo.modelType = "live2d";
+    modelInfo.extentionName = "moc3";
+    modelInfo.entranceFile =
       (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir);
-    // live2dModelInfo.has_motion =
+    // modelInfo.has_motion =
     //   "Motions" in fileJson.FileReferences ? true : false;
-    // console.log(live2dModelInfo);
-    writeModelInfo(live2dModelInfo);
+    // console.log(modelInfo);
+    writeModelInfo(modelInfo);
   }
+}
+function processPmx(fileDir) {
+  const modelInfo = {};
+  modelInfo.name = path.dirname(fileDir).split("/").pop().split("\\").pop();
+  modelInfo.modelType = "mmd";
+  modelInfo.extentionName = "pmx";
+  modelInfo.entranceFile =
+    (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir);
+  writeModelInfo(modelInfo);
 }
 function writeModelInfo(modelInfo) {
   //  防止重复写入模型数据

@@ -25,7 +25,7 @@ export const windowsOptions = {
       ? `http://localhost:${DEV_SERVER_PORT}/control/control.html`
       : "file://" + resolve(__dirname, "../control/control.html"),
     dev: {
-      autoOpenDevTool: true,
+      autoOpenDevTool: false,
     },
     pageType: "control",
   },
