@@ -1,10 +1,8 @@
-export class Live2dManager {
+import { ModelManager } from "../ModelManager";
+export class Live2dManager extends ModelManager {
   constructor(parentApp) {
-    this.modelType = "live2d";
-    this.canvas = parentApp.canvas;
-    this.stats = parentApp.stats;
-    this.model = null;
-    this.resolution = 2;
+    super(parentApp);
+    this.modelType = "Live2D";
   }
   switchIn() {
     this.app = new PIXI.Application({

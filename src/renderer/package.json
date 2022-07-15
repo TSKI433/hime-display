@@ -7,6 +7,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@pixiv/three-vrm": "^0.6.11",
     "element-plus": "2.2.8",
     "i18next": "^21.8.13",
     "i18next-vue": "^2.0.0-beta.2",

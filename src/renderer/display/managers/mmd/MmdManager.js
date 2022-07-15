@@ -1,12 +1,11 @@
+import { ModelManager } from "../ModelManager";
 import * as THREE from "three";
 import { MMDLoader } from "three/examples/jsm/loaders/MMDLoader.js";
 import { MouseFocusHelper } from "@display/lib/3d/MouseFocusHelper.js";
-export class MmdManager {
+export class MmdManager extends ModelManager {
   constructor(parentApp) {
-    this.modelType = "mmd";
-    this.canvas = parentApp.canvas;
-    this.stats = parentApp.stats;
-    this.model = null;
+    super(parentApp);
+    this.modelType = "MMD";
   }
   switchIn() {
     this.scene = new THREE.Scene();
@@ -28,7 +27,7 @@ export class MmdManager {
       canvas: this.canvas,
     });
     this.renderer.setClearColor(0x000000, 0);
-    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setPixelRatio(this.resolution);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
   render() {
@@ -45,8 +44,8 @@ export class MmdManager {
     const modelFile = modelInfo.entranceFile;
     const loaderMMD = new MMDLoader();
     loaderMMD.load(modelFile, (mmd) => {
+      console.log("[Hime Display] MMD Loaded");
       this.model = mmd;
-      console.log("MMD Loaded");
       // 世界未解之谜，只要载入mmd模型，直接在这里调用this.scene.add(mmd)，WebGL上下文就会有一定概率渲染着渲染着就弄丢了，然后整个程序直接卡死…
       // 然后在程序卡一阵子自动退出后，主进程会报出两条报错信息：
       // ERROR:command_buffer_proxy_impl.cc(293)] GPU state invalid after WaitForTokenInRange.

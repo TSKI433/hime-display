@@ -150,6 +150,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@pixiv/three-vrm@^0.6.11":
+  version "0.6.11"
+  resolved "https://registry.npmmirror.com/@pixiv/three-vrm/-/three-vrm-0.6.11.tgz#fc7e177ffc893e57ff40f7a1c1cd69dc3b5e58a2"
+  integrity sha512-86upLje9jwN2XxBNc8XYaX1r98mru/bAD3DaGRDN0Hwa+d9iSwI5jCbo8aEedGlGpdpPo1+vVWkMlfI7o35NSw==
+
 "@popperjs/core@npm:@sxzz/popperjs-es@^2.11.7":
   version "2.11.7"
   resolved "https://registry.npmmirror.com/@sxzz/popperjs-es/-/popperjs-es-2.11.7.tgz#a7f69e3665d3da9b115f9e71671dae1b97e13671"

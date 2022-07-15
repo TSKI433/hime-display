@@ -1,14 +1,15 @@
 import { Live2dManager } from "@display/managers/live2d/Live2dManager";
 import { MmdManager } from "@display/managers/mmd/MmdManager";
+import { VroidManager } from "./managers/vroid/VroidManager";
 export class Application {
   constructor() {
     this.init();
   }
   async init() {
     // 来自控制面板的配置项
-    this.settings = {};
     this.nodeAPI = window.nodeAPI;
     this.canvas = document.getElementById("display-canvas");
+    this.resolution = window.devicePixelRatio;
     this.initControlWindowId();
     this.handleIpcMessages();
     this.config = await this.nodeAPI.ipc.queryConfig();
@@ -28,8 +29,9 @@ export class Application {
     this.managers = {
       now: null,
     };
-    this.managers.live2d = new Live2dManager(this);
-    this.managers.mmd = new MmdManager(this);
+    this.managers.Live2D = new Live2dManager(this);
+    this.managers.MMD = new MmdManager(this);
+    this.managers.VRoid = new VroidManager(this);
   }
   handleIpcMessages() {
     this.nodeAPI.ipc.handleLoadModel((event, modelInfo) => {
