@@ -68,37 +68,40 @@ async function detectDatabaseItem(fileDir, sourceTypes) {
   }
 }
 function processLive2dJson(fileDir, fileJson) {
-  const modelInfo = {};
   if ("model" in fileJson) {
-    // 同时切分Windows和UNIX路径
-    modelInfo.name = path.dirname(fileDir).split("/").pop().split("\\").pop();
-    modelInfo.modelType = "live2d";
-    modelInfo.extentionName = "moc";
-    modelInfo.entranceFile =
+    writeModelInfo({
+      name: splitModelName(fileDir),
+      modelType: "live2d",
+      extentionName: "moc",
       // Windows下使用file:会导致路径出错，热重载开发环境下不使用file:会导致路径报错
-      (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir);
-    // modelInfo.has_motion = "motions" in fileJson ? true : false;
-    writeModelInfo(modelInfo);
+      entranceFile:
+        (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
+      // has_motion: "motions" in fileJson ? true : false;
+    });
   } else if ("FileReferences" in fileJson) {
-    modelInfo.name = path.dirname(fileDir).split("/").pop().split("\\").pop();
-    modelInfo.modelType = "live2d";
-    modelInfo.extentionName = "moc3";
-    modelInfo.entranceFile =
-      (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir);
-    // modelInfo.has_motion =
-    //   "Motions" in fileJson.FileReferences ? true : false;
-    // console.log(modelInfo);
-    writeModelInfo(modelInfo);
+    writeModelInfo({
+      name: splitModelName(fileDir),
+      modelType: "live2d",
+      extentionName: "moc3",
+      entranceFile:
+        (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
+      // has_motion:"Motions" in fileJson.FileReferences ? true : false
+    });
   }
 }
 function processPmx(fileDir) {
-  const modelInfo = {};
-  modelInfo.name = path.dirname(fileDir).split("/").pop().split("\\").pop();
-  modelInfo.modelType = "mmd";
-  modelInfo.extentionName = "pmx";
-  modelInfo.entranceFile =
-    (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir);
-  writeModelInfo(modelInfo);
+  writeModelInfo({
+    name: splitModelName(fileDir),
+    modelType: "mmd",
+    extentionName: "pmx",
+    entranceFile:
+      (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
+  });
+}
+// 因为有些模型入口文件名完全没有辨识度，如model.json，以模型入口文件的的上级目录名作为模型名称
+function splitModelName(fileDir) {
+  // 同时切分Windows和UNIX路径
+  return path.dirname(fileDir).split("/").pop().split("\\").pop();
 }
 function writeModelInfo(modelInfo) {
   //  防止重复写入模型数据
