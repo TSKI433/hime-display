@@ -64,14 +64,22 @@ async function detectDatabaseItem(fileDir, sourceTypes) {
       if (sourceTypes["mmd"]) {
         processPmx(fileDir);
       }
+      break;
     }
+    case ".vrm":
+      {
+        if (sourceTypes["vrm"]) {
+          processVrm(fileDir);
+        }
+      }
+      break;
   }
 }
 function processLive2dJson(fileDir, fileJson) {
   if ("model" in fileJson) {
     writeModelInfo({
       name: splitModelName(fileDir),
-      modelType: "live2d",
+      modelType: "Live2D",
       extentionName: "moc",
       // Windows下使用file:会导致路径出错，热重载开发环境下不使用file:会导致路径报错
       entranceFile:
@@ -81,7 +89,7 @@ function processLive2dJson(fileDir, fileJson) {
   } else if ("FileReferences" in fileJson) {
     writeModelInfo({
       name: splitModelName(fileDir),
-      modelType: "live2d",
+      modelType: "Live2D",
       extentionName: "moc3",
       entranceFile:
         (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
@@ -92,8 +100,17 @@ function processLive2dJson(fileDir, fileJson) {
 function processPmx(fileDir) {
   writeModelInfo({
     name: splitModelName(fileDir),
-    modelType: "mmd",
+    modelType: "MMD",
     extentionName: "pmx",
+    entranceFile:
+      (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
+  });
+}
+function processVrm(fileDir) {
+  writeModelInfo({
+    name: splitModelName(fileDir),
+    modelType: "VRoid",
+    extentionName: "vrm",
     entranceFile:
       (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
   });
