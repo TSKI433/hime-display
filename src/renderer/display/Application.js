@@ -1,6 +1,7 @@
 import { Live2dManager } from "@display/managers/live2d/Live2dManager";
 import { MmdManager } from "@display/managers/mmd/MmdManager";
 import { VroidManager } from "./managers/vroid/VroidManager";
+import { SpineManager } from "./managers/spine/SpineManager";
 export class Application {
   constructor() {
     this.init();
@@ -32,6 +33,7 @@ export class Application {
     this.managers.Live2D = new Live2dManager(this);
     this.managers.MMD = new MmdManager(this);
     this.managers.VRoid = new VroidManager(this);
+    this.managers.Spine = new SpineManager(this);
   }
   handleIpcMessages() {
     this.nodeAPI.ipc.handleLoadModel((event, modelInfo) => {
