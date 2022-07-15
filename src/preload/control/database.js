@@ -57,6 +57,7 @@ async function detectDatabaseItem(fileDir, sourceTypes) {
       const fileJson = JSON.parse(fileData.toString());
       if (sourceTypes["live2d"]) {
         processLive2dJson(fileDir, fileJson);
+        processSpineJson(fileDir, fileJson);
       }
       break;
     }
@@ -66,13 +67,18 @@ async function detectDatabaseItem(fileDir, sourceTypes) {
       }
       break;
     }
-    case ".vrm":
-      {
-        if (sourceTypes["vrm"]) {
-          processVrm(fileDir);
-        }
+    case ".vrm": {
+      if (sourceTypes["vrm"]) {
+        processVrm(fileDir);
       }
       break;
+    }
+    case ".skel": {
+      if (sourceTypes["spine"]) {
+        processSkel(fileDir);
+      }
+      break;
+    }
   }
 }
 function processLive2dJson(fileDir, fileJson) {
@@ -114,6 +120,27 @@ function processVrm(fileDir) {
     entranceFile:
       (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
   });
+}
+// todo: spine模型比较特殊，即使是加载模型，版本也不向下兼容……因此之后有必要进一步对模型版本进行判断
+function processSkel(fileDir) {
+  writeModelInfo({
+    name: splitModelName(fileDir),
+    modelType: "Spine",
+    extentionName: "skel",
+    entranceFile:
+      (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
+  });
+}
+function processSpineJson(fileDir, fileJson) {
+  if ("skeleton" in fileJson && "spine" in fileJson.skeleton) {
+    writeModelInfo({
+      name: splitModelName(fileDir),
+      modelType: "Spine",
+      extentionName: "json",
+      entranceFile:
+        (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
+    });
+  }
 }
 // 因为有些模型入口文件名完全没有辨识度，如model.json，以模型入口文件的的上级目录名作为模型名称
 function splitModelName(fileDir) {
