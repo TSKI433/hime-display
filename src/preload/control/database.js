@@ -4,7 +4,7 @@ import lowFileSync from "lowdb/adapters/FileSync";
 import fs from "fs";
 import util from "util";
 import path from "path";
-import { defalutDatabase } from "./defalutDatabase";
+import { defalutDatabase } from "@shared/defaults/defalutDatabase";
 import { APP_DATA_PATH } from "./paths";
 const APP_DATABASE_PATH = path.join(APP_DATA_PATH, "database.json");
 const db = low(new lowFileSync(APP_DATABASE_PATH));

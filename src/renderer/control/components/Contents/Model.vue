@@ -9,7 +9,7 @@
         highlight-current-row
         class="current-row--adjust-bg-color--hime el-table--model--hime"
       >
-        <el-table-column type="index" width="30" />
+        <el-table-column type="index" width="40" />
         <el-table-column label="名称" prop="name" />
         <el-table-column label="类型">
           <template #default="props">

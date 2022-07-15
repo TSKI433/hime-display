@@ -4,7 +4,7 @@ import { ThemeManager } from "./ui/ThemeManager";
 import low from "lowdb";
 import lowFileSync from "lowdb/adapters/FileSync";
 import { APP_CONFIG_PATH, APP_DATA_PATH } from "./options/paths";
-import { defaultConfig } from "./options/defaultConfig";
+import { defaultConfig } from "@shared/defaults/defaultConfig";
 import { ipcMain, dialog } from "electron";
 export class Application extends EventEmitter {
   constructor() {

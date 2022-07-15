@@ -4,11 +4,10 @@ import { app } from "electron";
 import { ExceptionHandler } from "./core/ExceptionHandler";
 import { logger } from "./core/Logger";
 import { Application } from "./Application";
-import { EMPTY_STRING } from "@shared/constants";
 export class Launcher extends EventEmitter {
   constructor() {
     super();
-    this.file = EMPTY_STRING;
+    this.file = "";
     this.init();
   }
 
