@@ -4,7 +4,7 @@ import { ModelManager } from "../ModelManager";
 export class SpineManager extends ModelManager {
   constructor(parentApp) {
     super(parentApp);
-    this.modelType = "Live2D";
+    this.modelType = "Spine";
   }
   switchIn() {
     this.app = new PIXI.Application({
