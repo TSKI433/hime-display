@@ -23,7 +23,7 @@ export class Application extends EventEmitter {
       this.openWindow("controlPanel");
     }
     if (this.configDB.get(["general", "open-display-at-launch"]).value()) {
-      this.openWindow(this.configDB.get(["general", "display-mode"]).value());
+      this.openWindow(this.configDB.get(["display", "display-mode"]).value());
     }
     // win.once("ready-to-show", () => {
     // this.isReady = true;
@@ -64,12 +64,12 @@ export class Application extends EventEmitter {
       });
     });
     ipcMain.on("control:launch-display-window", () => {
-      this.openWindow(this.configDB.get(["general", "display-mode"]).value());
+      this.openWindow(this.configDB.get(["display", "display-mode"]).value());
     });
     ipcMain.on("control:relaunch-display-window", () => {
       // 使用destroy方法，防止使用close导致关闭窗口受阻
       this.windowManager.windows.display.destroy();
-      this.openWindow(this.configDB.get(["general", "display-mode"]).value());
+      this.openWindow(this.configDB.get(["display", "display-mode"]).value());
     });
     ipcMain.on("control:close-display-window", () => {
       this.windowManager.windows.display.destroy();

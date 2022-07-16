@@ -63,4 +63,7 @@ body {
 //   background: var(--el-bg-color-overlay);
 //   border: 1px solid var(--el-border-color-light);
 // }
+.el-divider--horizontal.el-divider--hime {
+  margin: 12px 0;
+}
 </style>

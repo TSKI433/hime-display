@@ -1,12 +1,8 @@
 <template>
   <div style="font-size: 2rem"><slot></slot></div>
-  <el-divider class="el-divider--content--hime" />
+  <el-divider class="el-divider--hime" />
 </template>
 
 <script setup></script>
 
-<style lang="scss">
-.el-divider--horizontal.el-divider--content--hime {
-  margin: 12px 0;
-}
-</style>
+<style lang="scss"></style>

@@ -1,47 +1,52 @@
 <template>
-  <el-form label-position="top" class="el-form--large-label--hime">
+  <div class="content--hime">
     <hime-title-with-divider>{{ $t("menu.source") }}</hime-title-with-divider>
-    <el-form-item label="数据源">
-      <!-- row-key用于辨识row，解决expand输入内容后自动折叠的问题 -->
-      <el-table
-        :data="appStore.database.sourcePathInfo"
-        :border="true"
-        row-key="path"
-        ref="sourceTable"
-        class="el-table--source-path--hime"
-        size="small"
-        tooltip-effect="light"
-      >
-        <!-- 使用width="1"隐藏默认小箭头 -->
-        <el-table-column type="expand" width="1">
-          <template #default="props">
-            <div class="el-table__expanded-container--hime">
-              <el-form
-                label-position="top"
-                class="el-form--expanded--hime"
-                :inline="true"
-              >
-                <el-form-item label="来源标签">
-                  <el-input
-                    placeholder="来源标签"
-                    v-model="props.row.tagName"
-                    class="el-table__expanded-input--tag--hime"
-                  />
-                </el-form-item>
-                <el-form-item label="数据类型">
-                  <el-checkbox-button
-                    v-for="sourceType in sourceTypes"
-                    v-model="props.row.sourceTypes[sourceType]"
-                    :key="sourceType"
-                    :label="sourceType"
-                  />
-                </el-form-item>
-              </el-form>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="路径" prop="sourcePath" show-overflow-tooltip />
-        <!-- 备选方案：通过滚动展示过长的路径名
+    <el-form label-position="top" class="el-form--large-label--hime">
+      <el-form-item label="数据源">
+        <!-- row-key用于辨识row，解决expand输入内容后自动折叠的问题 -->
+        <el-table
+          :data="appStore.database.sourcePathInfo"
+          :border="true"
+          row-key="path"
+          ref="sourceTable"
+          class="el-table--source-path--hime"
+          size="small"
+          tooltip-effect="light"
+        >
+          <!-- 使用width="1"隐藏默认小箭头 -->
+          <el-table-column type="expand" width="1">
+            <template #default="props">
+              <div class="el-table__expanded-container--hime">
+                <el-form
+                  label-position="top"
+                  class="el-form--expanded--hime"
+                  :inline="true"
+                >
+                  <el-form-item label="来源标签">
+                    <el-input
+                      placeholder="来源标签"
+                      v-model="props.row.tagName"
+                      class="el-table__expanded-input--tag--hime"
+                    />
+                  </el-form-item>
+                  <el-form-item label="数据类型">
+                    <el-checkbox-button
+                      v-for="sourceType in sourceTypes"
+                      v-model="props.row.sourceTypes[sourceType]"
+                      :key="sourceType"
+                      :label="sourceType"
+                    />
+                  </el-form-item>
+                </el-form>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="路径"
+            prop="sourcePath"
+            show-overflow-tooltip
+          />
+          <!-- 备选方案：通过滚动展示过长的路径名
         <el-table-column label="路径" prop="path">
           <template #default="props">
             <el-scrollbar>
@@ -51,67 +56,68 @@
             </el-scrollbar>
           </template>
         </el-table-column> -->
-        <el-table-column
-          label="来源标签"
-          prop="tagName"
-          width="100"
-          align="center"
-        />
-        <el-table-column label="操作" width="210" align="center">
-          <template #default="props">
-            <el-tooltip :show-after="600" effect="light">
-              <template #default>
-                <!-- 发现props里有个文档里没说的expanded属性，正好可以拿来用 -->
-                <svg-icon-el-button
-                  size="small"
-                  :name="props.expanded ? 'close' : 'edit'"
-                  @click="expandRow(props.row)"
-                ></svg-icon-el-button>
-              </template>
-              <template #content>
-                {{ props.expanded ? "结束编辑" : "编辑路径信息" }}
-              </template>
-            </el-tooltip>
-            <el-tooltip :show-after="600" effect="light">
-              <template #default>
-                <svg-icon-el-button
-                  size="small"
-                  name="source"
-                  @click="showInFolder(props.row.sourcePath)"
-                ></svg-icon-el-button>
-              </template>
-              <template #content> 在文件浏览器中显示 </template>
-            </el-tooltip>
-            <el-tooltip :show-after="600" effect="light">
-              <template #default>
-                <svg-icon-el-button
-                  size="small"
-                  name="refresh"
-                  @click="loadFromSourcePath(props.row)"
-                ></svg-icon-el-button>
-              </template>
-              <template #content> 重新检索 </template>
-            </el-tooltip>
-            <el-tooltip :show-after="600" effect="light">
-              <template #default>
-                <svg-icon-el-button
-                  size="small"
-                  name="delete"
-                  @click="deleteSourcePath(props.$index)"
-                ></svg-icon-el-button>
-              </template>
-              <template #content> 删除该数据源 </template>
-            </el-tooltip>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-button @click="addSourePath">添加来源</el-button>
-      <el-button @click="loadFromSourcePathAll">全部重新检索</el-button>
-    </el-form-item>
-    <el-form-item label="数据信息">
-      <el-table> </el-table>
-    </el-form-item>
-  </el-form>
+          <el-table-column
+            label="来源标签"
+            prop="tagName"
+            width="100"
+            align="center"
+          />
+          <el-table-column label="操作" width="210" align="center">
+            <template #default="props">
+              <el-tooltip :show-after="600" effect="light">
+                <template #default>
+                  <!-- 发现props里有个文档里没说的expanded属性，正好可以拿来用 -->
+                  <svg-icon-el-button
+                    size="small"
+                    :name="props.expanded ? 'close' : 'edit'"
+                    @click="expandRow(props.row)"
+                  ></svg-icon-el-button>
+                </template>
+                <template #content>
+                  {{ props.expanded ? "结束编辑" : "编辑路径信息" }}
+                </template>
+              </el-tooltip>
+              <el-tooltip :show-after="600" effect="light">
+                <template #default>
+                  <svg-icon-el-button
+                    size="small"
+                    name="source"
+                    @click="showInFolder(props.row.sourcePath)"
+                  ></svg-icon-el-button>
+                </template>
+                <template #content> 在文件浏览器中显示 </template>
+              </el-tooltip>
+              <el-tooltip :show-after="600" effect="light">
+                <template #default>
+                  <svg-icon-el-button
+                    size="small"
+                    name="refresh"
+                    @click="loadFromSourcePath(props.row)"
+                  ></svg-icon-el-button>
+                </template>
+                <template #content> 重新检索 </template>
+              </el-tooltip>
+              <el-tooltip :show-after="600" effect="light">
+                <template #default>
+                  <svg-icon-el-button
+                    size="small"
+                    name="delete"
+                    @click="deleteSourcePath(props.$index)"
+                  ></svg-icon-el-button>
+                </template>
+                <template #content> 删除该数据源 </template>
+              </el-tooltip>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-button @click="addSourePath">添加来源</el-button>
+        <el-button @click="loadFromSourcePathAll">全部重新检索</el-button>
+      </el-form-item>
+      <el-form-item label="数据信息">
+        <el-table> </el-table>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 
 <script setup>
