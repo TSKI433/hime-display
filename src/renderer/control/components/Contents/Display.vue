@@ -1,5 +1,5 @@
 <template>
-  <div class="content--hime el-form--config--hime">
+  <div class="content--hime">
     <!-- <el-form label-position="top" class="el-form--large-label--hime"> -->
     <hime-title-with-divider>{{ $t("menu.display") }}</hime-title-with-divider>
     <el-scrollbar height="100%">

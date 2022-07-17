@@ -43,7 +43,9 @@
 import HimeTitleWithDivider from "@control/components/Common/TitleWithDivider.vue";
 import { ref, toRaw } from "vue";
 import { useAppStore } from "@control/store/app";
+import { useControlStore } from "@control/store/control";
 const appStore = useAppStore();
+const controlStore = useControlStore();
 let currentModelInfo = null;
 const modelTableSelected = ref(false);
 const ipcAPI = window.nodeAPI.ipc;
@@ -53,10 +55,17 @@ function changeCurrentModelInfo(currentRow) {
 }
 function loadModelNow() {
   const rawModelInfo = toRaw(currentModelInfo);
+  controlStore.currentModelType = rawModelInfo.modelType;
+  controlStore.modelControlDataLoading = true;
+  controlStore.modelControlData = null;
   ipcAPI.loadModel(appStore.displayWindowId, rawModelInfo);
   console.log(
     `[Hime Display] Load model: name:${rawModelInfo.name}, modelType:${rawModelInfo.modelType}`
   );
+  ipcAPI.receiveModelControlData((event, modelControlData) => {
+    controlStore.modelControlData = modelControlData;
+    controlStore.modelControlDataLoading = false;
+  });
 }
 </script>
 

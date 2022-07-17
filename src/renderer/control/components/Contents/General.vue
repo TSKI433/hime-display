@@ -1,5 +1,5 @@
 <template>
-  <div class="content--hime el-form--config--hime">
+  <div class="content--hime">
     <hime-title-with-divider>{{ $t("menu.general") }}</hime-title-with-divider>
     <el-form label-width="200px">
       <el-scrollbar height="100%">
