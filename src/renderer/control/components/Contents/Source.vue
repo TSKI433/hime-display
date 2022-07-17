@@ -115,6 +115,7 @@
             v-for="(totalCount, totalName) in totalInfo[0]"
             :prop="totalName"
             :label="totalName"
+            align="center"
           >
           </el-table-column>
         </el-table>
@@ -129,7 +130,7 @@ import SvgIconElButton from "@control/components/Common/SvgIconElButton.vue";
 import HimeTitleWithDivider from "@control/components/Common/TitleWithDivider.vue";
 import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
-const sourceTypes = ["live2d", "spine", "vrm", "mmd", "motion3D", "audio3D"];
+const sourceTypes = ["Live2D", "Spine", "VRoid", "MMD", "motion3D", "audio3D"];
 const sourceTable = ref();
 const totalInfo = computed(() => [
   {
@@ -145,6 +146,8 @@ const totalInfo = computed(() => [
     MMD: appStore.database.model.filter((item) => {
       return item.modelType === "MMD";
     }).length,
+    motion3D: appStore.database.motion3D.length,
+    audio3D: appStore.database.audio3D.length,
   },
 ]);
 // 实时更新数据库
@@ -171,10 +174,10 @@ function addSourePath() {
         sourcePath: path[0],
         tagName: "",
         sourceTypes: {
-          live2d: true,
-          spine: true,
-          mmd: true,
-          vrm: true,
+          Live2D: true,
+          Spine: true,
+          MMD: true,
+          VRoid: true,
           motion3D: true,
           audio3D: true,
         },

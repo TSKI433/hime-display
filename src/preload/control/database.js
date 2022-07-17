@@ -55,26 +55,26 @@ async function detectDatabaseItem(fileDir, sourceTypes) {
       // 回调函数往上无法嵌套，转换成Promise
       const fileData = await util.promisify(fs.readFile)(fileDir);
       const fileJson = JSON.parse(fileData.toString());
-      if (sourceTypes["live2d"]) {
+      if (sourceTypes["Live2D"]) {
         processLive2dJson(fileDir, fileJson);
         processSpineJson(fileDir, fileJson);
       }
       break;
     }
     case ".pmx": {
-      if (sourceTypes["mmd"]) {
+      if (sourceTypes["MMD"]) {
         processPmx(fileDir);
       }
       break;
     }
     case ".vrm": {
-      if (sourceTypes["vrm"]) {
+      if (sourceTypes["VRoid"]) {
         processVrm(fileDir);
       }
       break;
     }
     case ".skel": {
-      if (sourceTypes["spine"]) {
+      if (sourceTypes["Spine"]) {
         processSkel(fileDir);
       }
       break;
