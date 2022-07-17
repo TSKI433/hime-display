@@ -52,7 +52,7 @@
             />
           </sub-config-item>
         </el-form-item>
-        <el-form-item label="2D默认屏幕模型范围">
+        <el-form-item label="2D渲染配置">
           <sub-config-item label="宽度">
             <div class="el-slicder--with-label--hime">
               <span> 0% </span>

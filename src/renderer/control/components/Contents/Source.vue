@@ -12,6 +12,7 @@
           class="el-table--source-path--hime"
           size="small"
           tooltip-effect="light"
+          max-height="160"
         >
           <!-- 使用width="1"隐藏默认小箭头 -->
           <el-table-column type="expand" width="1">

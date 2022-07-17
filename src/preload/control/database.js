@@ -79,6 +79,12 @@ async function detectDatabaseItem(fileDir, sourceTypes) {
       }
       break;
     }
+    case ".vmd": {
+      if (sourceTypes["motion3D"]) {
+        processVmd(fileDir);
+      }
+      break;
+    }
   }
 }
 function processLive2dJson(fileDir, fileJson) {
@@ -142,6 +148,14 @@ function processSpineJson(fileDir, fileJson) {
     });
   }
 }
+function processVmd(fileDir) {
+  writeMotion3DInfo({
+    name: path.basename(fileDir),
+    extentionName: "vmd",
+    entranceFile:
+      (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
+  });
+}
 // 因为有些模型入口文件名完全没有辨识度，如model.json，以模型入口文件的的上级目录名作为模型名称
 function splitModelName(fileDir) {
   // 同时切分Windows和UNIX路径
@@ -151,5 +165,10 @@ function writeModelInfo(modelInfo) {
   //  防止重复写入模型数据
   if (db.get("model").findIndex(modelInfo).value() == -1) {
     db.get("model").push(modelInfo).write();
+  }
+}
+function writeMotion3DInfo(motionInfo) {
+  if (db.get("motion3D").findIndex(motionInfo).value() == -1) {
+    db.get("motion3D").push(motionInfo).write();
   }
 }
