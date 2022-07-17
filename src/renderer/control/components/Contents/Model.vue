@@ -42,7 +42,7 @@
 <script setup>
 import HimeTitleWithDivider from "@control/components/Common/TitleWithDivider.vue";
 import { ref, toRaw } from "vue";
-import { useAppStore } from "../../store/app";
+import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
 let currentModelInfo = null;
 const modelTableSelected = ref(false);

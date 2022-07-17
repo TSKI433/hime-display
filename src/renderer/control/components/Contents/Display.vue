@@ -1,12 +1,13 @@
 <template>
-  <div class="content--hime content--display--hime">
+  <div class="content--hime el-form--config--hime">
     <!-- <el-form label-position="top" class="el-form--large-label--hime"> -->
     <hime-title-with-divider>{{ $t("menu.display") }}</hime-title-with-divider>
     <el-scrollbar height="100%">
-      <el-form label-width="200px" class="el-form--display--hime">
+      <el-form label-width="200px" class="el-form--config--hime">
         <el-form-item label="展示器窗口设置">
           <sub-config-item label="窗口类型">
             <el-radio-group v-model="appStore.config.display['display-mode']">
+              <!-- 我感觉这里的element plus给我整懵了，填在label里面的东西其实却是value？ -->
               <el-radio-button label="displayFullScreen">
                 全屏透明
               </el-radio-button>
@@ -111,7 +112,7 @@
         <span>展示器状态</span>
         <el-tag
           effect="light"
-          :type="appStore.displayWindowId === -1 ? 'warning' : 'primary'"
+          :type="appStore.displayWindowId === -1 ? 'warning' : ''"
         >
           {{ appStore.displayWindowId !== -1 ? "已启动" : "未启动" }}
         </el-tag>
@@ -136,7 +137,7 @@
 import HimeTitleWithDivider from "@control/components/Common/TitleWithDivider.vue";
 import SubConfigItem from "@control/components/Common/SubConfigItem.vue";
 import { watch, toRaw } from "vue";
-import { useAppStore } from "../../store/app";
+import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
 watch(appStore.config.display, (newValue) => {
@@ -159,32 +160,6 @@ function closeDisplayWindow() {
   width: 80%;
   margin-left: 12px;
   margin-right: 12px;
-}
-.content--display--hime {
-  // 限住高度，让el-scrollbar生效
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  .el-form--display--hime {
-    .el-form-item {
-      margin-bottom: 10px;
-      .el-form-item__label {
-        font-size: var(--el-font-size-medium);
-        font-weight: bold;
-      }
-      .el-form-item__content {
-        flex-direction: column;
-        align-items: flex-start;
-        > * {
-          margin-bottom: 6px;
-        }
-        .el-slicder--with-label--hime {
-          display: flex;
-          width: 300px;
-        }
-      }
-    }
-  }
 }
 .display-option {
   display: flex;

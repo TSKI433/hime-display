@@ -124,7 +124,7 @@
 import { watch, ref, toRaw } from "vue";
 import SvgIconElButton from "@control/components/Common/SvgIconElButton.vue";
 import HimeTitleWithDivider from "@control/components/Common/TitleWithDivider.vue";
-import { useAppStore } from "../../store/app";
+import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
 const sourceTypes = ["live2d", "spine", "vrm", "mmd", "motion3D", "audio3D"];
 const sourceTable = ref();

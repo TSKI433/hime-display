@@ -10,6 +10,7 @@
 import HimeMenu from "@control/components/Menu/Index.vue";
 import HimeMain from "@control/components/Main.vue";
 import { useAppStore } from "@control/store/app";
+import i18next from "i18next";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
 appStore.syncDatabase();
@@ -20,6 +21,7 @@ ipcAPI.queryWindowIds().then((windowIds) => {
 ipcAPI.handleUpdateWindowIds((event, windowIds) => {
   appStore.displayWindowId = windowIds.display;
 });
+i18next.changeLanguage(appStore.config.general.language);
 </script>
 
 <style lang="scss">
@@ -65,5 +67,36 @@ body {
 // }
 .el-divider--horizontal.el-divider--hime {
   margin: 12px 0;
+}
+// 调节config的页面样式，即display页面和general页面
+.el-form--config--hime {
+  // 限住高度，让el-scrollbar生效
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  .el-form--config--hime {
+    .el-form-item {
+      margin-bottom: 10px;
+      .el-form-item__label {
+        font-size: var(--el-font-size-medium);
+        font-weight: bold;
+      }
+      .el-form-item__content {
+        flex-direction: column;
+        align-items: flex-start;
+        > * {
+          margin-bottom: 6px;
+        }
+        .el-slicder--with-label--hime {
+          display: flex;
+          width: 300px;
+        }
+      }
+    }
+  }
+}
+.el-form--large-label--hime > .el-form-item > .el-form-item__label {
+  font-size: var(--el-font-size-extra-large);
+  line-height: initial;
 }
 </style>

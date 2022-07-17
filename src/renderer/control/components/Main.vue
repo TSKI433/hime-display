@@ -38,8 +38,4 @@ const contentComponentNow = computed(() => {
 .el-main {
   background-color: var(--el-fill-color-lighter);
 }
-.el-form--large-label--hime > .el-form-item > .el-form-item__label {
-  font-size: var(--el-font-size-extra-large);
-  line-height: initial;
-}
 </style>
