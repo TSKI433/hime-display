@@ -27,7 +27,7 @@
             />
           </sub-config-item>
         </el-form-item>
-        <el-form-item label="显示设置">
+        <el-form-item label="模型显示设置">
           <sub-config-item label="显示像素比">
             <el-radio-group v-model="appStore.config.display['pixel-ratio']">
               <el-radio-button label="normal"> 普通 </el-radio-button>
@@ -44,7 +44,7 @@
           <sub-config-item label="模型视线跟踪鼠标">
             <el-switch v-model="appStore.config.display['model-mouse-track']" />
           </sub-config-item>
-          <sub-config-item label="背景颜色">
+          <sub-config-item label="背景颜色（仅有框窗口）">
             <el-color-picker
               v-model="appStore.config.display.background"
               show-alpha

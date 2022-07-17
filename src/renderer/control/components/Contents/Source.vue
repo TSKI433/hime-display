@@ -22,14 +22,7 @@
                   class="el-form--expanded--hime"
                   :inline="true"
                 >
-                  <el-form-item label="来源标签">
-                    <el-input
-                      placeholder="来源标签"
-                      v-model="props.row.tagName"
-                      class="el-table__expanded-input--tag--hime"
-                    />
-                  </el-form-item>
-                  <el-form-item label="数据类型">
+                  <el-form-item label="检索数据类型">
                     <el-checkbox-button
                       v-for="sourceType in sourceTypes"
                       v-model="props.row.sourceTypes[sourceType]"
@@ -56,12 +49,6 @@
             </el-scrollbar>
           </template>
         </el-table-column> -->
-          <el-table-column
-            label="来源标签"
-            prop="tagName"
-            width="100"
-            align="center"
-          />
           <el-table-column label="操作" width="210" align="center">
             <template #default="props">
               <el-tooltip :show-after="600" effect="light">
@@ -97,37 +84,69 @@
                 </template>
                 <template #content> 重新检索 </template>
               </el-tooltip>
-              <el-tooltip :show-after="600" effect="light">
-                <template #default>
-                  <svg-icon-el-button
-                    size="small"
-                    name="delete"
-                    @click="deleteSourcePath(props.$index)"
-                  ></svg-icon-el-button>
+              <el-popconfirm
+                title="确认要删除此路径吗？"
+                @confirm="deleteSourcePath(props.$index)"
+              >
+                <template #reference>
+                  <!-- 嵌套使用el-popconfirm和el-tooltip需要加一层div包裹，但这会导致样式变化 -->
+                  <div style="display: inline-block; margin-left: 12px">
+                    <el-tooltip :show-after="600" effect="light">
+                      <template #default>
+                        <svg-icon-el-button
+                          size="small"
+                          name="delete"
+                        ></svg-icon-el-button>
+                      </template>
+                      <template #content> 删除该数据源 </template>
+                    </el-tooltip>
+                  </div>
                 </template>
-                <template #content> 删除该数据源 </template>
-              </el-tooltip>
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
         <el-button @click="addSourePath">添加来源</el-button>
         <el-button @click="loadFromSourcePathAll">全部重新检索</el-button>
       </el-form-item>
-      <el-form-item label="数据信息">
-        <el-table> </el-table>
+      <el-form-item label="统计信息">
+        <el-table :data="totalInfo" size="small" :border="true">
+          <el-table-column
+            v-for="(totalCount, totalName) in totalInfo[0]"
+            :prop="totalName"
+            :label="totalName"
+          >
+          </el-table-column>
+        </el-table>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script setup>
-import { watch, ref, toRaw } from "vue";
+import { watch, ref, toRaw, computed } from "vue";
 import SvgIconElButton from "@control/components/Common/SvgIconElButton.vue";
 import HimeTitleWithDivider from "@control/components/Common/TitleWithDivider.vue";
 import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
 const sourceTypes = ["live2d", "spine", "vrm", "mmd", "motion3D", "audio3D"];
 const sourceTable = ref();
+const totalInfo = computed(() => [
+  {
+    Live2D: appStore.database.model.filter((item) => {
+      return item.modelType === "Live2D";
+    }).length,
+    Spine: appStore.database.model.filter((item) => {
+      return item.modelType === "Spine";
+    }).length,
+    VRoid: appStore.database.model.filter((item) => {
+      return item.modelType === "VRoid";
+    }).length,
+    MMD: appStore.database.model.filter((item) => {
+      return item.modelType === "MMD";
+    }).length,
+  },
+]);
 // 实时更新数据库
 watch(appStore.database.sourcePathInfo, (newValue) => {
   // 这里没办法只有把整个source数据传过去

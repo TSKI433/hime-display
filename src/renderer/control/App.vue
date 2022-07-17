@@ -1,9 +1,11 @@
 <template>
   <div class="drag-area"></div>
-  <el-container>
-    <hime-menu></hime-menu>
-    <hime-main></hime-main>
-  </el-container>
+  <el-config-provider :locale="locale">
+    <el-container>
+      <hime-menu></hime-menu>
+      <hime-main></hime-main>
+    </el-container>
+  </el-config-provider>
 </template>
 
 <script setup>
@@ -11,6 +13,10 @@ import HimeMenu from "@control/components/Menu/Index.vue";
 import HimeMain from "@control/components/Main.vue";
 import { useAppStore } from "@control/store/app";
 import i18next from "i18next";
+import zhCn from "element-plus/dist/locale/zh-cn.mjs";
+import en from "element-plus/dist/locale/en.mjs";
+import ja from "element-plus/dist/locale/ja.mjs";
+import { computed } from "vue";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
 appStore.syncDatabase();
@@ -22,6 +28,15 @@ ipcAPI.handleUpdateWindowIds((event, windowIds) => {
   appStore.displayWindowId = windowIds.display;
 });
 i18next.changeLanguage(appStore.config.general.language);
+const locale = computed(() =>
+  appStore.config.general.language === "en"
+    ? en
+    : appStore.config.general.language === "zh-CN"
+    ? zhCn
+    : appStore.config.general.language === "jp"
+    ? ja
+    : null
+);
 </script>
 
 <style lang="scss">
