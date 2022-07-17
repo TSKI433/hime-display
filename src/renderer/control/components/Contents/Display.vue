@@ -97,11 +97,8 @@
             />
           </sub-config-item>
 
-          <sub-config-item label="环境光">
-            <el-switch v-model="appStore.config.display['3d-ambient-light']" />
-          </sub-config-item>
-          <sub-config-item label="平行光">
-            <el-switch v-model="appStore.config.display['3d-direct-light']" />
+          <sub-config-item label="轮廓线效果">
+            <el-switch v-model="appStore.config.display['3d-outline-effect']" />
           </sub-config-item>
         </el-form-item>
       </el-form>
