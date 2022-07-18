@@ -35,7 +35,7 @@ export class WindowManager extends EventEmitter {
     window.on("closed", () => {
       this.windows[pageType] = null;
       this.windowIds[pageType] = -1;
-      this.updateWindowIds();
+      this.allUpdateWindowIds();
     });
     if (windowName === "displayFullScreen") {
       window.maximize();
@@ -55,7 +55,7 @@ export class WindowManager extends EventEmitter {
         }
       });
     }
-    this.updateWindowIds();
+    this.allUpdateWindowIds();
     return this.windows[pageType];
   }
   sendMessageToWindow(windowName, message, ...args) {
@@ -66,10 +66,17 @@ export class WindowManager extends EventEmitter {
     logger.info(`[Hime Display] send to ${windowName}: ${message}`, ...args);
     window.webContents.send(message, ...args);
   }
-  updateWindowIds() {
+  allUpdateWindowIds() {
     Object.keys(this.windows).forEach((key) => {
-      this.sendMessageToWindow(key, "main:update-window-ids", this.windowIds);
+      this.updateWindowIds(key);
     });
+  }
+  updateWindowIds(windowName) {
+    this.sendMessageToWindow(
+      windowName,
+      "main:update-window-ids",
+      this.windowIds
+    );
   }
   // 备选方案，使用MessageChannel实现两个渲染进程的通信
   // buildMessagePort() {

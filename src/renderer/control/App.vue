@@ -12,12 +12,14 @@
 import HimeMenu from "@control/components/Menu/Index.vue";
 import HimeMain from "@control/components/Main.vue";
 import { useAppStore } from "@control/store/app";
+import { useControlStore } from "@control/store/control";
 import i18next from "i18next";
 import zhCn from "element-plus/dist/locale/zh-cn.mjs";
 import en from "element-plus/dist/locale/en.mjs";
 import ja from "element-plus/dist/locale/ja.mjs";
 import { computed } from "vue";
 const appStore = useAppStore();
+const controlStore = useControlStore();
 const ipcAPI = window.nodeAPI.ipc;
 appStore.syncDatabase();
 appStore.syncConfig();
@@ -26,6 +28,10 @@ ipcAPI.queryWindowIds().then((windowIds) => {
 });
 ipcAPI.handleUpdateWindowIds((event, windowIds) => {
   appStore.displayWindowId = windowIds.display;
+  // 展示器关闭或重载时重置模型控制器的状态
+  controlStore.currentModelType = "";
+  controlStore.modelControlDataLoading = false;
+  controlStore.modelControlData = null;
 });
 i18next.changeLanguage(appStore.config.general.language);
 const locale = computed(() =>

@@ -50,7 +50,7 @@ export const windowsOptions = {
       ? `http://localhost:${DEV_SERVER_PORT}/display/display.html`
       : "file://" + resolve(__dirname, "../renderer/display/display.html"),
     dev: {
-      autoOpenDevTool: false,
+      autoOpenDevTool: true,
     },
     pageType: "display",
   },

@@ -78,6 +78,9 @@ export class Application extends EventEmitter {
       return this.windowManager.windowIds;
     });
     ipcMain.handle("display:query-window-ids", () => {
+      // 控制面板有必要确认展示器的模型载入状态，刷新页面后模型也会变为未载入状态
+      // 这里仅向控制面板发送消息，如果展示器发送消息，展示器的windowId在query状态同时成了update，会导致奇怪的问题，id直接变undefined了
+      this.windowManager.updateWindowIds("control");
       return this.windowManager.windowIds;
     });
     ipcMain.handle("display:query-config", () => {

@@ -1,8 +1,13 @@
 <template>
   <div class="content--hime">
     <hime-title-with-divider>{{ $t("menu.control") }}</hime-title-with-divider>
-    <template v-if="controlComponentsNow !== undefined">
-      <component :is="controlComponentsNow"></component>
+    <template
+      v-if="
+        controlComponentNow !== undefined &&
+        !controlStore.modelControlDataLoading
+      "
+    >
+      <component :is="controlComponentNow"></component>
     </template>
     <template v-else> 载入一个模型以进行控制 </template>
   </div>
@@ -23,7 +28,7 @@ const controlComponents = {
   HimeVRoidControl,
   HimeLive2DControl,
 };
-const controlComponentsNow = computed(() => {
+const controlComponentNow = computed(() => {
   return controlComponents[`Hime${controlStore.currentModelType}Control`];
 });
 </script>
