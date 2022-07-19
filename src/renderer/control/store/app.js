@@ -3,7 +3,7 @@ export const useAppStore = defineStore("app", {
   state: () => ({
     // initialized: false,
     ui: {
-      activeMenuItem: "control",
+      activeMenuItem: "model",
     },
     database: {},
     config: {},

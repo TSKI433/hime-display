@@ -8,9 +8,9 @@ function buildNodeInfoTree(node, tree = {}) {
     additionalInfo += "(MMD)";
   }
   //   tree.type = node.type;
-  //   tree.uuid = node.uuid;
+  //   tree.id = node.id;
   //   方便element ui接入
-  tree.value = node.uuid;
+  tree.value = node.id;
   tree.label = `${node.type}${additionalInfo}`;
   tree.children = [];
   node.children.forEach((child) => {

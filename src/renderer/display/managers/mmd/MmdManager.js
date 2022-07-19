@@ -3,10 +3,12 @@ import * as THREE from "three";
 import { MMDLoader } from "three/examples/jsm/loaders/MMDLoader.js";
 import { MouseFocusHelper } from "@display/utils/3d/MouseFocusHelper.js";
 import { buildNodeInfoTree } from "@display/utils/3d/utils";
+import { TransformMonitor } from "@display/utils/3d/TransformMonitor";
 export class MmdManager extends ModelManager {
   constructor(parentApp) {
     super(parentApp);
     this.modelType = "MMD";
+    this.transformMonitor = new TransformMonitor();
   }
   switchIn() {
     this.scene = new THREE.Scene();
@@ -36,7 +38,12 @@ export class MmdManager extends ModelManager {
       this.stats.begin();
       this.stats.end();
     }
-
+    if (
+      this._onUpdateNodeTransfrom !== undefined &&
+      this.transformMonitor.checkUpdate()
+    ) {
+      this._onUpdateNodeTransfrom(this.transformMonitor.transform);
+    }
     this.mouseFocusHelper?.focus();
     this.renderer.render(this.scene, this.camera);
     requestAnimationFrame(this.render.bind(this));
@@ -111,5 +118,21 @@ export class MmdManager extends ModelManager {
         }
       );
     });
+  }
+  onUpdateNodeTransfrom(callback) {
+    this._onUpdateNodeTransfrom = callback;
+  }
+  bindNodeTransform(id) {
+    this.transformMonitor.bind(this.scene.getObjectById(id));
+  }
+  setNodeTransform(id, transform) {
+    const target = this.scene.getObjectById(id);
+    for (let i of ["position", "rotation", "scale"]) {
+      for (let j of ["x", "y", "z"]) {
+        if (target[i][j] !== transform[i][j]) {
+          target[i][j] = transform[i][j];
+        }
+      }
+    }
   }
 }

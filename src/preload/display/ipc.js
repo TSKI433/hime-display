@@ -27,3 +27,17 @@ export function sendModelControlInfo(controlWindowId, modelControlInfo) {
     modelControlInfo
   );
 }
+export function updateNodeTransfrom(displayWindowId, newTransform) {
+  ipcRenderer.sendTo(
+    displayWindowId,
+    "display:model:update-node-transform",
+    newTransform
+  );
+}
+export function handelSetNodeTransform(callback) {
+  ipcRenderer.on("control:model:set-node-transform", callback);
+}
+export function handelBindNodeTransform(callback) {
+  console.log("requestBindNodeTransform");
+  ipcRenderer.on("control:model:request-sync-node-transform", callback);
+}

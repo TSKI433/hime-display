@@ -44,6 +44,12 @@ export class Application {
         this.managers.now?.switchOut();
         this.managers.now = this.managers[modelInfo.modelType];
         this.managers.now.switchIn();
+        this.managers.now.onUpdateNodeTransfrom((newTransform) => {
+          this.nodeAPI.ipc.updateNodeTransfrom(
+            this.controlWindowId,
+            newTransform
+          );
+        });
       }
       this.managers.now.loadModel(modelInfo).then((modelControlInfo) => {
         this.nodeAPI.ipc.sendModelControlInfo(
@@ -51,6 +57,13 @@ export class Application {
           modelControlInfo
         );
       });
+    });
+    this.nodeAPI.ipc.handelBindNodeTransform((event, id) => {
+      console.log(`[Hime Display] Bind node transform: ${id}`);
+      this.managers.now.bindNodeTransform(id);
+    });
+    this.nodeAPI.ipc.handelSetNodeTransform((event, id, newTransform) => {
+      this.managers.now.setNodeTransform(id, newTransform);
     });
   }
   initStats() {
