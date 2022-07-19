@@ -4,10 +4,10 @@
       descriptionData.name
     }}</el-descriptions-item>
     <el-descriptions-item align="center" label="扩展名">{{
-      descriptionData.extentionName
+      descriptionData.extensionName
     }}</el-descriptions-item>
     <el-descriptions-item align="center" label="顶点数">{{
-      descriptionData.vetexCount
+      descriptionData.vertexCount
     }}</el-descriptions-item>
     <el-descriptions-item align="center" label="三角形数">{{
       descriptionData.triangleCount

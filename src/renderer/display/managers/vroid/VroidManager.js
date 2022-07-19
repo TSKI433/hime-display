@@ -2,7 +2,7 @@ import { ModelManager } from "../ModelManager";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { VRM, VRMSchema } from "@pixiv/three-vrm";
-import { MouseFocusHelper } from "@display/lib/3d/MouseFocusHelper.js";
+import { MouseFocusHelper } from "@display/utils/3d/MouseFocusHelper.js";
 // 用于转头……VRM使用的坐标系和THREE是反的，不转的话模型永远是后脑勺对着你
 const turnHeadQuaternion = new THREE.Quaternion().setFromEuler(
   new THREE.Euler(0, Math.PI, 0)

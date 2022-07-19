@@ -1,7 +1,7 @@
 import { ModelManager } from "../ModelManager";
 import * as THREE from "three";
 import { MMDLoader } from "three/examples/jsm/loaders/MMDLoader.js";
-import { MouseFocusHelper } from "@display/lib/3d/MouseFocusHelper.js";
+import { MouseFocusHelper } from "@display/utils/3d/MouseFocusHelper.js";
 export class MmdManager extends ModelManager {
   constructor(parentApp) {
     super(parentApp);
@@ -53,8 +53,8 @@ export class MmdManager extends ModelManager {
           const modelControlInfo = {
             description: {
               name: modelInfo.name,
-              extentionName: modelInfo.extentionName,
-              vetexCount: mmd.geometry.attributes.normal.count,
+              extensionName: modelInfo.extensionName,
+              vertexCount: mmd.geometry.attributes.normal.count,
               triangleCount: mmd.geometry.index.count / 3,
               boneCount: mmdUserData.bones.length,
               ikCount: mmdUserData.iks.length,

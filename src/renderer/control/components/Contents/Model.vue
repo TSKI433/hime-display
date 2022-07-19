@@ -24,7 +24,7 @@
           <el-table-column label="扩展名">
             <template #default="props">
               <el-tag effect="light">
-                {{ props.row.extentionName }}
+                {{ props.row.extensionName }}
               </el-tag>
             </template>
           </el-table-column>
