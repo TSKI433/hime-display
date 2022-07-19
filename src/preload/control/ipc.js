@@ -20,6 +20,6 @@ export function handleUpdateWindowIds(callback) {
 export function loadModel(displayWindowId, modelInfo) {
   ipcRenderer.sendTo(displayWindowId, "control:load-model", modelInfo);
 }
-export function receiveModelControlData(callback) {
-  ipcRenderer.once("display:model-control-data", callback);
+export function receiveModelControlInfo(callback) {
+  ipcRenderer.once("display:model-control-info", callback);
 }

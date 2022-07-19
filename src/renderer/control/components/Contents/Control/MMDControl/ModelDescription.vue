@@ -1,41 +1,41 @@
 <template>
   <el-descriptions border size="small" direction="vertical" :column="5">
     <el-descriptions-item align="center" label="名称">{{
-      descriptionData.name
+      descriptionInfo.name
     }}</el-descriptions-item>
     <el-descriptions-item align="center" label="扩展名">{{
-      descriptionData.extensionName
+      descriptionInfo.extensionName
     }}</el-descriptions-item>
     <el-descriptions-item align="center" label="顶点数">{{
-      descriptionData.vertexCount
+      descriptionInfo.vertexCount
     }}</el-descriptions-item>
     <el-descriptions-item align="center" label="三角形数">{{
-      descriptionData.triangleCount
+      descriptionInfo.triangleCount
     }}</el-descriptions-item>
     <el-descriptions-item align="center" label="骨骼数">{{
-      descriptionData.boneCount
+      descriptionInfo.boneCount
     }}</el-descriptions-item>
     <el-descriptions-item align="center" label="IK数">{{
-      descriptionData.ikCount
+      descriptionInfo.ikCount
     }}</el-descriptions-item>
     <el-descriptions-item align="center" label="刚体数">{{
-      descriptionData.rigidBodyCount
+      descriptionInfo.rigidBodyCount
     }}</el-descriptions-item>
     <el-descriptions-item align="center" label="约束数">{{
-      descriptionData.constraintCount
+      descriptionInfo.constraintCount
     }}</el-descriptions-item>
     <el-descriptions-item align="center" label="付与数">{{
-      descriptionData.grantCount
+      descriptionInfo.grantCount
     }}</el-descriptions-item>
     <el-descriptions-item align="center" label="变形数">{{
-      descriptionData.morphCount
+      descriptionInfo.morphCount
     }}</el-descriptions-item>
   </el-descriptions>
 </template>
 
 <script setup>
 const props = defineProps({
-  descriptionData: Object,
+  descriptionInfo: Object,
 });
 </script>
 

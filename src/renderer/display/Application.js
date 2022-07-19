@@ -45,10 +45,10 @@ export class Application {
         this.managers.now = this.managers[modelInfo.modelType];
         this.managers.now.switchIn();
       }
-      this.managers.now.loadModel(modelInfo).then((modelControlData) => {
-        this.nodeAPI.ipc.sendModelControlData(
+      this.managers.now.loadModel(modelInfo).then((modelControlInfo) => {
+        this.nodeAPI.ipc.sendModelControlInfo(
           this.controlWindowId,
-          modelControlData
+          modelControlInfo
         );
       });
     });

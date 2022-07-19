@@ -1,12 +1,15 @@
 <template>
   <div>
-    <el-tree-select :data="[transformData]" check-strictly />
+    <el-tree-select :data="[transformInfo]" check-strictly />
+    <transform></transform>
   </div>
 </template>
 
 <script setup>
+import Transform from "../Common/Transform3D.vue";
+import { reactive } from "vue";
 const props = defineProps({
-  transformData: Object,
+  transformInfo: Object,
 });
 </script>
 

@@ -20,10 +20,10 @@ export function queryConfig() {
   // config数据主进程也有，这里还是invoke主进程吧
   return ipcRenderer.invoke("display:query-config");
 }
-export function sendModelControlData(controlWindowId, modelControlData) {
+export function sendModelControlInfo(controlWindowId, modelControlInfo) {
   ipcRenderer.sendTo(
     controlWindowId,
-    "display:model-control-data",
-    modelControlData
+    "display:model-control-info",
+    modelControlInfo
   );
 }

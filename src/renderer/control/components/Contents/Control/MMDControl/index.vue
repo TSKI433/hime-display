@@ -16,17 +16,18 @@
     <el-tabs type="border-card">
       <el-tab-pane label="模型信息">
         <ModelDescription3D
-          v-if="controlStore.modelControlData?.description !== undefined"
-          :description-data="controlStore.modelControlData.description"
+          v-if="controlStore.modelControlInfo?.description !== undefined"
+          :description-info="controlStore.modelControlInfo.description"
         ></ModelDescription3D>
         <template v-else>数据载入错误</template>
       </el-tab-pane>
       <el-tab-pane label="对象变换">
         <ObjectTransform
-          v-if="controlStore.modelControlData?.transform !== undefined"
-          :transform-data="controlStore.modelControlData.transform"
+          v-if="controlStore.modelControlInfo?.transform !== undefined"
+          :transform-info="controlStore.modelControlInfo.transform"
         ></ObjectTransform>
         <template v-else>数据载入错误</template>
+        <!-- <ObjectTransform></ObjectTransform> -->
       </el-tab-pane>
       <el-tab-pane label="动画播放">
         <AnimationControl></AnimationControl>

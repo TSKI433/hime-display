@@ -1,10 +1,11 @@
 <template>
   <div class="content--hime">
     <hime-title-with-divider>{{ $t("menu.control") }}</hime-title-with-divider>
+    <!-- <HimeMMDControl></HimeMMDControl> -->
     <template
       v-if="
         controlComponentNow !== undefined &&
-        !controlStore.modelControlDataLoading
+        !controlStore.modelControlInfoLoading
       "
     >
       <component :is="controlComponentNow"></component>

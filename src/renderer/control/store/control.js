@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 export const useControlStore = defineStore("control", {
   state: () => ({
     currentModelType: "",
-    modelControlDataLoading: false,
-    modelControlData: null,
+    modelControlInfoLoading: false,
+    modelControlInfo: null,
   }),
 });

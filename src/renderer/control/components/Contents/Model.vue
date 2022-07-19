@@ -56,17 +56,17 @@ function changeCurrentModelInfo(currentRow) {
 function loadModelNow() {
   const rawModelInfo = toRaw(currentModelInfo);
   controlStore.currentModelType = rawModelInfo.modelType;
-  controlStore.modelControlDataLoading = true;
-  controlStore.modelControlData = null;
+  controlStore.modelControlInfoLoading = true;
+  controlStore.modelControlInfo = null;
   ipcAPI.loadModel(appStore.displayWindowId, rawModelInfo);
   console.log(
     `[Hime Display] Load model: name:${rawModelInfo.name}, modelType:${rawModelInfo.modelType}`
   );
-  ipcAPI.receiveModelControlData((event, modelControlData) => {
+  ipcAPI.receiveModelControlInfo((event, modelControlInfo) => {
     // 关键点，使用markRaw包装对象。一些模型，比如MMD的层级结构复杂的离谱，能往下嵌套十几级，涉及到四五百，甚至更多的骨骼，用成响应式对象会直接影响到性能
-    // 按现在这种写法，modelControlData在发生引用值改变时依旧可以响应式变化，例如设定controlStore.modelControlData={}是可以响应式改变UI的，只是改变modelControlData内部的东西不会触发UI变化
-    controlStore.modelControlData = markRaw(modelControlData);
-    controlStore.modelControlDataLoading = false;
+    // 按现在这种写法，modelControlInfo在发生引用值改变时依旧可以响应式变化，例如设定controlStore.modelControlInfo={}是可以响应式改变UI的，只是改变modelControlInfo内部的东西不会触发UI变化
+    controlStore.modelControlInfo = markRaw(modelControlInfo);
+    controlStore.modelControlInfoLoading = false;
   });
 }
 </script>

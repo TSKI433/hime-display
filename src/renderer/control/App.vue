@@ -30,8 +30,8 @@ ipcAPI.handleUpdateWindowIds((event, windowIds) => {
   appStore.displayWindowId = windowIds.display;
   // 展示器关闭或重载时重置模型控制器的状态
   // controlStore.currentModelType = "";
-  // controlStore.modelControlDataLoading = false;
-  // controlStore.modelControlData = null;
+  // controlStore.modelControlInfoLoading = false;
+  // controlStore.modelControlInfo = null;
   // 原来pinia有个方法叫reset……
   controlStore.$reset();
 });

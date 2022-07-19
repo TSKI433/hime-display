@@ -1,7 +1,7 @@
 <template>
   <el-main
     v-loading="
-      controlStore.modelControlDataLoading &&
+      controlStore.modelControlInfoLoading &&
       contentComponentNow === HimeControl
     "
   >
