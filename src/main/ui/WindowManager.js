@@ -3,8 +3,9 @@ import { windowsOptions } from "../options/windows";
 import { BrowserWindow } from "electron";
 import { logger } from "../core/Logger";
 export class WindowManager extends EventEmitter {
-  constructor() {
+  constructor(configDB) {
     super();
+    this.configDB = configDB;
     this.windows = {
       control: null,
       display: null,
@@ -42,10 +43,14 @@ export class WindowManager extends EventEmitter {
       window.setIgnoreMouseEvents(true, {
         forward: true,
       });
-      window.setAlwaysOnTop(true, "screen-saver", 1);
-      window.setVisibleOnAllWorkspaces(true, {
-        visibleOnFullScreen: true, //在所有窗口上显示，全屏应用也不例外
-      });
+      if (this.configDB.get(["display", "keep-display-at-top"]).value()) {
+        window.setAlwaysOnTop(true, "screen-saver", 1);
+      }
+      if (this.configDB.get(["display", "show-in-all-workspaces"]).value()) {
+        window.setVisibleOnAllWorkspaces(true, {
+          visibleOnFullScreen: true, //在所有窗口上显示，全屏应用也不例外
+        });
+      }
     }
     if (windowName === "controlPanel") {
       //保持display窗口一直处于聚焦状态，以处理鼠标事件

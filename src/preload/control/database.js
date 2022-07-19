@@ -49,8 +49,8 @@ async function loadDataFromPath(dataPath, sourceTypes) {
   return Promise.all(promises);
 }
 async function detectDatabaseItem(fileDir, sourceTypes) {
-  const extentionName = path.extname(fileDir);
-  switch (extentionName) {
+  const extensionName = path.extname(fileDir);
+  switch (extensionName) {
     case ".json": {
       // 回调函数往上无法嵌套，转换成Promise
       const fileData = await util.promisify(fs.readFile)(fileDir);
@@ -92,7 +92,7 @@ function processLive2dJson(fileDir, fileJson) {
     writeModelInfo({
       name: splitModelName(fileDir),
       modelType: "Live2D",
-      extentionName: "moc",
+      extensionName: "moc",
       // Windows下使用file:会导致路径出错，热重载开发环境下不使用file:会导致路径报错
       entranceFile:
         (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
@@ -102,7 +102,7 @@ function processLive2dJson(fileDir, fileJson) {
     writeModelInfo({
       name: splitModelName(fileDir),
       modelType: "Live2D",
-      extentionName: "moc3",
+      extensionName: "moc3",
       entranceFile:
         (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
       // has_motion:"Motions" in fileJson.FileReferences ? true : false
@@ -113,7 +113,7 @@ function processPmx(fileDir) {
   writeModelInfo({
     name: splitModelName(fileDir),
     modelType: "MMD",
-    extentionName: "pmx",
+    extensionName: "pmx",
     entranceFile:
       (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
   });
@@ -122,7 +122,7 @@ function processVrm(fileDir) {
   writeModelInfo({
     name: splitModelName(fileDir),
     modelType: "VRoid",
-    extentionName: "vrm",
+    extensionName: "vrm",
     entranceFile:
       (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
   });
@@ -132,7 +132,7 @@ function processSkel(fileDir) {
   writeModelInfo({
     name: splitModelName(fileDir),
     modelType: "Spine",
-    extentionName: "skel",
+    extensionName: "skel",
     entranceFile:
       (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
   });
@@ -142,7 +142,7 @@ function processSpineJson(fileDir, fileJson) {
     writeModelInfo({
       name: splitModelName(fileDir),
       modelType: "Spine",
-      extentionName: "json",
+      extensionName: "json",
       entranceFile:
         (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
     });
@@ -151,7 +151,7 @@ function processSpineJson(fileDir, fileJson) {
 function processVmd(fileDir) {
   writeMotion3DInfo({
     name: path.basename(fileDir),
-    extentionName: "vmd",
+    extensionName: "vmd",
     entranceFile:
       (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
   });

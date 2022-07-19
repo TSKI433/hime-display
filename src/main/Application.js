@@ -13,9 +13,9 @@ export class Application extends EventEmitter {
     this.init();
   }
   init() {
+    this.initConfigDB();
     this.initWindowManager();
     this.initThemeManager();
-    this.initConfigDB();
     this.handleIpcMessages();
   }
   startApp() {
@@ -38,7 +38,8 @@ export class Application extends EventEmitter {
     this.configDB.defaults(defaultConfig).write();
   }
   initWindowManager() {
-    this.windowManager = new WindowManager();
+    // 启动window时也需要读取配置数据库
+    this.windowManager = new WindowManager(this.configDB);
   }
   initThemeManager() {
     this.themeManager = new ThemeManager();
