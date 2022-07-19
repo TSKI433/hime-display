@@ -41,7 +41,8 @@ import SubConfigItem from "@control/components/Common/SubConfigItem.vue";
 import { watch, toRaw } from "vue";
 import { useAppStore } from "@control/store/app";
 import languageNames from "@shared/locales/languageNames";
-import i18next from "i18next";
+import { useTranslation } from "i18next-vue";
+const { i18next } = useTranslation();
 const appStore = useAppStore();
 watch(appStore.config.general, (newValue) => {
   window.nodeAPI.config.write("general", toRaw(newValue));
