@@ -32,6 +32,12 @@
       <el-tab-pane label="动画播放">
         <AnimationControl></AnimationControl>
       </el-tab-pane>
+      <el-tab-pane label="变形目标">
+        <MorphTarget></MorphTarget>
+      </el-tab-pane>
+      <el-tab-pane label="相机参数">
+        <CameraParameter></CameraParameter>
+      </el-tab-pane>
       <el-tab-pane label="动作捕捉">
         <MotionCapture></MotionCapture>
       </el-tab-pane>
@@ -43,6 +49,8 @@
 import ModelDescription3D from "./ModelDescription.vue";
 import ObjectTransform from "./ObjectTransform.vue";
 import AnimationControl from "./AnimationControl.vue";
+import MorphTarget from "./MorphTarget.vue";
+import CameraParameter from "../Common/CameraParameter.vue";
 import MotionCapture from "./MotionCapture.vue";
 import { useControlStore } from "@control/store/control";
 const controlStore = useControlStore();
