@@ -29,9 +29,11 @@ ipcAPI.queryWindowIds().then((windowIds) => {
 ipcAPI.handleUpdateWindowIds((event, windowIds) => {
   appStore.displayWindowId = windowIds.display;
   // 展示器关闭或重载时重置模型控制器的状态
-  controlStore.currentModelType = "";
-  controlStore.modelControlDataLoading = false;
-  controlStore.modelControlData = null;
+  // controlStore.currentModelType = "";
+  // controlStore.modelControlDataLoading = false;
+  // controlStore.modelControlData = null;
+  // 原来pinia有个方法叫reset……
+  controlStore.$reset();
 });
 i18next.changeLanguage(appStore.config.general.language);
 const locale = computed(() =>

@@ -2,6 +2,7 @@ import { ModelManager } from "../ModelManager";
 import * as THREE from "three";
 import { MMDLoader } from "three/examples/jsm/loaders/MMDLoader.js";
 import { MouseFocusHelper } from "@display/utils/3d/MouseFocusHelper.js";
+import { buildNodeInfoTree } from "@display/utils/3d/utils";
 export class MmdManager extends ModelManager {
   constructor(parentApp) {
     super(parentApp);
@@ -89,7 +90,8 @@ export class MmdManager extends ModelManager {
           // 直接给我来个ReferenceError: setImmediate is not defined
           setTimeout(() => {
             this.scene.add(mmd);
-
+            // 必须在添加上模型后再构建信息
+            modelControlInfo.transform = buildNodeInfoTree(this.scene);
             modelControlInfo.state = "success";
             resolve(modelControlInfo);
           }, 1000);

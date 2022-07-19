@@ -41,7 +41,7 @@
 
 <script setup>
 import HimeTitleWithDivider from "@control/components/Common/TitleWithDivider.vue";
-import { ref, toRaw } from "vue";
+import { ref, toRaw, markRaw } from "vue";
 import { useAppStore } from "@control/store/app";
 import { useControlStore } from "@control/store/control";
 const appStore = useAppStore();
@@ -63,7 +63,9 @@ function loadModelNow() {
     `[Hime Display] Load model: name:${rawModelInfo.name}, modelType:${rawModelInfo.modelType}`
   );
   ipcAPI.receiveModelControlData((event, modelControlData) => {
-    controlStore.modelControlData = modelControlData;
+    // 关键点，使用markRaw包装对象。一些模型，比如MMD的层级结构复杂的离谱，能往下嵌套十几级，涉及到四五百，甚至更多的骨骼，用成响应式对象会直接影响到性能
+    // 按现在这种写法，modelControlData在发生引用值改变时依旧可以响应式变化，例如设定controlStore.modelControlData={}是可以响应式改变UI的，只是改变modelControlData内部的东西不会触发UI变化
+    controlStore.modelControlData = markRaw(modelControlData);
     controlStore.modelControlDataLoading = false;
   });
 }

@@ -22,7 +22,11 @@
         <template v-else>数据载入错误</template>
       </el-tab-pane>
       <el-tab-pane label="对象变换">
-        <ObjectTransform></ObjectTransform>
+        <ObjectTransform
+          v-if="controlStore.modelControlData?.transform !== undefined"
+          :transform-data="controlStore.modelControlData.transform"
+        ></ObjectTransform>
+        <template v-else>数据载入错误</template>
       </el-tab-pane>
       <el-tab-pane label="动画播放">
         <AnimationControl></AnimationControl>
