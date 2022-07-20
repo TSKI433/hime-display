@@ -1,6 +1,17 @@
 <template>
   <div>
-    <el-tree-select :data="[controlInfo]" check-strictly v-model="nodeIdNow" />
+    <el-tree-select
+      :data="[controlInfo.tree]"
+      check-strictly
+      v-model="nodeIdNow"
+      @change="syncAutoCompleteValue"
+    />
+    <!-- 我去，这几天这么巧的吗，又碰到一个Element Plus刚刚修复了的bug：https://github.com/element-plus/element-plus/issues/8542 -->
+    <el-autocomplete
+      v-model="autoCompleteValue"
+      :fetch-suggestions="querySearch"
+      @select="handleSelect"
+    ></el-autocomplete>
     <transform
       :transform-object="transformObject"
       @input="setNodeTransform"
@@ -54,6 +65,25 @@ ipcAPI.handleSendToModelControl((event, message) => {
     transformObject.scale = message.data.scale;
   }
 });
+const autoCompleteValue = ref("");
+function querySearch(queryString, callback) {
+  const results = queryString
+    ? props.controlInfo.list.filter((item) => {
+        return item.value.toLowerCase().indexOf(queryString.toLowerCase()) > -1;
+      })
+    : props.controlInfo.list;
+  callback(results);
+}
+// 输入预测框向树形选择的绑定是自动的
+function handleSelect(item) {
+  nodeIdNow.value = item.id;
+}
+// 树形选择向输入预测框的绑定
+function syncAutoCompleteValue(id) {
+  autoCompleteValue.value = props.controlInfo.list.find(
+    (item) => item.id === id
+  ).value;
+}
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss"></style>

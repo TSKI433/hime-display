@@ -2,7 +2,7 @@ import { ModelManager } from "../ModelManager";
 import * as THREE from "three";
 import { MMDLoader } from "three/examples/jsm/loaders/MMDLoader.js";
 import { MouseFocusHelper } from "@display/utils/3d/MouseFocusHelper.js";
-import { buildNodeInfoTree } from "@display/utils/3d/utils";
+import { buildNodeInfoTreeAndList } from "@display/utils/3d/utils";
 import { TransformMonitor } from "@display/utils/3d/TransformMonitor";
 export class MmdManager extends ModelManager {
   constructor(parentApp) {
@@ -101,7 +101,7 @@ export class MmdManager extends ModelManager {
           setTimeout(() => {
             this.scene.add(mmd);
             // 必须在添加上模型后再构建信息
-            modelControlInfo.transform = buildNodeInfoTree(this.scene);
+            modelControlInfo.transform = buildNodeInfoTreeAndList(this.scene);
             modelControlInfo.state = "success";
             resolve(modelControlInfo);
           }, 1000);
