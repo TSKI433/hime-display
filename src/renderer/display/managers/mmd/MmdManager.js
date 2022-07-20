@@ -39,10 +39,13 @@ export class MmdManager extends ModelManager {
       this.stats.end();
     }
     if (
-      this._onUpdateNodeTransfrom !== undefined &&
+      this._sendToModelControl !== undefined &&
       this.transformMonitor.checkUpdate()
     ) {
-      this._onUpdateNodeTransfrom(this.transformMonitor.transform);
+      this._sendToModelControl({
+        channel: "manager:update-node-transform",
+        data: this.transformMonitor.transform,
+      });
     }
     this.mouseFocusHelper?.focus();
     this.renderer.render(this.scene, this.camera);
@@ -119,14 +122,27 @@ export class MmdManager extends ModelManager {
       );
     });
   }
-  onUpdateNodeTransfrom(callback) {
-    this._onUpdateNodeTransfrom = callback;
+  onSendToModelControl(callback) {
+    this._sendToModelControl = callback;
   }
-  bindNodeTransform(id) {
-    this.transformMonitor.bind(this.scene.getObjectById(id));
+  handleMessage(message) {
+    switch (message.channel) {
+      case "control:bind-node-transform": {
+        this.bindNodeTransform(message.data);
+        break;
+      }
+      case "control:set-node-transform": {
+        const { nodeId, transform } = message.data;
+        this.setNodeTransform(nodeId, transform);
+        break;
+      }
+    }
   }
-  setNodeTransform(id, transform) {
-    const target = this.scene.getObjectById(id);
+  bindNodeTransform(nodeId) {
+    this.transformMonitor.bind(this.scene.getObjectById(nodeId));
+  }
+  setNodeTransform(nodeId, transform) {
+    const target = this.scene.getObjectById(nodeId);
     for (let i of ["position", "rotation", "scale"]) {
       for (let j of ["x", "y", "z"]) {
         if (target[i][j] !== transform[i][j]) {

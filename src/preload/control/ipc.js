@@ -23,20 +23,9 @@ export function loadModel(displayWindowId, modelInfo) {
 export function receiveModelControlInfo(callback) {
   ipcRenderer.once("display:model-control-info", callback);
 }
-export function handelUpdateNodeTransfrom(callback) {
-  ipcRenderer.on("display:model:update-node-transform", callback);
+export function sendToModelManager(displayWindowId, message) {
+  ipcRenderer.sendTo(displayWindowId, "control:send-to-model-manager", message);
 }
-export function setNodeTransform(displayWindowId, ...args) {
-  ipcRenderer.sendTo(
-    displayWindowId,
-    "control:model:set-node-transform",
-    ...args
-  );
-}
-export function requestBindNodeTransform(displayWindowId, newId) {
-  ipcRenderer.sendTo(
-    displayWindowId,
-    "control:model:request-sync-node-transform",
-    newId
-  );
+export function handleSendToModelControl(callback) {
+  ipcRenderer.on("display:send-to-model-control", callback);
 }

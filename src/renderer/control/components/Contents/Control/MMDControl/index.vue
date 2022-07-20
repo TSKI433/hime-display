@@ -14,6 +14,7 @@
       <el-menu-item index="MotionCapture">动作捕捉</el-menu-item>
     </el-menu> -->
     <el-tabs type="border-card">
+      <!-- 就想用个for循环我容易吗……动态组件，动态参数，动态标题 -->
       <el-tab-pane
         :label="$t(`control.${subControlKey}`)"
         v-for="subControlKey in subControlKeys"
@@ -21,7 +22,9 @@
         <component
           :is="subControlComponents[subControlKey]"
           v-if="controlStore.modelControlInfo?.description !== undefined"
-          :description-info="controlStore.modelControlInfo.description"
+          :control-info="
+            controlStore.modelControlInfo[subControlAttrs[subControlKey]]
+          "
         ></component>
         <template v-else>数据载入错误</template>
       </el-tab-pane>
@@ -37,7 +40,6 @@ import MorphTarget from "./MorphTarget.vue";
 import CameraParameter from "../Common/CameraParameter.vue";
 import MotionCapture from "./MotionCapture.vue";
 import { useControlStore } from "@control/store/control";
-import { reactive } from "vue";
 const controlStore = useControlStore();
 // 这么写主要是方便i18n
 // Object的Key无法保证顺序，因此重新列了个键值数组
@@ -56,6 +58,14 @@ const subControlComponents = {
   "morph-target": MorphTarget,
   "camera-parameter": CameraParameter,
   "motion-capture": MotionCapture,
+};
+const subControlAttrs = {
+  "model-description": "description",
+  "object-transform": "transform",
+  "animation-control": "animation",
+  "morph-target": "morph",
+  "camera-parameter": "camera",
+  "motion-capture": "motion",
 };
 </script>
 

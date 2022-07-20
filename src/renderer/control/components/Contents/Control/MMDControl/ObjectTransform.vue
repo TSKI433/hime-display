@@ -1,10 +1,6 @@
 <template>
   <div>
-    <el-tree-select
-      :data="[transformInfo]"
-      check-strictly
-      v-model="nodeIdNow"
-    />
+    <el-tree-select :data="[controlInfo]" check-strictly v-model="nodeIdNow" />
     <transform
       :transform-object="transformObject"
       @input="setNodeTransform"
@@ -19,7 +15,7 @@ import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
 const props = defineProps({
-  transformInfo: Object,
+  controlInfo: Object,
 });
 const transformObject = reactive({
   position: { x: 0, y: 0, z: 0 },
@@ -30,23 +26,33 @@ const nodeIdNow = ref("");
 // 此处发现，vue的watch对于ref返回原始值，对于reactive返回代理值
 watch(nodeIdNow, (newId, oldId) => {
   if (newId === oldId) return;
-  ipcAPI.requestBindNodeTransform(appStore.displayWindowId, newId);
+  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+    channel: "control:bind-node-transform",
+    data: newId,
+  });
 });
 // 这里不能watch了，因为展示器那边带来的数据更新也会触发watch，造成死循环
 // watch(transformObject, (newTransform) => {
 //      ipcAPI.setNodeTransform(nodeIdNow.value,toRaw(newTransform))
 // });
 function setNodeTransform() {
-  ipcAPI.setNodeTransform(
-    appStore.displayWindowId,
-    nodeIdNow.value,
-    toRaw(transformObject)
-  );
+  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+    channel: "control:set-node-transform",
+    data: {
+      nodeId: nodeIdNow.value,
+      transform: toRaw(transformObject),
+    },
+  });
 }
-ipcAPI.handelUpdateNodeTransfrom((event, newTransform) => {
-  transformObject.position = newTransform.position;
-  transformObject.rotation = newTransform.rotation;
-  transformObject.scale = newTransform.scale;
+
+// 照理来讲，模型控制这一级的组件没用keep-alive，动态组件切换后事件监听也能正确弄过去？
+ipcAPI.handleSendToModelControl((event, message) => {
+  if (message.channel === "manager:update-node-transform") {
+    // 直接赋值会失去响应性
+    transformObject.position = message.data.position;
+    transformObject.rotation = message.data.rotation;
+    transformObject.scale = message.data.scale;
+  }
 });
 </script>
 

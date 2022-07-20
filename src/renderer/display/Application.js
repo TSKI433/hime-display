@@ -44,11 +44,8 @@ export class Application {
         this.managers.now?.switchOut();
         this.managers.now = this.managers[modelInfo.modelType];
         this.managers.now.switchIn();
-        this.managers.now.onUpdateNodeTransfrom((newTransform) => {
-          this.nodeAPI.ipc.updateNodeTransfrom(
-            this.controlWindowId,
-            newTransform
-          );
+        this.managers.now.onSendToModelControl((message) => {
+          this.nodeAPI.ipc.sendToModelControl(this.controlWindowId, message);
         });
       }
       this.managers.now.loadModel(modelInfo).then((modelControlInfo) => {
@@ -58,12 +55,11 @@ export class Application {
         );
       });
     });
-    this.nodeAPI.ipc.handelBindNodeTransform((event, id) => {
-      console.log(`[Hime Display] Bind node transform: ${id}`);
-      this.managers.now.bindNodeTransform(id);
-    });
-    this.nodeAPI.ipc.handelSetNodeTransform((event, id, newTransform) => {
-      this.managers.now.setNodeTransform(id, newTransform);
+    this.nodeAPI.ipc.handleSendToModelManager((event, message) => {
+      console.log(
+        `[Hime Display] Receive message from control: ${message.channel}`
+      );
+      this.managers.now.handleMessage(message);
     });
   }
   initStats() {
