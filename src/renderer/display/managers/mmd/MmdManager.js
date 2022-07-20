@@ -9,14 +9,11 @@ export class MmdManager extends ModelManager {
     super(parentApp);
     this.modelType = "MMD";
     this.transformMonitor = new TransformMonitor();
+    this.MMDLoader = new MMDLoader();
   }
   switchIn() {
     this.scene = new THREE.Scene();
-    const ambient = new THREE.AmbientLight(0x666666);
-    this.scene.add(ambient);
-    const directionalLight = new THREE.DirectionalLight(0x887766);
-    directionalLight.position.z = 100;
-    this.scene.add(directionalLight);
+    this._addLight();
     this.camera = new THREE.PerspectiveCamera(
       45,
       window.innerWidth / window.innerHeight,
@@ -33,29 +30,11 @@ export class MmdManager extends ModelManager {
     this.renderer.setPixelRatio(this.resolution);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
-  render() {
-    if (this.stats !== null) {
-      this.stats.begin();
-      this.stats.end();
-    }
-    if (
-      this._sendToModelControl !== undefined &&
-      this.transformMonitor.checkUpdate()
-    ) {
-      this._sendToModelControl({
-        channel: "manager:update-node-transform",
-        data: this.transformMonitor.transform,
-      });
-    }
-    this.mouseFocusHelper?.focus();
-    this.renderer.render(this.scene, this.camera);
-    requestAnimationFrame(this.render.bind(this));
-  }
+  switchOut() {}
   loadModel(modelInfo) {
     return new Promise((resolve, reject) => {
       const modelFile = modelInfo.entranceFile;
-      const loaderMMD = new MMDLoader();
-      loaderMMD.load(
+      this.MMDLoader.load(
         modelFile,
         (mmd) => {
           console.log("[Hime Display] MMD Loaded");
@@ -105,7 +84,7 @@ export class MmdManager extends ModelManager {
             modelControlInfo.state = "success";
             resolve(modelControlInfo);
           }, 1000);
-          this.render();
+          this._render();
           this.mouseFocusHelper = new MouseFocusHelper(
             mmd.skeleton.bones.find((bone) => bone.name === "頭"),
             this.camera
@@ -122,26 +101,52 @@ export class MmdManager extends ModelManager {
       );
     });
   }
+  _addLight() {
+    const ambient = new THREE.AmbientLight(0x666666);
+    this.scene.add(ambient);
+    const directionalLight = new THREE.DirectionalLight(0x887766);
+    directionalLight.position.z = 100;
+    this.scene.add(directionalLight);
+  }
+  _render() {
+    if (this.stats !== null) {
+      this.stats.begin();
+      this.stats.end();
+    }
+    if (
+      this._sendToModelControl !== undefined &&
+      this.transformMonitor.checkUpdate()
+    ) {
+      this._sendToModelControl({
+        channel: "manager:update-node-transform",
+        data: this.transformMonitor.transform,
+      });
+    }
+    this.mouseFocusHelper?.focus();
+    this.renderer.render(this.scene, this.camera);
+    requestAnimationFrame(this._render.bind(this));
+  }
+
   onSendToModelControl(callback) {
     this._sendToModelControl = callback;
   }
   handleMessage(message) {
     switch (message.channel) {
       case "control:bind-node-transform": {
-        this.bindNodeTransform(message.data);
+        this._bindNodeTransform(message.data);
         break;
       }
       case "control:set-node-transform": {
         const { nodeId, transform } = message.data;
-        this.setNodeTransform(nodeId, transform);
+        this._setNodeTransform(nodeId, transform);
         break;
       }
     }
   }
-  bindNodeTransform(nodeId) {
+  _bindNodeTransform(nodeId) {
     this.transformMonitor.bind(this.scene.getObjectById(nodeId));
   }
-  setNodeTransform(nodeId, transform) {
+  _setNodeTransform(nodeId, transform) {
     const target = this.scene.getObjectById(nodeId);
     for (let i of ["position", "rotation", "scale"]) {
       for (let j of ["x", "y", "z"]) {
