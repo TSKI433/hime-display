@@ -18,6 +18,8 @@ class MouseFocusHelper {
     this.camera = camera;
     this.ratio = ratio;
     this.focusPosition = new Vector3();
+    // 防止由于focusPosition默认在(0,0,0)导致刚载入模型时出现头拧断了也要看脚底的情况
+    this.object.getWorldPosition(this.focusPosition);
   }
   update(x, y) {
     // 传入屏幕指针坐标，计算聚焦目标坐标

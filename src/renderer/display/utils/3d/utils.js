@@ -7,9 +7,7 @@ function buildNodeInfoTree(node, tree = {}) {
   if (tree.type === "SkinnedMesh" && node.geometry.userData.MMD !== undefined) {
     additionalInfo += "(MMD)";
   }
-  //   tree.type = node.type;
-  //   tree.id = node.id;
-  //   方便element ui接入
+  //   方便element plus接入
   tree.value = node.id;
   tree.label = `${node.type}${additionalInfo}`;
   tree.children = [];
