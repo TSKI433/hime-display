@@ -60,10 +60,10 @@ export class MmdManager extends ModelManager {
           // ERROR:gpu_process_host.cc(974)] GPU process exited unexpectedly: exit_code=512
           // 经过各种瞎尝试，设个延时（实测延时设短了也不行，如0，100也有几率卡死）函数后，就不会有问题了，别问我解决的原理是什么，问就是不知道
 
-          // 这个问题在脱离Electron，直接在Chrome，Firefox中测试时都不会出现
-          // 通过控制变量法实验得出结论，该问题与ESM模块系统无直接关联，全换成iife模块它也崩
-          // 通过第二个控制变量实验得出结论，该问题与跨域使用file:// 加载模型无直接关联
-          // 顺带一提，展示器在崩坏重载后的报错信息为：
+          // 1.这个问题在脱离Electron，直接在Chrome，Firefox中测试时都不会出现
+          // 2.该问题与ESM模块系统无直接关联，全换成iife模块它也崩
+          // 3.该问题与跨域使用file:// 加载模型无直接关联，之后也进一步验证了，虽然在file://的协议下，资源相应头没有Content-Length导致无法在OnProgress回调中检查加载进度，但是这并没有影响资源的正常加载
+          // 4.顺带一提，展示器在崩坏重载后的报错信息为：
           // THREE.WebGLProgram: Shader Error 0 - VALIDATE_STATUS false
           // WebGL: INVALID_OPERATION: useProgram: program not valid
           // THREE.WebGLProgram: Shader Error 1282 - VALIDATE_STATUS false
@@ -72,19 +72,27 @@ export class MmdManager extends ModelManager {
           // INVALID_OPERATION: useProgram: program not valid
           // WebGL: CONTEXT_LOST_WEBGL: loseContext: context lost
           // THREE.WebGLRenderer: Context Lost.
-          // 综上，推测此问题可能比较单纯，就是在Electron环境下THREE的渲染在一些情况下会导致GPU错误。出现的第一个报错为Shader Error，推测深层次可能跟THREE的MMDToonShader的渲染有关，反正这已经到我无法解决的领域了
+          // 5.推测此问题可能比较单纯，就是在Electron环境下THREE的渲染在一些情况下会导致GPU错误。出现的第一个报错为Shader Error，推测深层次可能跟THREE的MMDToonShader的渲染有关，反正这已经到我无法解决的领域了
+          // 6.通过各种打断点判断，这玩意儿和资源加载似乎就没什么关系
+          // 7.MMD加载资源的时候，本来纹理的加载的就是异步的，他会先创建material再加载图片，图片未加载时在场景中呈现为透明状态，这没什么问题，从时间线的分析上来看，模型是加载完成和图片加载完成的顺序和软件崩不崩没有直接联系
+          // 8.测试发现，只要有一次载入成功，之后的几次模型载入必定成功，由此推测这很可能是跟某个东西的初始化或缓存什么的相关
+          // 9.测试发现，如果先让renderer渲染着，再让模型加载，甚至在MMDLoader调用回调函数之前软件就已经崩了，这说明这个问题甚至跟把mmd模型丢scene渲染都没有直接关系
+          // 10.接第8条，发现不单单是之后几次必定成功，只要主进程不退出，重启展示器页面也必定不崩，而且之前崩的状态是直接波及到主进程和渲染器进程，是整个应用全部卡死，由此推测，这个问题或许已经超出了前端的范畴了，是Electron内部对Chromium处理的什么问题
+          // 现在得出的不触发问题的方法，在render之前一段时间（大概要一秒多）就载入MMD模型
+          // 目前我感觉比较好的解决方案，要求不就是要加载第一个MMD模型隔一段时间后才能调用渲染器进程嘛，那我一上来就加载个模型，加载完后什么事都不干，之后不久什么问题都没有了？实践证明真的是这样，不过对这个模型也有要求，我试过直接放一根骨头的模型，无效；拿着Belnder随便造了个MMD立方体，带个基础材质，还是无效；把材质弄成纹理贴图，依旧无效……合着和材质半点关系没有是吧，好吧管你问题出在哪儿，那只能直接上真模型了。顺带一提，这个问题还仅仅在pmx模型出现，omd一点问题也没有
+          // 不过目前在渲染前加个一秒多的延时一般来讲也没什么问题了，之后具体怎么弄再看吧
 
           // 震惊！！！setImmediate居然不是标准特性……
           // https://developer.mozilla.org/zh-CN/docs/Web/API/Window/setImmediate
           // 直接给我来个ReferenceError: setImmediate is not defined
+          this.scene.add(mmd);
           setTimeout(() => {
-            this.scene.add(mmd);
-            // 必须在添加上模型后再构建信息
-            modelControlInfo.transform = buildNodeInfoTreeAndList(this.scene);
-            modelControlInfo.state = "success";
-            resolve(modelControlInfo);
+            this._render();
           }, 1000);
-          this._render();
+          // 必须在添加上模型后再构建信息
+          modelControlInfo.transform = buildNodeInfoTreeAndList(this.scene);
+          modelControlInfo.state = "success";
+          resolve(modelControlInfo);
           this.mouseFocusHelper = new MouseFocusHelper(
             mmd.skeleton.bones.find((bone) => bone.name === "頭"),
             this.camera
