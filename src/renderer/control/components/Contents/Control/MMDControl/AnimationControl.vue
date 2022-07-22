@@ -41,6 +41,7 @@
     :disabled="!motionTableSelected || !audioTableSelected"
     >播放选中动画及音频</el-button
   >
+  <el-slider />
 </template>
 
 <script setup>
@@ -80,6 +81,14 @@ function playMotionWithAudio() {
     });
   }
 }
+ipcAPI.handleSendToModelControl((event, message) => {
+  switch (message.channel) {
+    case "manager:update-motion-info": {
+      console.log("[Hime Display] Update motion info:", message.data);
+      break;
+    }
+  }
+});
 </script>
 
 <style lang="scss"></style>

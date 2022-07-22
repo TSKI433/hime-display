@@ -163,8 +163,15 @@ export class MmdManager extends ModelManager {
         const { motionFilePath } = message.data;
         console.log(`[Hime Diplsay] Load Motion: ${motionFilePath}`);
         this.animationManager = new AnimationManager(this.MMDLoader);
-        this.animationManager.loadAnimation(this.model, motionFilePath);
-        this.animationManager.play();
+        this.animationManager
+          .loadAnimation(this.model, motionFilePath)
+          .then(() => {
+            this._sendToModelControl({
+              channel: "manager:update-motion-info",
+              data: { durantion: this.animationManager.clip.duration },
+            });
+          });
+        break;
       }
       case "control:play-motion-with-audio": {
         const { motionFilePath, audioFilePath } = message.data;
@@ -172,12 +179,16 @@ export class MmdManager extends ModelManager {
           `[Hime Diplsay] Load Motion: ${motionFilePath} With Audio: ${audioFilePath}`
         );
         this.animationManager = new AnimationManager(this.MMDLoader);
-        this.animationManager.loadAnimationWithAudio(
-          this.model,
-          motionFilePath,
-          audioFilePath
-        );
+        this.animationManager
+          .loadAnimationWithAudio(this.model, motionFilePath, audioFilePath)
+          .then(() => {
+            this._sendToModelControl({
+              channel: "manager:update-motion-info",
+              data: { durantion: this.animationManager.clip.duration },
+            });
+          });
         this.camera.add(this.animationManager.listener);
+        break;
       }
     }
   }
