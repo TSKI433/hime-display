@@ -1,9 +1,26 @@
 <template>
   <el-table
     :data="appStore.database.motion3D"
-    @current-change="changeCurrentModelInfo"
+    @current-change="changeCurrentMotionInfo"
     size="small"
-    height="200"
+    height="160"
+    highlight-current-row
+  >
+    <el-table-column type="index" width="40" />
+    <el-table-column label="名称" prop="name" show-overflow-tooltip />
+    <el-table-column label="扩展名">
+      <template #default="props">
+        <el-tag effect="light">
+          {{ props.row.extensionName }}
+        </el-tag>
+      </template>
+    </el-table-column>
+  </el-table>
+  <el-table
+    :data="appStore.database.audio3D"
+    @current-change="changeCurrentAudioInfo"
+    size="small"
+    height="160"
     highlight-current-row
   >
     <el-table-column type="index" width="40" />
@@ -19,6 +36,11 @@
   <el-button @click="playMotion" :disabled="!motionTableSelected"
     >播放选中动画</el-button
   >
+  <el-button
+    @click="playMotionWithAudio"
+    :disabled="!motionTableSelected || !audioTableSelected"
+    >播放选中动画及音频</el-button
+  >
 </template>
 
 <script setup>
@@ -27,17 +49,34 @@ import { useAppStore } from "@control/store/app";
 import { ref } from "vue";
 const appStore = useAppStore();
 let currentMotionInfo = null;
+let currentAudioInfo = null;
 const motionTableSelected = ref(false);
+const audioTableSelected = ref(false);
 const ipcAPI = window.nodeAPI.ipc;
-function changeCurrentModelInfo(currentRow) {
+function changeCurrentMotionInfo(currentRow) {
   motionTableSelected.value = true;
   currentMotionInfo = currentRow;
+}
+function changeCurrentAudioInfo(currentRow) {
+  audioTableSelected.value = true;
+  currentAudioInfo = currentRow;
 }
 function playMotion() {
   if (currentMotionInfo !== null) {
     ipcAPI.sendToModelManager(appStore.displayWindowId, {
       channel: "control:play-motion",
       data: { motionFilePath: currentMotionInfo.entranceFile },
+    });
+  }
+}
+function playMotionWithAudio() {
+  if (currentMotionInfo !== null && currentAudioInfo !== null) {
+    ipcAPI.sendToModelManager(appStore.displayWindowId, {
+      channel: "control:play-motion-with-audio",
+      data: {
+        motionFilePath: currentMotionInfo.entranceFile,
+        audioFilePath: currentAudioInfo.entranceFile,
+      },
     });
   }
 }

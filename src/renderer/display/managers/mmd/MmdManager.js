@@ -22,6 +22,10 @@ export class MmdManager extends ModelManager {
       2000
     );
     this.camera.position.set(0, 10, 40);
+    // 这是一步立足长远，顾全大局的操作，在之后主要有两个作用：
+    // 其一，在构建节点树的时候会连着Camera进去，这样相机的位置就能和其他对象统一控制了
+    // 其二，之后要载入音频的时候，会把AudioListener加到camera下，这样一来，相机的移动就可以连带着listener移动，就像给相机挂了个耳机一样（然而目前用的不是THREE的PositionalAudio，这波操作似乎什么用都没有……）
+    this.scene.add(this.camera);
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
       aplpha: true,
@@ -131,7 +135,7 @@ export class MmdManager extends ModelManager {
         data: this.transformMonitor.transform,
       });
     }
-    if (this.animationManager?.loaded && this.animationManager?.clock.running) {
+    if (this.animationManager?.ready && this.animationManager?.clock.running) {
       this.animationManager.update();
     } else {
       // 播放动画的时候模型还盯着鼠标看，转身都不带扭头的那效果……我实在是看不下去了
@@ -157,10 +161,23 @@ export class MmdManager extends ModelManager {
       }
       case "control:play-motion": {
         const { motionFilePath } = message.data;
-        console.log(motionFilePath);
+        console.log(`[Hime Diplsay] Load Motion: ${motionFilePath}`);
         this.animationManager = new AnimationManager(this.MMDLoader);
-        this.animationManager.loadAnimation(motionFilePath, this.model);
+        this.animationManager.loadAnimation(this.model, motionFilePath);
         this.animationManager.play();
+      }
+      case "control:play-motion-with-audio": {
+        const { motionFilePath, audioFilePath } = message.data;
+        console.log(
+          `[Hime Diplsay] Load Motion: ${motionFilePath} With Audio: ${audioFilePath}`
+        );
+        this.animationManager = new AnimationManager(this.MMDLoader);
+        this.animationManager.loadAnimationWithAudio(
+          this.model,
+          motionFilePath,
+          audioFilePath
+        );
+        this.camera.add(this.animationManager.listener);
       }
     }
   }
