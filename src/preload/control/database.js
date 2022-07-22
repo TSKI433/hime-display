@@ -85,81 +85,91 @@ async function detectDatabaseItem(fileDir, sourceTypes) {
       }
       break;
     }
+    case ".wav": {
+      if (sourceTypes["audio3D"]) {
+        processWav(fileDir);
+      }
+      break;
+    }
   }
 }
 function processLive2dJson(fileDir, fileJson) {
   if ("model" in fileJson) {
     writeModelInfo({
-      name: splitModelName(fileDir),
+      name: splitDirName(fileDir),
       modelType: "Live2D",
       extensionName: "moc",
       // Windows下使用file:会导致路径出错，热重载开发环境下不使用file:会导致路径报错
-      entranceFile:
-        (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
+      entranceFile: resolveEntrancePath(fileDir),
       // has_motion: "motions" in fileJson ? true : false;
     });
   } else if ("FileReferences" in fileJson) {
     writeModelInfo({
-      name: splitModelName(fileDir),
+      name: splitDirName(fileDir),
       modelType: "Live2D",
       extensionName: "moc3",
-      entranceFile:
-        (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
+      entranceFile: resolveEntrancePath(fileDir),
       // has_motion:"Motions" in fileJson.FileReferences ? true : false
     });
   }
 }
 function processPmx(fileDir) {
   writeModelInfo({
-    name: splitModelName(fileDir),
+    name: splitDirName(fileDir),
     modelType: "MMD",
     extensionName: "pmx",
-    entranceFile:
-      (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
+    entranceFile: resolveEntrancePath(fileDir),
   });
 }
 function processVrm(fileDir) {
   writeModelInfo({
-    name: splitModelName(fileDir),
+    name: splitDirName(fileDir),
     modelType: "VRoid",
     extensionName: "vrm",
-    entranceFile:
-      (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
+    entranceFile: resolveEntrancePath(fileDir),
   });
 }
 // todo: spine模型比较特殊，即使是加载模型，版本也不向下兼容……因此之后有必要进一步对模型版本进行判断
 function processSkel(fileDir) {
   writeModelInfo({
-    name: splitModelName(fileDir),
+    name: splitDirName(fileDir),
     modelType: "Spine",
     extensionName: "skel",
-    entranceFile:
-      (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
+    entranceFile: resolveEntrancePath(fileDir),
   });
 }
 function processSpineJson(fileDir, fileJson) {
   if ("skeleton" in fileJson && "spine" in fileJson.skeleton) {
     writeModelInfo({
-      name: splitModelName(fileDir),
+      name: splitDirName(fileDir),
       modelType: "Spine",
       extensionName: "json",
-      entranceFile:
-        (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
+      entranceFile: resolveEntrancePath(fileDir),
     });
   }
 }
 function processVmd(fileDir) {
   writeMotion3DInfo({
-    name: path.basename(fileDir),
+    // 根据我在B碗上的下载经验，好多配布中都会带有多个版本的vmd，这些文件的名称并不是曲名
+    name: splitDirName(fileDir) + "-" + path.basename(fileDir),
     extensionName: "vmd",
-    entranceFile:
-      (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir),
+    entranceFile: resolveEntrancePath(fileDir),
+  });
+}
+function processWav(fileDir) {
+  writeAudio3DInfo({
+    name: path.basename(fileDir),
+    extensionName: "wav",
+    entranceFile: resolveEntrancePath(fileDir),
   });
 }
 // 因为有些模型入口文件名完全没有辨识度，如model.json，以模型入口文件的的上级目录名作为模型名称
-function splitModelName(fileDir) {
+function splitDirName(fileDir) {
   // 同时切分Windows和UNIX路径
   return path.dirname(fileDir).split("/").pop().split("\\").pop();
+}
+function resolveEntrancePath(fileDir) {
+  return (import.meta.env.DEV ? "file://" : "") + path.resolve(fileDir);
 }
 function writeModelInfo(modelInfo) {
   //  防止重复写入模型数据
@@ -170,5 +180,10 @@ function writeModelInfo(modelInfo) {
 function writeMotion3DInfo(motionInfo) {
   if (db.get("motion3D").findIndex(motionInfo).value() == -1) {
     db.get("motion3D").push(motionInfo).write();
+  }
+}
+function writeAudio3DInfo(audioInfo) {
+  if (db.get("audio3D").findIndex(audioInfo).value() == -1) {
+    db.get("audio3D").push(audioInfo).write();
   }
 }

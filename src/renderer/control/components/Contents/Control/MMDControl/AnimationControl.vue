@@ -3,7 +3,7 @@
     :data="appStore.database.motion3D"
     @current-change="changeCurrentModelInfo"
     size="small"
-    height="300"
+    height="200"
     highlight-current-row
   >
     <el-table-column type="index" width="40" />
@@ -16,6 +16,9 @@
       </template>
     </el-table-column>
   </el-table>
+  <el-button @click="playMotion" :disabled="!motionTableSelected"
+    >播放选中动画</el-button
+  >
 </template>
 
 <script setup>
@@ -29,6 +32,14 @@ const ipcAPI = window.nodeAPI.ipc;
 function changeCurrentModelInfo(currentRow) {
   motionTableSelected.value = true;
   currentMotionInfo = currentRow;
+}
+function playMotion() {
+  if (currentMotionInfo !== null) {
+    ipcAPI.sendToModelManager(appStore.displayWindowId, {
+      channel: "control:play-motion",
+      data: { motionFilePath: currentMotionInfo.entranceFile },
+    });
+  }
 }
 </script>
 

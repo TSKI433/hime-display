@@ -4,6 +4,7 @@ import { MMDLoader } from "three/examples/jsm/loaders/MMDLoader.js";
 import { MouseFocusHelper } from "@display/utils/3d/MouseFocusHelper.js";
 import { buildNodeInfoTreeAndList } from "@display/utils/3d/utils";
 import { TransformMonitor } from "@display/utils/3d/TransformMonitor";
+import { AnimationManager } from "./AnimationManager";
 export class MmdManager extends ModelManager {
   constructor(parentApp) {
     super(parentApp);
@@ -130,7 +131,12 @@ export class MmdManager extends ModelManager {
         data: this.transformMonitor.transform,
       });
     }
-    this.mouseFocusHelper?.focus();
+    if (this.animationManager?.loaded && this.animationManager?.clock.running) {
+      this.animationManager.update();
+    } else {
+      // 播放动画的时候模型还盯着鼠标看，转身都不带扭头的那效果……我实在是看不下去了
+      this.mouseFocusHelper?.focus();
+    }
     this.renderer.render(this.scene, this.camera);
     requestAnimationFrame(this._render.bind(this));
   }
@@ -148,6 +154,13 @@ export class MmdManager extends ModelManager {
         const { nodeId, transform } = message.data;
         this._setNodeTransform(nodeId, transform);
         break;
+      }
+      case "control:play-motion": {
+        const { motionFilePath } = message.data;
+        console.log(motionFilePath);
+        this.animationManager = new AnimationManager(this.MMDLoader);
+        this.animationManager.loadAnimation(motionFilePath, this.model);
+        this.animationManager.play();
       }
     }
   }
