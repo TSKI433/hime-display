@@ -57,7 +57,8 @@ export class Application {
     });
     this.nodeAPI.ipc.handleSendToModelManager((event, message) => {
       console.log(
-        `[Hime Display] Receive message from control: ${message.channel}`
+        `[Hime Display] Receive message from control: ${message.channel}, data:`,
+        message.data
       );
       this.managers.now.handleMessage(message);
     });

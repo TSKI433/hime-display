@@ -33,6 +33,10 @@
       </template>
     </el-table-column>
   </el-table>
+  <el-input-number
+    v-model="delayTime"
+    :disabled="!audioTableSelected"
+  ></el-input-number>
   <el-button @click="playMotion" :disabled="!motionTableSelected"
     >载入选中动画</el-button
   >
@@ -41,10 +45,12 @@
     :disabled="!motionTableSelected || !audioTableSelected"
     >载入选中动画及音频</el-button
   >
-  <el-slider />
   <el-button @click="setMotionState" :disabled="!motionLoaded">{{
     motionPlaying ? "暂停" : "播放"
   }}</el-button>
+  <el-button @click="quitAnimationPlay" :disabled="!motionLoaded"
+    >退出动画播放</el-button
+  >
 </template>
 
 <script setup>
@@ -56,6 +62,7 @@ let currentMotionInfo = null;
 let currentAudioInfo = null;
 const motionTableSelected = ref(false);
 const audioTableSelected = ref(false);
+const delayTime = ref(0);
 const ipcAPI = window.nodeAPI.ipc;
 function changeCurrentMotionInfo(currentRow) {
   motionTableSelected.value = true;
@@ -69,7 +76,9 @@ function playMotion() {
   if (currentMotionInfo !== null) {
     ipcAPI.sendToModelManager(appStore.displayWindowId, {
       channel: "control:play-motion",
-      data: { motionFilePath: currentMotionInfo.entranceFile },
+      data: {
+        motionFilePath: currentMotionInfo.entranceFile,
+      },
     });
   }
 }
@@ -80,6 +89,7 @@ function playMotionWithAudio() {
       data: {
         motionFilePath: currentMotionInfo.entranceFile,
         audioFilePath: currentAudioInfo.entranceFile,
+        delayTime: delayTime.value,
       },
     });
   }
@@ -96,6 +106,14 @@ function setMotionState() {
     });
     motionPlaying.value = !motionPlaying.value;
   }
+}
+function quitAnimationPlay() {
+  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+    channel: "control:quit-animation-play",
+    data: null,
+  });
+  motionLoaded.value = false;
+  motionPlaying.value = false;
 }
 ipcAPI.handleSendToModelControl((event, message) => {
   switch (message.channel) {

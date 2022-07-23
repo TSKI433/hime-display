@@ -137,8 +137,9 @@ export class MmdManager extends ModelManager {
     }
     if (this.animationManager?.ready && this.animationManager?.clock.running) {
       this.animationManager.update();
-    } else {
-      // 播放动画的时候模型还盯着鼠标看，转身都不带扭头的那效果……我实在是看不下去了
+    }
+    // 播放动画的时候模型还盯着鼠标看，转身都不带扭头的那效果……我实在是看不下去了
+    if (this.animationManager === null) {
       this.mouseFocusHelper?.focus();
     }
     this.renderer.render(this.scene, this.camera);
@@ -162,6 +163,7 @@ export class MmdManager extends ModelManager {
       case "control:play-motion": {
         const { motionFilePath } = message.data;
         console.log(`[Hime Diplsay] Load Motion: ${motionFilePath}`);
+        this._resetAnimationManager();
         this.animationManager = new AnimationManager(this.MMDLoader);
         this.animationManager
           .loadAnimation(this.model, motionFilePath)
@@ -174,13 +176,19 @@ export class MmdManager extends ModelManager {
         break;
       }
       case "control:play-motion-with-audio": {
-        const { motionFilePath, audioFilePath } = message.data;
+        const { motionFilePath, audioFilePath, delayTime } = message.data;
         console.log(
           `[Hime Diplsay] Load Motion: ${motionFilePath} With Audio: ${audioFilePath}`
         );
+        this._resetAnimationManager();
         this.animationManager = new AnimationManager(this.MMDLoader);
         this.animationManager
-          .loadAnimationWithAudio(this.model, motionFilePath, audioFilePath)
+          .loadAnimationWithAudio(
+            this.model,
+            motionFilePath,
+            audioFilePath,
+            delayTime
+          )
           .then(() => {
             this._sendToModelControl({
               channel: "manager:update-motion-info",
@@ -197,6 +205,11 @@ export class MmdManager extends ModelManager {
         } else if (state === "pause") {
           this.animationManager.pause();
         }
+        break;
+      }
+      case "control:quit-animation-play": {
+        this._resetAnimationManager();
+        break;
       }
     }
   }
@@ -212,5 +225,10 @@ export class MmdManager extends ModelManager {
         }
       }
     }
+  }
+  _resetAnimationManager() {
+    this.animationManager?.destroy();
+    this.animationManager = null;
+    this.model.pose();
   }
 }
