@@ -91,6 +91,12 @@ async function detectDatabaseItem(fileDir, sourceTypes) {
       }
       break;
     }
+    case ".mp3": {
+      if (sourceTypes["audio3D"]) {
+        processMp3(fileDir);
+      }
+      break;
+    }
   }
 }
 function processLive2dJson(fileDir, fileJson) {
@@ -160,6 +166,13 @@ function processWav(fileDir) {
   writeAudio3DInfo({
     name: path.basename(fileDir),
     extensionName: "wav",
+    entranceFile: resolveEntrancePath(fileDir),
+  });
+}
+function processMp3(fileDir) {
+  writeAudio3DInfo({
+    name: path.basename(fileDir),
+    extensionName: "mp3",
     entranceFile: resolveEntrancePath(fileDir),
   });
 }
