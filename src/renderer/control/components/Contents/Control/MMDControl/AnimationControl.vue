@@ -34,14 +34,17 @@
     </el-table-column>
   </el-table>
   <el-button @click="playMotion" :disabled="!motionTableSelected"
-    >播放选中动画</el-button
+    >载入选中动画</el-button
   >
   <el-button
     @click="playMotionWithAudio"
     :disabled="!motionTableSelected || !audioTableSelected"
-    >播放选中动画及音频</el-button
+    >载入选中动画及音频</el-button
   >
   <el-slider />
+  <el-button @click="setMotionState" :disabled="!motionLoaded">{{
+    motionPlaying ? "暂停" : "播放"
+  }}</el-button>
 </template>
 
 <script setup>
@@ -81,10 +84,25 @@ function playMotionWithAudio() {
     });
   }
 }
+const motionLoaded = ref(false);
+const motionPlaying = ref(false);
+function setMotionState() {
+  if (motionLoaded.value) {
+    ipcAPI.sendToModelManager(appStore.displayWindowId, {
+      channel: "control:set-motion-state",
+      data: {
+        state: motionPlaying.value ? "pause" : "play",
+      },
+    });
+    motionPlaying.value = !motionPlaying.value;
+  }
+}
 ipcAPI.handleSendToModelControl((event, message) => {
   switch (message.channel) {
     case "manager:update-motion-info": {
       console.log("[Hime Display] Update motion info:", message.data);
+      motionLoaded.value = true;
+      motionPlaying.value = true;
       break;
     }
   }

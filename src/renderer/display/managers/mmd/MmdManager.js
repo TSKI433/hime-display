@@ -151,7 +151,7 @@ export class MmdManager extends ModelManager {
   handleMessage(message) {
     switch (message.channel) {
       case "control:bind-node-transform": {
-        this._bindNodeTransform(message.data);
+        this._bindNodeTransform(message.data.nodeId);
         break;
       }
       case "control:set-node-transform": {
@@ -189,6 +189,14 @@ export class MmdManager extends ModelManager {
           });
         this.camera.add(this.animationManager.listener);
         break;
+      }
+      case "control:set-motion-state": {
+        const { state } = message.data;
+        if (state === "play") {
+          this.animationManager.play();
+        } else if (state === "pause") {
+          this.animationManager.pause();
+        }
       }
     }
   }

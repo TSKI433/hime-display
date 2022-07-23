@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import _ from "lodash";
+import capitalize from "lodash/capitalize";
 import HimeGeneral from "@control/components/Contents/General.vue";
 import HimeDisplay from "@control/components/Contents/Display.vue";
 import HimeControl from "@control/components/Contents/Control/index.vue";
@@ -37,7 +37,7 @@ const contentComponents = {
   HimeAbout,
 };
 const contentComponentNow = computed(() => {
-  return contentComponents["Hime" + _.capitalize(appStore.ui.activeMenuItem)];
+  return contentComponents["Hime" + capitalize(appStore.ui.activeMenuItem)];
 });
 </script>
 

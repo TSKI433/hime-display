@@ -39,7 +39,7 @@ watch(nodeIdNow, (newId, oldId) => {
   if (newId === oldId) return;
   ipcAPI.sendToModelManager(appStore.displayWindowId, {
     channel: "control:bind-node-transform",
-    data: newId,
+    data: { nodeId: newId },
   });
 });
 // 这里不能watch了，因为展示器那边带来的数据更新也会触发watch，造成死循环
