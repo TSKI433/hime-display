@@ -3,7 +3,10 @@ import * as THREE from "three";
 import { MMDLoader } from "three/examples/jsm/loaders/MMDLoader.js";
 import { MouseFocusHelper } from "@display/utils/3d/MouseFocusHelper.js";
 import { buildNodeInfoTreeAndList } from "@display/utils/3d/utils";
-import { TransformMonitor } from "@display/utils/3d/TransformMonitor";
+import {
+  TransformMonitor,
+  MMDMorphMonitor,
+} from "@display/utils/3d/ParameterMonitor";
 import { AnimationManager } from "./AnimationManager";
 import { MotionCaptureManager } from "./MotionCaptureManager";
 export class MmdManager extends ModelManager {
@@ -11,6 +14,7 @@ export class MmdManager extends ModelManager {
     super(parentApp);
     this.modelType = "MMD";
     this.transformMonitor = new TransformMonitor();
+    this.morphMonitor = new MMDMorphMonitor();
     this.MMDLoader = new MMDLoader();
     this.motionCaptureManager = new MotionCaptureManager();
     // 主要用于MouseFocusHelper的判断
@@ -62,6 +66,7 @@ export class MmdManager extends ModelManager {
               grantCount: mmdUserData.grants.length,
               morphCount: mmd.geometry.morphTargets.length,
             },
+            morph: this.model.morphTargetDictionary,
           };
           // 世界未解之谜，只要载入mmd模型，直接在这里调用this.scene.add(mmd)，WebGL上下文就会有一定概率渲染着渲染着就弄丢了，然后整个程序直接卡死…
           // 然后在程序卡一阵子自动退出后，主进程会报出两条报错信息：
@@ -130,14 +135,21 @@ export class MmdManager extends ModelManager {
       this.stats.begin();
       this.stats.end();
     }
-    if (
-      this._sendToModelControl !== undefined &&
-      this.transformMonitor.checkUpdate()
-    ) {
-      this._sendToModelControl({
-        channel: "manager:update-node-transform",
-        data: this.transformMonitor.transform,
-      });
+    if (this._sendToModelControl !== undefined) {
+      if (this.transformMonitor.checkUpdate()) {
+        this._sendToModelControl({
+          channel: "manager:update-node-transform",
+          data: this.transformMonitor.transform,
+        });
+      }
+      if (this.morphMonitor.checkUpdate()) {
+        this._sendToModelControl({
+          channel: "manager:update-node-morph",
+          data: {
+            weight: this.morphMonitor.morph,
+          },
+        });
+      }
     }
     if (this.animationManager?.ready && this.animationManager?.clock.running) {
       this.animationManager.update();
@@ -217,6 +229,22 @@ export class MmdManager extends ModelManager {
       }
       case "control:launch-capture": {
         this.motionCaptureManager.start(this.model);
+        break;
+      }
+      case "control:bind-morph-target": {
+        const { morphName } = message.data;
+        this.morphMonitor.bind(morphName, this.model);
+        break;
+      }
+      case "control:set-morph-weight": {
+        const { morphName, weight } = message.data;
+        const morphIndex = this.model.morphTargetDictionary[morphName];
+        if (morphIndex === undefined) {
+          throw new Error(
+            `MmdManager: Morph ${morphName} not found in the model`
+          );
+        }
+        this.model.morphTargetInfluences[morphIndex] = weight;
         break;
       }
     }
