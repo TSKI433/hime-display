@@ -7,10 +7,14 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@mediapipe/camera_utils": "^0.3.1640029074",
+    "@mediapipe/drawing_utils": "^0.3.1620248257",
+    "@mediapipe/face_mesh": "^0.4.1633559619",
     "@pixiv/three-vrm": "^0.6.11",
     "element-plus": "2.2.8",
     "i18next": "^21.8.13",
     "i18next-vue": "^2.0.0-beta.2",
+    "kalidokit": "^1.1.5",
     "lodash": "^4.17.21",
     "pinia": "^2.0.14",
     "three": "^0.142.0",

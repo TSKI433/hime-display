@@ -5,12 +5,16 @@ import { MouseFocusHelper } from "@display/utils/3d/MouseFocusHelper.js";
 import { buildNodeInfoTreeAndList } from "@display/utils/3d/utils";
 import { TransformMonitor } from "@display/utils/3d/TransformMonitor";
 import { AnimationManager } from "./AnimationManager";
+import { MotionCaptureManager } from "./MotionCaptureManager";
 export class MmdManager extends ModelManager {
   constructor(parentApp) {
     super(parentApp);
     this.modelType = "MMD";
     this.transformMonitor = new TransformMonitor();
     this.MMDLoader = new MMDLoader();
+    this.motionCaptureManager = new MotionCaptureManager();
+    // 主要用于MouseFocusHelper的判断
+    this.animationManager === null;
   }
   switchIn() {
     this.scene = new THREE.Scene();
@@ -209,6 +213,10 @@ export class MmdManager extends ModelManager {
       }
       case "control:quit-animation-play": {
         this._resetAnimationManager();
+        break;
+      }
+      case "control:launch-capture": {
+        this.motionCaptureManager.start(this.model);
         break;
       }
     }

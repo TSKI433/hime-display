@@ -7,7 +7,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- <title>electron-vite</title> -->
 	<style>
-		* {
+		html,
+		body,
+		#display-canvas {
 			margin: 0;
 			padding: 0;
 			height: 100%;
@@ -17,6 +19,33 @@
 		#display-canvas {
 			/* canvas默认的display为inline，会导致滚动条出现 */
 			display: block;
+		}
+
+		.capture__container {
+			position: absolute;
+			bottom: 24px;
+			right: 24px;
+			border-radius: 10px;
+			background: black;
+			overflow: hidden;
+		}
+
+		/* 靠video元素撑开容器高度 */
+		.capture__video {
+			max-width: 300px;
+			height: auto;
+			transform: scale(-1, 1);
+			display: block;
+		}
+
+		.capture__canvas {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			transform: scale(-1, 1);
+
 		}
 	</style>
 </head>
@@ -44,6 +73,7 @@
 	<script src="./lib/live2d/index.min.js"></script>
 	<script src="./lib/spine/pixi-spine.umd.js"></script>
 	<script type="module" src="./main.js"></script>
+	<!-- <video src="" class="capture-video"></video> -->
 </body>
 
 </html>
