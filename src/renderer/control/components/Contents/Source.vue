@@ -1,7 +1,7 @@
 <template>
-  <div class="content--hime">
+  <div class="hime-content">
     <hime-title-with-divider>{{ $t("menu.source") }}</hime-title-with-divider>
-    <el-form label-position="top" class="el-form--large-label--hime">
+    <el-form label-position="top" class="hime-el-form--large-label">
       <el-form-item label="数据源">
         <!-- row-key用于辨识row，解决expand输入内容后自动折叠的问题 -->
         <el-table
@@ -9,7 +9,7 @@
           :border="true"
           row-key="path"
           ref="sourceTable"
-          class="el-table--source-path--hime"
+          class="hime-el-table--source-path"
           size="small"
           tooltip-effect="light"
           max-height="160"
@@ -17,10 +17,10 @@
           <!-- 使用width="1"隐藏默认小箭头 -->
           <el-table-column type="expand" width="1">
             <template #default="props">
-              <div class="el-table__expanded-container--hime">
+              <div class="hime-el-table__expanded-container">
                 <el-form
                   label-position="top"
-                  class="el-form--expanded--hime"
+                  class="hime-el-form--expanded"
                   :inline="true"
                 >
                   <el-form-item label="检索数据类型">
@@ -207,17 +207,17 @@ function loadFromSourcePathAll() {
 </script>
 
 <style lang="scss">
-.el-table--source-path--hime {
+.hime-el-table--source-path {
   margin-bottom: 10px;
   .el-table__expand-icon {
     // 配合上方的width="1"使用，可以隐藏默认的小箭头
     color: transparent;
   }
   .el-table__expanded-cell {
-    .el-table__expanded-container--hime {
+    .hime-el-table__expanded-container {
       padding: 5px 0 5px 20px;
     }
-    .el-table__expanded-input--tag--hime {
+    .hime-el-table__expanded-input--tag {
       width: 75px;
       margin-top: 2px;
     }
@@ -232,7 +232,7 @@ function loadFromSourcePathAll() {
 // .el-form-item .source--form .el-form-item {
 //   margin-bottom: 18px;
 // }
-// .el-form--expanded--hime input {
+// .hime-el-form--expanded input {
 //   width: 80px;
 // }
 </style>

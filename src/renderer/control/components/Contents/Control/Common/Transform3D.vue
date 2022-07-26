@@ -1,5 +1,5 @@
 <template>
-  <el-form class="el-form--config--hime" label-position="top" :inline="true">
+  <el-form class="hime-el-form--config" label-position="top" :inline="true">
     <el-form-item label="位置">
       <config-item :label="i" v-for="i in xyz">
         <el-input-number

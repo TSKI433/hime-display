@@ -1,7 +1,7 @@
 <template>
-  <div class="content--hime">
+  <div class="hime-content">
     <hime-title-with-divider>{{ $t("menu.model") }}</hime-title-with-divider>
-    <el-form label-position="top" class="el-form--large-label--hime">
+    <el-form label-position="top" class="hime-el-form--large-label">
       <el-form-item label="模型数据库">
         <el-table
           :data="appStore.database.model"
@@ -10,7 +10,7 @@
           height="300"
           highlight-current-row
           tooltip-effect="light"
-          class="current-row--adjust-bg-color--hime el-table--model--hime"
+          class="hime-current-row--adjust-bg-color hime-el-table--model"
         >
           <el-table-column type="index" width="40" />
           <el-table-column label="名称" prop="name" show-overflow-tooltip />
@@ -72,10 +72,10 @@ function loadModelNow() {
 </script>
 
 <style lang="scss">
-.el-table--model--hime {
+.hime-el-table--model {
   margin-bottom: 10px;
 }
-.current-row--adjust-bg-color--hime {
+.hime-current-row--adjust-bg-color {
   // 同时:hover和current应该显示current的效果更合理
   .el-table__body tr:hover.current-row > td.el-table__cell {
     background-color: var(--el-table-current-row-bg-color);

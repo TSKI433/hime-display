@@ -1,5 +1,5 @@
 <template>
-  <div class="content--hime">
+  <div class="hime-content">
     <hime-title-with-divider>{{ $t("menu.control") }}</hime-title-with-divider>
     <!-- <HimeMMDControl></HimeMMDControl> -->
     <template
@@ -35,7 +35,7 @@ const controlComponentNow = computed(() => {
 </script>
 
 <style lang="scss">
-.model-control--hime {
+.hime-model-control {
   flex: 1;
 }
 </style>

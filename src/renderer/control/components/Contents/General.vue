@@ -1,9 +1,9 @@
 <template>
-  <div class="content--hime">
+  <div class="hime-content">
     <hime-title-with-divider>{{ $t("menu.general") }}</hime-title-with-divider>
     <el-form label-width="200px">
       <el-scrollbar height="100%">
-        <el-form label-width="200px" class="el-form--config--hime">
+        <el-form label-width="200px" class="hime-el-form--config">
           <el-form-item label="启动应用配置">
             <config-item label="打开控制面板">
               <el-switch

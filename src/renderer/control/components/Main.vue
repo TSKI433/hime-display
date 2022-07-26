@@ -45,7 +45,7 @@ const contentComponentNow = computed(() => {
 .el-main {
   background-color: var(--el-fill-color-lighter);
 }
-.content--hime {
+.hime-content {
   width: 100%;
   // 限住高度，让el-scrollbar生效
   height: 100%;
@@ -55,7 +55,7 @@ const contentComponentNow = computed(() => {
 
 // 调节config的页面样式，即display页面和general页面
 
-.el-form--config--hime {
+.hime-el-form--config {
   .el-form-item {
     margin-bottom: 10px;
     .el-form-item__label {
@@ -65,14 +65,14 @@ const contentComponentNow = computed(() => {
     .el-form-item__content {
       flex-direction: column;
       align-items: flex-start;
-      .el-slicder--with-label--hime {
+      .hime-el-slicder--with-label {
         display: flex;
         width: 300px;
       }
     }
   }
 }
-.el-form--large-label--hime > .el-form-item > .el-form-item__label {
+.hime-el-form--large-label > .el-form-item > .el-form-item__label {
   font-size: var(--el-font-size-extra-large);
   line-height: initial;
 }

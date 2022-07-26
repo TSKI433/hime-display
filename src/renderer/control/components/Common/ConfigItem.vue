@@ -1,6 +1,6 @@
 <template>
-  <div class="config-item--hime">
-    <div class="config-item__label--hime">{{ label }}:</div>
+  <div class="hime-config-item">
+    <div class="hime-config-item__label">{{ label }}:</div>
     <slot> </slot>
   </div>
 </template>
@@ -12,12 +12,12 @@ const props = defineProps({
 </script>
 
 <style lang="scss">
-.config-item--hime {
+.hime-config-item {
   display: flex;
   // 实践发现不设下面这一条的话small版的el-input-number会抽风
   align-items: center;
   margin-bottom: 6px;
-  .config-item__label--hime {
+  .hime-config-item__label {
     margin-right: 10px;
   }
 }

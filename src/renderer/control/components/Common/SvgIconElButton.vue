@@ -1,6 +1,6 @@
 <template>
   <el-button>
-    <svg-icon :name="name" class="el-svg-icon--hime"></svg-icon>
+    <svg-icon :name="name" class="hime-el-svg-icon"></svg-icon>
   </el-button>
 </template>
 
@@ -12,7 +12,7 @@ const props = defineProps({
 </script>
 
 <style lang="scss">
-.el-svg-icon--hime {
+.hime-el-svg-icon {
   height: var(--el-font-size-base);
   width: var(--el-font-size-base);
   use {

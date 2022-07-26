@@ -1,9 +1,9 @@
 <template>
-  <div class="content--hime">
-    <!-- <el-form label-position="top" class="el-form--large-label--hime"> -->
+  <div class="hime-content">
+    <!-- <el-form label-position="top" class="hime-el-form--large-label"> -->
     <hime-title-with-divider>{{ $t("menu.display") }}</hime-title-with-divider>
     <el-scrollbar height="100%">
-      <el-form label-width="200px" class="el-form--config--hime">
+      <el-form label-width="200px" class="hime-el-form--config">
         <el-form-item label="展示器窗口设置">
           <config-item label="窗口类型">
             <el-radio-group v-model="appStore.config.display['display-mode']">
@@ -54,11 +54,11 @@
         </el-form-item>
         <el-form-item label="2D渲染配置">
           <config-item label="宽度">
-            <div class="el-slicder--with-label--hime">
+            <div class="hime-el-slicder--with-label">
               <span> 0% </span>
               <el-slider
                 v-model="appStore.config.display['2d-initial-width-range']"
-                class="el-slider--hime"
+                class="hime-el-slider"
                 show-tooltip
                 :format-tooltip="(value) => value + '%'"
                 range
@@ -69,11 +69,11 @@
             </div>
           </config-item>
           <config-item label="高度">
-            <div class="el-slicder--with-label--hime">
+            <div class="hime-el-slicder--with-label">
               <span> 0% </span>
               <el-slider
                 v-model="appStore.config.display['2d-initial-height-range']"
-                class="el-slider--hime"
+                class="hime-el-slider"
                 show-tooltip
                 :format-tooltip="(value) => value + '%'"
                 range
@@ -103,7 +103,7 @@
         </el-form-item>
       </el-form>
     </el-scrollbar>
-    <el-divider class="el-divider--hime" />
+    <el-divider class="hime-el-divider" />
     <div class="display-option">
       <div class="display-option__state">
         <span>展示器状态</span>
@@ -153,7 +153,7 @@ function closeDisplayWindow() {
 </script>
 
 <style lang="scss">
-.el-slider--hime {
+.hime-el-slider {
   width: 80%;
   margin-left: 12px;
   margin-right: 12px;
