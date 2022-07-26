@@ -37,6 +37,7 @@ export const windowsOptions = {
       transparent: true, //让窗口透明
       autoHideMenuBar: true,
       skipTaskbar: true,
+      roundedCorners: false, //去除边角圆角，本来就是要占满整个屏幕的，stats面板被圆角弄掉一块实在有点难看
       webPreferences: {
         // nodeIntegration: true,
         // contextIsolation: false,

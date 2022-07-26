@@ -16,6 +16,7 @@ export class Application {
     this.config = await this.nodeAPI.ipc.queryConfig();
     this.initStats();
     this.initManagers();
+    this.handleWindowResize();
   }
   initControlWindowId() {
     this.controlWindowId = -1;
@@ -69,5 +70,12 @@ export class Application {
       this.stats = new Stats();
       document.body.appendChild(this.stats.domElement);
     }
+  }
+  handleWindowResize() {
+    window.addEventListener("resize", () => {
+      if (this.managers.now !== null) {
+        this.managers.now.onWindowResize();
+      }
+    });
   }
 }

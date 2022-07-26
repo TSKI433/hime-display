@@ -23,13 +23,14 @@ export class MmdManager extends ModelManager {
   switchIn() {
     this.scene = new THREE.Scene();
     this._addLight();
+    // 由于要在整个屏幕上展示，刻意将视锥体垂直视野角度改为了30度，以减小模型的屏幕边缘时产生的画面畸变
     this.camera = new THREE.PerspectiveCamera(
-      45,
+      30,
       window.innerWidth / window.innerHeight,
       1,
       2000
     );
-    this.camera.position.set(0, 10, 40);
+    this.camera.position.set(0, 10, 55);
     // 这是一步立足长远，顾全大局的操作，在之后主要有两个作用：
     // 其一，在构建节点树的时候会连着Camera进去，这样相机的位置就能和其他对象统一控制了
     // 其二，之后要载入音频的时候，会把AudioListener加到camera下，这样一来，相机的移动就可以连带着listener移动，就像给相机挂了个耳机一样（然而目前用的不是THREE的PositionalAudio，这波操作似乎什么用都没有……）
@@ -266,5 +267,10 @@ export class MmdManager extends ModelManager {
     this.animationManager?.destroy();
     this.animationManager = null;
     this.model.pose();
+  }
+  onWindowResize() {
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 }
