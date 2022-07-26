@@ -5,7 +5,7 @@
     <el-scrollbar height="100%">
       <el-form label-width="200px" class="el-form--config--hime">
         <el-form-item label="展示器窗口设置">
-          <sub-config-item label="窗口类型">
+          <config-item label="窗口类型">
             <el-radio-group v-model="appStore.config.display['display-mode']">
               <!-- 我感觉这里的element plus给我整懵了，填在label里面的东西其实却是value？ -->
               <el-radio-button label="displayFullScreen">
@@ -15,45 +15,45 @@
                 有框窗口
               </el-radio-button>
             </el-radio-group>
-          </sub-config-item>
-          <sub-config-item label="覆盖于其他窗口上方">
+          </config-item>
+          <config-item label="覆盖于其他窗口上方">
             <el-switch
               v-model="appStore.config.display['keep-display-at-top']"
             />
-          </sub-config-item>
-          <sub-config-item label="在所有工作区显示">
+          </config-item>
+          <config-item label="在所有工作区显示">
             <el-switch
               v-model="appStore.config.display['show-in-all-workspaces']"
             />
-          </sub-config-item>
+          </config-item>
         </el-form-item>
         <el-form-item label="模型显示设置">
-          <sub-config-item label="显示像素比">
+          <config-item label="显示像素比">
             <el-radio-group v-model="appStore.config.display['pixel-ratio']">
               <el-radio-button label="normal"> 普通 </el-radio-button>
               <el-radio-button label="retina"> 视网膜 </el-radio-button>
               <el-radio-button label="system"> 系统配置 </el-radio-button>
             </el-radio-group>
-          </sub-config-item>
-          <sub-config-item label="显示帧率">
+          </config-item>
+          <config-item label="显示帧率">
             <el-switch v-model="appStore.config.display['show-fps']" />
-          </sub-config-item>
-          <sub-config-item label="抗锯齿">
+          </config-item>
+          <config-item label="抗锯齿">
             <el-switch v-model="appStore.config.display['antialias']" />
-          </sub-config-item>
-          <sub-config-item label="模型视线跟踪鼠标">
+          </config-item>
+          <config-item label="模型视线跟踪鼠标">
             <el-switch v-model="appStore.config.display['model-mouse-track']" />
-          </sub-config-item>
-          <sub-config-item label="背景颜色（仅有框窗口）">
+          </config-item>
+          <config-item label="背景颜色（仅有框窗口）">
             <el-color-picker
               v-model="appStore.config.display.background"
               show-alpha
               color-format="hex"
             />
-          </sub-config-item>
+          </config-item>
         </el-form-item>
         <el-form-item label="2D渲染配置">
-          <sub-config-item label="宽度">
+          <config-item label="宽度">
             <div class="el-slicder--with-label--hime">
               <span> 0% </span>
               <el-slider
@@ -67,8 +67,8 @@
               />
               <span> 100% </span>
             </div>
-          </sub-config-item>
-          <sub-config-item label="高度">
+          </config-item>
+          <config-item label="高度">
             <div class="el-slicder--with-label--hime">
               <span> 0% </span>
               <el-slider
@@ -82,24 +82,24 @@
               />
               <span> 100% </span>
             </div>
-          </sub-config-item>
+          </config-item>
         </el-form-item>
         <el-form-item label="3D渲染配置">
-          <sub-config-item label="相机类型">
+          <config-item label="相机类型">
             <el-radio-group v-model="appStore.config.display['3d-camera-type']">
               <el-radio-button label="perspective">透视相机</el-radio-button>
               <el-radio-button label="orthographic">正交相机</el-radio-button>
             </el-radio-group>
-          </sub-config-item>
-          <sub-config-item label="物理模拟">
+          </config-item>
+          <config-item label="物理模拟">
             <el-switch
               v-model="appStore.config.display['3d-physics-simulation']"
             />
-          </sub-config-item>
+          </config-item>
 
-          <sub-config-item label="轮廓线效果">
+          <config-item label="轮廓线效果">
             <el-switch v-model="appStore.config.display['3d-outline-effect']" />
-          </sub-config-item>
+          </config-item>
         </el-form-item>
       </el-form>
     </el-scrollbar>
@@ -132,7 +132,7 @@
 
 <script setup>
 import HimeTitleWithDivider from "@control/components/Common/TitleWithDivider.vue";
-import SubConfigItem from "@control/components/Common/SubConfigItem.vue";
+import ConfigItem from "@control/components/Common/ConfigItem.vue";
 import { watch, toRaw } from "vue";
 import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();

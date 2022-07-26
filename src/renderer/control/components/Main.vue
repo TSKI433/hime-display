@@ -65,9 +65,6 @@ const contentComponentNow = computed(() => {
     .el-form-item__content {
       flex-direction: column;
       align-items: flex-start;
-      > * {
-        margin-bottom: 6px;
-      }
       .el-slicder--with-label--hime {
         display: flex;
         width: 300px;

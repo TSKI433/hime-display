@@ -5,16 +5,16 @@
       <el-scrollbar height="100%">
         <el-form label-width="200px" class="el-form--config--hime">
           <el-form-item label="启动应用配置">
-            <sub-config-item label="打开控制面板">
+            <config-item label="打开控制面板">
               <el-switch
                 v-model="appStore.config.general['open-control-at-launch']"
               />
-            </sub-config-item>
-            <sub-config-item label="打开展示器">
+            </config-item>
+            <config-item label="打开展示器">
               <el-switch
                 v-model="appStore.config.general['open-display-at-launch']"
               />
-            </sub-config-item>
+            </config-item>
           </el-form-item>
           <el-form-item label="语言">
             <el-select
@@ -37,7 +37,7 @@
 
 <script setup>
 import HimeTitleWithDivider from "@control/components/Common/TitleWithDivider.vue";
-import SubConfigItem from "@control/components/Common/SubConfigItem.vue";
+import ConfigItem from "@control/components/Common/ConfigItem.vue";
 import { watch, toRaw } from "vue";
 import { useAppStore } from "@control/store/app";
 import languageNames from "@shared/locales/languageNames";

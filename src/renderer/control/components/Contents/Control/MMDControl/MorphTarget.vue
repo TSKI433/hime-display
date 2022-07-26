@@ -1,5 +1,5 @@
 <template>
-  <sub-config-item label="目标选择">
+  <config-item label="目标选择">
     <el-select v-model="selectedMorphName" @change="BindMorphTarget">
       <el-option
         v-for="(morphIndex, morphName) in controlInfo"
@@ -7,8 +7,8 @@
         :value="morphName"
       />
     </el-select>
-  </sub-config-item>
-  <sub-config-item label="参数调整">
+  </config-item>
+  <config-item label="参数调整">
     <el-slider
       v-model="morphWeight"
       :min="0"
@@ -18,11 +18,11 @@
       :disabled="selectedMorphName === ''"
       @input="setMorphWeight"
     />
-  </sub-config-item>
+  </config-item>
 </template>
 
 <script setup>
-import SubConfigItem from "@control/components/Common/SubConfigItem.vue";
+import ConfigItem from "@control/components/Common/ConfigItem.vue";
 import { ref } from "vue";
 import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
