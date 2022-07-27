@@ -1,6 +1,7 @@
 import { ModelManager } from "../ModelManager";
 import * as THREE from "three";
 import { MMDLoader } from "three/examples/jsm/loaders/MMDLoader.js";
+import { OutlineEffect } from "three/examples/jsm/effects/OutlineEffect.js";
 import { MouseFocusHelper } from "@display/utils/3d/MouseFocusHelper.js";
 import { buildNodeInfoTreeAndList } from "@display/utils/3d/utils";
 import {
@@ -30,7 +31,7 @@ export class MmdManager extends ModelManager {
       1,
       2000
     );
-    this.camera.position.set(0, 10, 55);
+    this.camera.position.set(0, 10, 70);
     // 这是一步立足长远，顾全大局的操作，在之后主要有两个作用：
     // 其一，在构建节点树的时候会连着Camera进去，这样相机的位置就能和其他对象统一控制了
     // 其二，之后要载入音频的时候，会把AudioListener加到camera下，这样一来，相机的移动就可以连带着listener移动，就像给相机挂了个耳机一样（然而目前用的不是THREE的PositionalAudio，这波操作似乎什么用都没有……）
@@ -43,6 +44,9 @@ export class MmdManager extends ModelManager {
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.setPixelRatio(this.resolution);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+    if (this.config.display["3d-outline-effect"]) {
+      this.renderer = new OutlineEffect(this.renderer);
+    }
   }
   switchOut() {}
   loadModel(modelInfo) {
