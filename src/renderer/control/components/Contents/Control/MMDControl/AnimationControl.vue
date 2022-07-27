@@ -1,60 +1,77 @@
 <template>
-  <el-table
-    :data="appStore.database.motion3D"
-    @current-change="changeCurrentMotionInfo"
-    size="small"
-    height="160"
-    highlight-current-row
-  >
-    <el-table-column type="index" width="40" />
-    <el-table-column label="名称" prop="name" show-overflow-tooltip />
-    <el-table-column label="扩展名">
-      <template #default="props">
-        <el-tag effect="light">
-          {{ props.row.extensionName }}
-        </el-tag>
-      </template>
-    </el-table-column>
-  </el-table>
-  <el-table
-    :data="appStore.database.audio3D"
-    @current-change="changeCurrentAudioInfo"
-    size="small"
-    height="160"
-    highlight-current-row
-  >
-    <el-table-column type="index" width="40" />
-    <el-table-column label="名称" prop="name" show-overflow-tooltip />
-    <el-table-column label="扩展名">
-      <template #default="props">
-        <el-tag effect="light">
-          {{ props.row.extensionName }}
-        </el-tag>
-      </template>
-    </el-table-column>
-  </el-table>
-  <el-input-number
-    v-model="delayTime"
-    :disabled="!audioTableSelected"
-  ></el-input-number>
-  <el-button @click="playMotion" :disabled="!motionTableSelected"
-    >载入选中动画</el-button
-  >
-  <el-button
-    @click="playMotionWithAudio"
-    :disabled="!motionTableSelected || !audioTableSelected"
-    >载入选中动画及音频</el-button
-  >
-  <el-button @click="setMotionState" :disabled="!motionLoaded">{{
-    motionPlaying ? "暂停" : "播放"
-  }}</el-button>
-  <el-button @click="quitAnimationPlay" :disabled="!motionLoaded"
-    >退出动画播放</el-button
-  >
+  <el-scrollbar max-height="400px">
+    <el-collapse class="hime-control-collapse">
+      <el-collapse-item title="动作数据库" name="motionDatabase">
+        <el-table
+          :border="true"
+          :data="appStore.database.motion3D"
+          @current-change="changeCurrentMotionInfo"
+          size="small"
+          height="160"
+          highlight-current-row
+        >
+          <el-table-column type="index" width="40" />
+          <el-table-column label="名称" prop="name" show-overflow-tooltip />
+          <el-table-column label="扩展名">
+            <template #default="props">
+              <el-tag effect="light">
+                {{ props.row.extensionName }}
+              </el-tag>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-collapse-item>
+      <el-collapse-item title="模型数据库" name="audioDatabase">
+        <el-table
+          :data="appStore.database.audio3D"
+          :border="true"
+          @current-change="changeCurrentAudioInfo"
+          size="small"
+          height="160"
+          highlight-current-row
+        >
+          <el-table-column type="index" width="40" />
+          <el-table-column label="名称" prop="name" show-overflow-tooltip />
+          <el-table-column label="扩展名">
+            <template #default="props">
+              <el-tag effect="light">
+                {{ props.row.extensionName }}
+              </el-tag>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-collapse-item>
+    </el-collapse>
+    <config-item label="音频延时">
+      <el-input-number
+        v-model="delayTime"
+        :disabled="!audioTableSelected"
+      ></el-input-number>
+    </config-item>
+    <config-item label="加载">
+      <el-button @click="playMotion" :disabled="!motionTableSelected"
+        >载入选中动画</el-button
+      >
+      <el-button
+        @click="playMotionWithAudio"
+        :disabled="!motionTableSelected || !audioTableSelected"
+        >载入选中动画及音频</el-button
+      >
+    </config-item>
+    <config-item label="控制">
+      <el-button @click="setMotionState" :disabled="!motionLoaded">{{
+        motionPlaying ? "暂停" : "播放"
+      }}</el-button>
+      <el-button @click="quitAnimationPlay" :disabled="!motionLoaded"
+        >退出动画播放</el-button
+      >
+    </config-item>
+  </el-scrollbar>
 </template>
 
 <script setup>
 import { useAppStore } from "@control/store/app";
+import ConfigItem from "@control/components/Common/ConfigItem.vue";
 // 发现奇妙的现象，这里不引入ref不会直接报错，而是先蹦出两三百个vue的警告来
 import { ref } from "vue";
 const appStore = useAppStore();
@@ -127,4 +144,8 @@ ipcAPI.handleSendToModelControl((event, message) => {
 });
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.hime-control-collapse {
+  margin-bottom: 16px;
+}
+</style>

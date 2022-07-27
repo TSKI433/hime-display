@@ -1,17 +1,21 @@
 <template>
   <div>
-    <el-tree-select
-      :data="[controlInfo.tree]"
-      check-strictly
-      v-model="nodeIdNow"
-      @change="syncAutoCompleteValue"
-    />
+    <config-item label="树状对象选择">
+      <el-tree-select
+        :data="[controlInfo.tree]"
+        check-strictly
+        v-model="nodeIdNow"
+        @change="syncAutoCompleteValue"
+      />
+    </config-item>
     <!-- 我去，这几天这么巧的吗，又碰到一个Element Plus刚刚修复了的bug：https://github.com/element-plus/element-plus/issues/8542 -->
-    <el-autocomplete
-      v-model="autoCompleteValue"
-      :fetch-suggestions="querySearch"
-      @select="handleSelect"
-    ></el-autocomplete>
+    <config-item label="输入预测对象选择">
+      <el-autocomplete
+        v-model="autoCompleteValue"
+        :fetch-suggestions="querySearch"
+        @select="handleSelect"
+      ></el-autocomplete>
+    </config-item>
     <transform
       :transform-object="transformObject"
       @input="setNodeTransform"
@@ -21,6 +25,7 @@
 
 <script setup>
 import Transform from "../Common/Transform3D.vue";
+import ConfigItem from "@control/components/Common/ConfigItem.vue";
 import { reactive, ref, watch, toRaw } from "vue";
 import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
