@@ -182,13 +182,14 @@ export class MmdManager extends ModelManager {
         break;
       }
       case "control:play-motion": {
-        const { motionFilePath } = message.data;
+        const { motionFilePath, physicsSimulation } = message.data;
         console.log(`[Hime Diplsay] Load Motion: ${motionFilePath}`);
         this._resetAnimationManager();
         this.animationManager = new AnimationManager(this.MMDLoader);
         this.animationManager
           .loadAnimation(this.model, motionFilePath)
           .then(() => {
+            this.animationManager.helper.enable("physics", physicsSimulation);
             this._sendToModelControl({
               channel: "manager:update-motion-info",
               data: { durantion: this.animationManager.clip.duration },
@@ -197,7 +198,8 @@ export class MmdManager extends ModelManager {
         break;
       }
       case "control:play-motion-with-audio": {
-        const { motionFilePath, audioFilePath, delayTime } = message.data;
+        const { motionFilePath, audioFilePath, delayTime, physicsSimulation } =
+          message.data;
         console.log(
           `[Hime Diplsay] Load Motion: ${motionFilePath} With Audio: ${audioFilePath}`
         );
@@ -211,6 +213,7 @@ export class MmdManager extends ModelManager {
             delayTime
           )
           .then(() => {
+            this.animationManager.helper.enable("physics", physicsSimulation);
             this._sendToModelControl({
               channel: "manager:update-motion-info",
               data: { durantion: this.animationManager.clip.duration },
@@ -250,6 +253,13 @@ export class MmdManager extends ModelManager {
           );
         }
         this.model.morphTargetInfluences[morphIndex] = weight;
+        break;
+      }
+      case "control:change-physics": {
+        this.animationManager?.helper.enable(
+          "physics",
+          message.data.physicsSimulation
+        );
         break;
       }
     }

@@ -85,12 +85,6 @@
           </config-item>
         </el-form-item>
         <el-form-item label="3D渲染配置">
-          <config-item label="物理模拟">
-            <el-switch
-              v-model="appStore.config.display['3d-physics-simulation']"
-            />
-          </config-item>
-
           <config-item label="轮廓线效果">
             <el-switch v-model="appStore.config.display['3d-outline-effect']" />
           </config-item>

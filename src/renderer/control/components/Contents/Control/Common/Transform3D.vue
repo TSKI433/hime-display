@@ -41,7 +41,6 @@
         ></el-input-number>
       </config-item>
     </config-item>
-    <div>四元数（不存在的……不会真有哪个神仙打算手动用四元数控制旋转吧）</div>
   </div>
 </template>
 

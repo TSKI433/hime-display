@@ -48,6 +48,9 @@
         :disabled="!audioTableSelected"
       ></el-input-number>
     </config-item>
+    <config-item label="物理模拟">
+      <el-switch v-model="physicsSimulation" />
+    </config-item>
     <config-item label="加载">
       <el-button @click="playMotion" :disabled="!motionTableSelected"
         >载入选中动画</el-button
@@ -73,7 +76,7 @@
 import { useAppStore } from "@control/store/app";
 import ConfigItem from "@control/components/Common/ConfigItem.vue";
 // 发现奇妙的现象，这里不引入ref不会直接报错，而是先蹦出两三百个vue的警告来
-import { ref } from "vue";
+import { ref, watch } from "vue";
 const appStore = useAppStore();
 let currentMotionInfo = null;
 let currentAudioInfo = null;
@@ -95,6 +98,7 @@ function playMotion() {
       channel: "control:play-motion",
       data: {
         motionFilePath: currentMotionInfo.entranceFile,
+        physicsSimulation: physicsSimulation.value,
       },
     });
   }
@@ -107,6 +111,7 @@ function playMotionWithAudio() {
         motionFilePath: currentMotionInfo.entranceFile,
         audioFilePath: currentAudioInfo.entranceFile,
         delayTime: delayTime.value,
+        physicsSimulation: physicsSimulation.value,
       },
     });
   }
@@ -132,6 +137,15 @@ function quitAnimationPlay() {
   motionLoaded.value = false;
   motionPlaying.value = false;
 }
+const physicsSimulation = ref(true);
+watch(physicsSimulation, (newValue) => {
+  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+    channel: "control:change-physics",
+    data: {
+      physicsSimulation: newValue,
+    },
+  });
+});
 ipcAPI.handleSendToModelControl((event, message) => {
   switch (message.channel) {
     case "manager:update-motion-info": {
