@@ -85,12 +85,6 @@
           </config-item>
         </el-form-item>
         <el-form-item label="3D渲染配置">
-          <config-item label="相机类型">
-            <el-radio-group v-model="appStore.config.display['3d-camera-type']">
-              <el-radio-button label="perspective">透视相机</el-radio-button>
-              <el-radio-button label="orthographic">正交相机</el-radio-button>
-            </el-radio-group>
-          </config-item>
           <config-item label="物理模拟">
             <el-switch
               v-model="appStore.config.display['3d-physics-simulation']"

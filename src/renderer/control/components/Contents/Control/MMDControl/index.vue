@@ -46,13 +46,6 @@
         </MorphTarget>
         <template v-else>数据载入错误</template>
       </el-tab-pane>
-      <el-tab-pane :label="$t(`control.camera-parameter`)">
-        <CameraParameter
-          v-if="controlStore.modelControlInfo?.description !== undefined"
-        >
-        </CameraParameter>
-        <template v-else>数据载入错误</template>
-      </el-tab-pane>
       <el-tab-pane :label="$t(`control.motion-capture`)">
         <MotionCapture
           v-if="controlStore.modelControlInfo?.description !== undefined"
@@ -69,7 +62,6 @@ import ModelDescription3D from "./ModelDescription.vue";
 import ObjectTransform from "./ObjectTransform.vue";
 import AnimationControl from "./AnimationControl.vue";
 import MorphTarget from "./MorphTarget.vue";
-import CameraParameter from "../Common/CameraParameter.vue";
 import MotionCapture from "./MotionCapture.vue";
 import { useControlStore } from "@control/store/control";
 const controlStore = useControlStore();
