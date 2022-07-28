@@ -19,7 +19,7 @@ export class MmdManager extends ModelManager {
     this.MMDLoader = new MMDLoader();
     this.motionCaptureManager = new MotionCaptureManager();
     // 主要用于MouseFocusHelper的判断
-    this.animationManager === null;
+    this.animationManager = null;
   }
   switchIn() {
     this.scene = new THREE.Scene();
