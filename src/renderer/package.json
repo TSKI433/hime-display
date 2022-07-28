@@ -10,6 +10,7 @@
     "@mediapipe/camera_utils": "^0.3.1640029074",
     "@mediapipe/drawing_utils": "^0.3.1620248257",
     "@mediapipe/face_mesh": "^0.4.1633559619",
+    "@mediapipe/holistic": "^0.5.1635989137",
     "@pixiv/three-vrm": "^0.6.11",
     "element-plus": "2.2.8",
     "i18next": "^21.8.13",
