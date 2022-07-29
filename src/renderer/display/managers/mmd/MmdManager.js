@@ -9,7 +9,7 @@ import {
   MMDMorphMonitor,
 } from "@display/utils/3d/ParameterMonitor";
 import { AnimationManager } from "./AnimationManager";
-import { MotionCaptureManager } from "./MotionCaptureManager";
+import { MMDFaceMeshCaptureManager as FaceMeshCaptureManager } from "@display/utils/capture/MMDFaceMeshCaptureManager";
 export class MmdManager extends ModelManager {
   constructor(parentApp) {
     super(parentApp);
@@ -17,7 +17,7 @@ export class MmdManager extends ModelManager {
     this.transformMonitor = new TransformMonitor();
     this.morphMonitor = new MMDMorphMonitor();
     this.MMDLoader = new MMDLoader();
-    this.motionCaptureManager = new MotionCaptureManager();
+    this.faceMeshCaptureManager = null;
     // 主要用于MouseFocusHelper的判断
     this.animationManager = null;
   }
@@ -160,7 +160,10 @@ export class MmdManager extends ModelManager {
       this.animationManager.update();
     }
     // 播放动画的时候模型还盯着鼠标看，转身都不带扭头的那效果……我实在是看不下去了
-    if (this.animationManager === null) {
+    if (
+      this.animationManager === null &&
+      this.faceMeshCaptureManager === null
+    ) {
       this.mouseFocusHelper?.focus();
     }
     this.renderer.render(this.scene, this.camera);
@@ -236,7 +239,9 @@ export class MmdManager extends ModelManager {
         break;
       }
       case "control:launch-capture": {
-        this.motionCaptureManager.start(this.model);
+        this.faceMeshCaptureManager = new FaceMeshCaptureManager();
+        this.faceMeshCaptureManager.setTarget(this.model);
+        this.faceMeshCaptureManager.start();
         break;
       }
       case "control:bind-morph-target": {
