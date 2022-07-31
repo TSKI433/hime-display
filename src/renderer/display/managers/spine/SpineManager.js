@@ -44,4 +44,5 @@ export class SpineManager extends ModelManager {
         this.app.start();
       });
   }
+  onSendToModelControl() {}
 }

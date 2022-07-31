@@ -15,16 +15,27 @@ export class MmdManager extends ModelManager {
   constructor(parentApp) {
     super(parentApp);
     this.modelType = "MMD";
+    this._sendToModelControl = null;
     this.shouldRender = false;
-    this.transformMonitor = new TransformMonitor();
-    this.morphMonitor = new MMDMorphMonitor();
-    this.MMDLoader = new MMDLoader();
+
+    this.MMDLoader = null;
+    this.transformMonitor = null;
+    this.morphMonitor = null;
     this.faceMeshCaptureManager = null;
     this.holisticCaptureManager = null;
     // 主要用于MouseFocusHelper的判断
     this.animationManager = null;
+    this.mouseFocusHelper = null;
+
+    this.scene = null;
+    this.camera = null;
+    this.renderer = null;
+    this.effect = null;
   }
   switchIn() {
+    this.MMDLoader = new MMDLoader();
+    this.transformMonitor = new TransformMonitor();
+    this.morphMonitor = new MMDMorphMonitor();
     this.scene = new THREE.Scene();
     this._addLight();
     // 由于要在整个屏幕上展示，刻意将视锥体垂直视野角度改为了30度，以减小模型的屏幕边缘时产生的画面畸变
@@ -47,11 +58,45 @@ export class MmdManager extends ModelManager {
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.setPixelRatio(this.resolution);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    if (this.config.display["3d-outline-effect"]) {
-      this.renderer = new OutlineEffect(this.renderer);
-    }
+    this.effect = new OutlineEffect(this.renderer);
+    this.effect.enabled = this.config.display["3d-outline-effect"];
   }
-  switchOut() {}
+  switchOut() {
+    this._clearModel();
+    this._sendToModelControl = null;
+    this.shouldRender = false;
+
+    this.MMDLoader = null;
+    this.transformMonitor = null;
+    this.morphMonitor = null;
+    this.faceMeshCaptureManager = null;
+    this.holisticCaptureManager = null;
+    this.animationManager = null;
+    // 人查麻了，搞了半天MMD模型没被垃圾回收是mouseFocusHelper的问题，由一个脑袋开始揪住整个模型死活不放手是吧
+    this.mouseFocusHelper = null;
+
+    this.scene.traverse((obj) => {
+      if (obj.isMesh) {
+        // 这里本来应该除了mmd就没有mesh了，还是这么的写一下，但是其他的meshtexture就不知道是什么情况了，先不处理
+        obj.material.dispose();
+        obj.geometry.dispose();
+      }
+      if (obj.dispose !== undefined) {
+        // 看了一下THREE.Light类是有dispose方法的，默认是个预留空函数，这里用的平行光和环境光都没有对此函数进行覆盖，但为了之后考虑还是调用一下
+        obj.dispose();
+      }
+    });
+    // 上方遍历函数中调用用改变children数组，导致错误，此处处理也是使用Object.values做了浅层克隆
+    Object.values(this.scene.children).forEach((obj) => {
+      this.scene.remove(obj);
+    });
+    this.renderer.clear();
+    this.renderer.dispose();
+    this.scene = null;
+    this.camera = null;
+    this.renderer = null;
+    this.effect = null;
+  }
   loadModel(modelInfo) {
     return new Promise((resolve, reject) => {
       const modelFile = modelInfo.entranceFile;
@@ -110,6 +155,7 @@ export class MmdManager extends ModelManager {
           // https://developer.mozilla.org/zh-CN/docs/Web/API/Window/setImmediate
           // 直接给我来个ReferenceError: setImmediate is not defined
           this.scene.add(mmd);
+          // 后来发现又个windows下的cancelAnimationFrame的API，但这是一个这是一个实验中的功能，所以还是不用了
           if (!this.shouldRender) {
             this.shouldRender = true;
             setTimeout(() => {
@@ -151,7 +197,7 @@ export class MmdManager extends ModelManager {
       this.stats.begin();
       this.stats.end();
     }
-    if (this._sendToModelControl !== undefined) {
+    if (this._sendToModelControl !== null) {
       if (this.transformMonitor.checkUpdate()) {
         this._sendToModelControl({
           channel: "manager:update-node-transform",
@@ -177,7 +223,7 @@ export class MmdManager extends ModelManager {
     ) {
       this.mouseFocusHelper?.focus();
     }
-    this.renderer.render(this.scene, this.camera);
+    this.effect.render(this.scene, this.camera);
     requestAnimationFrame(this._render.bind(this));
   }
 
@@ -321,6 +367,6 @@ export class MmdManager extends ModelManager {
   onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.effect.setSize(window.innerWidth, window.innerHeight);
   }
 }

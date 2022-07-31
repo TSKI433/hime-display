@@ -60,4 +60,5 @@ export class Live2dManager extends ModelManager {
     //   }
     // });
   }
+  onSendToModelControl() {}
 }

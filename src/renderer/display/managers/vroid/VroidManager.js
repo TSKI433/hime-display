@@ -69,4 +69,5 @@ export class VroidManager extends ModelManager {
       });
     });
   }
+  onSendToModelControl() {}
 }
