@@ -156,8 +156,8 @@ function processSpineJson(fileDir, fileJson) {
 }
 function processVmd(fileDir) {
   writeMotion3DInfo({
-    // 根据我在B碗上的下载经验，好多配布中都会带有多个版本的vmd，这些文件的名称并不是曲名
-    name: splitDirName(fileDir) + "-" + path.basename(fileDir),
+    // 根据我在B碗上的下载经验，有一些配布中都会带有多个版本的vmd，这些文件的名称都不是曲名，但没有办法，只能让用户手动改一下文件名了
+    name: path.basename(fileDir),
     extensionName: "vmd",
     entranceFile: resolveEntrancePath(fileDir),
   });
