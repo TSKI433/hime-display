@@ -1,7 +1,8 @@
 import { Face } from "kalidokit";
 import * as faceMeshRoot from "@mediapipe/face_mesh";
 import { Camera } from "@mediapipe/camera_utils";
-import { drawConnectors } from "@mediapipe/drawing_utils";
+import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
+import { setTarget, createVideo, onResults } from "./parents/parents.js";
 // 虽然在node_modules中有训练好的数据，然而我根本不知道应该如何写路径引入，于是先复制粘贴了一份到项目目录下
 const solutionPath = "./lib/@mediapipe/face_mesh/";
 export class FaceMeshCaptureManager {
@@ -10,9 +11,7 @@ export class FaceMeshCaptureManager {
     this.onRiggedFaceCallback = null;
     this.running = false;
   }
-  setTarget(target) {
-    this.model = target;
-  }
+
   start() {
     if (this.readyToRig !== undefined) {
       this.readyToRig();
@@ -41,89 +40,26 @@ export class FaceMeshCaptureManager {
     this.camera.start();
     this.running = true;
   }
-  createVideo() {
-    this.videoContainer = document.createElement("div");
-    this.videoContainer.classList.add("capture__container");
-    this.video = document.createElement("video");
-    this.videoContainer.appendChild(this.video);
-    this.video.classList.add("capture__video");
-    this.canvas = document.createElement("canvas");
-    this.canvasCtx = this.canvas.getContext("2d");
-    this.videoContainer.appendChild(this.canvas);
-    this.canvas.classList.add("capture__canvas");
-    document.body.appendChild(this.videoContainer);
-  }
-  onResults(results) {
-    this.drawResults(results);
-    this.animateModel(results);
-  }
   drawResults(results) {
+    if (results.multiFaceLandmarks.length < 1) {
+      return;
+    }
+    const points = results.multiFaceLandmarks[0];
+    this.canvas.width = this.video.videoWidth;
+    this.canvas.height = this.video.videoHeight;
     this.canvasCtx.save();
     this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.canvasCtx.drawImage(
-      results.image,
-      0,
-      0,
-      this.canvas.width,
-      this.canvas.height
-    );
-    if (results.multiFaceLandmarks) {
-      for (const landmarks of results.multiFaceLandmarks) {
-        drawConnectors(
-          this.canvasCtx,
-          landmarks,
-          faceMeshRoot.FACEMESH_TESSELATION,
-          { color: "#C0C0C070", lineWidth: 1 }
-        );
-        drawConnectors(
-          this.canvasCtx,
-          landmarks,
-          faceMeshRoot.FACEMESH_RIGHT_EYE,
-          { color: "#FF3030", lineWidth: 1 }
-        );
-        drawConnectors(
-          this.canvasCtx,
-          landmarks,
-          faceMeshRoot.FACEMESH_RIGHT_EYEBROW,
-          { color: "#FF3030", lineWidth: 1 }
-        );
-        drawConnectors(
-          this.canvasCtx,
-          landmarks,
-          faceMeshRoot.FACEMESH_LEFT_EYE,
-          { color: "#30FF30", lineWidth: 1 }
-        );
-        drawConnectors(
-          this.canvasCtx,
-          landmarks,
-          faceMeshRoot.FACEMESH_LEFT_EYEBROW,
-          { color: "#30FF30", lineWidth: 1 }
-        );
-        drawConnectors(
-          this.canvasCtx,
-          landmarks,
-          faceMeshRoot.FACEMESH_FACE_OVAL,
-          { color: "#E0E0E0", lineWidth: 1 }
-        );
-        drawConnectors(this.canvasCtx, landmarks, faceMeshRoot.FACEMESH_LIPS, {
-          color: "#E0E0E0",
-          lineWidth: 1,
-        });
-        // if (solutionOptions.refineLandmarks) {
-        drawConnectors(
-          this.canvasCtx,
-          landmarks,
-          faceMeshRoot.FACEMESH_RIGHT_IRIS,
-          { color: "#FF3030", lineWidth: 1 }
-        );
-        drawConnectors(
-          this.canvasCtx,
-          landmarks,
-          faceMeshRoot.FACEMESH_LEFT_IRIS,
-          { color: "#30FF30", lineWidth: 1 }
-        );
-        // }
-      }
+    // Use `Mediapipe` drawing functions
+    drawConnectors(this.canvasCtx, points, faceMeshRoot.FACEMESH_TESSELATION, {
+      color: "#C0C0C070",
+      lineWidth: 1,
+    });
+    if (points && points.length === 478) {
+      //draw pupils
+      drawLandmarks(this.canvasCtx, [points[468], points[468 + 5]], {
+        color: "#ffe603",
+        lineWidth: 2,
+      });
     }
     this.canvasCtx.restore();
   }
@@ -146,3 +82,6 @@ export class FaceMeshCaptureManager {
     this.onRiggedFaceCallback = callback;
   }
 }
+FaceMeshCaptureManager.prototype.setTarget = setTarget;
+FaceMeshCaptureManager.prototype.createVideo = createVideo;
+FaceMeshCaptureManager.prototype.onResults = onResults;
