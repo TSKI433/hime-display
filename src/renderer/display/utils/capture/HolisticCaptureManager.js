@@ -130,10 +130,12 @@ export class HolisticCaptureManager {
     if (leftHandLandmarks) {
       const riggedLeftHand = Hand.solve(leftHandLandmarks, "Left");
       rigResults.riggedLeftHand = riggedLeftHand;
+      this.rigLeftHand(riggedLeftHand);
     }
     if (rightHandLandmarks) {
       const riggedRightHand = Hand.solve(rightHandLandmarks, "Right");
       rigResults.riggedRightHand = riggedRightHand;
+      this.rigRightHand(riggedRightHand);
     }
     if (this.onRiggedHolisticCallback !== null) {
       this.onRiggedHolisticCallback(rigResults);

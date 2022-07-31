@@ -57,6 +57,13 @@ function lerpBoneRotationByBone(bone, rotation, lerpRatio, dampener = 1) {
     lerp(-rotation.z * dampener, bone.rotation.z, lerpRatio)
   );
 }
+function lerpBonePositionByBone(bone, position, lerpRatio, dampener = 1) {
+  bone.position.set(
+    lerp(position.x * dampener, bone.position.x, lerpRatio),
+    lerp(position.y * dampener, bone.position.y, lerpRatio),
+    lerp(position.z * dampener, bone.position.z, lerpRatio)
+  );
+}
 function getBoneNode(boneName) {
   if (this.boneStore[boneName] === undefined) {
     const bone = this.model.skeleton.bones.find((b) => b.name === boneName);
@@ -72,4 +79,10 @@ function getBoneNode(boneName) {
     return this.boneStore[boneName];
   }
 }
-export { rigFace, lerpMorphTargetByName, lerpBoneRotationByBone, getBoneNode };
+export {
+  rigFace,
+  lerpMorphTargetByName,
+  lerpBoneRotationByBone,
+  lerpBonePositionByBone,
+  getBoneNode,
+};
