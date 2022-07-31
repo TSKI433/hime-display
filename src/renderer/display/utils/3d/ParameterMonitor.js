@@ -26,7 +26,6 @@ class TransformMonitor {
           if (this.transform[i][j] !== this.target[i][j]) {
             this.transform[i][j] = this.target[i][j];
             changed = true;
-            break;
           }
         }
       }

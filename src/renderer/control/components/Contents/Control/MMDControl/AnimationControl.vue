@@ -21,7 +21,7 @@
           </el-table-column>
         </el-table>
       </el-collapse-item>
-      <el-collapse-item title="模型数据库" name="audioDatabase">
+      <el-collapse-item title="音频数据库" name="audioDatabase">
         <el-table
           :data="appStore.database.audio3D"
           :border="true"
