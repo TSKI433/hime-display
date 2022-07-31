@@ -3,6 +3,7 @@ import * as holisticRoot from "@mediapipe/holistic";
 import { Camera } from "@mediapipe/camera_utils";
 import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 import { setTarget, createVideo, onResults } from "./parents/parents.js";
+const solutionPath = "./lib/@mediapipe/holistic/";
 export class HolisticCaptureManager {
   constructor() {
     this.model = null;
@@ -14,7 +15,7 @@ export class HolisticCaptureManager {
       this.readyToRig();
     }
     this.createVideo();
-    this.holistic = new Holistic({
+    this.holistic = new holisticRoot.Holistic({
       locateFile: (file) => {
         return `${solutionPath}${file}`;
       },
@@ -59,7 +60,7 @@ export class HolisticCaptureManager {
     drawConnectors(
       this.canvasCtx,
       results.faceLandmarks,
-      FACEMESH_TESSELATION,
+      holisticRoot.FACEMESH_TESSELATION,
       {
         color: "#C0C0C070",
         lineWidth: 1,

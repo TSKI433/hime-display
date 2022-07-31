@@ -1,8 +1,8 @@
 <template>
   <config-item label="捕捉类型">
     <el-radio-group v-model="motionCaptureType">
-      <el-radio-button label="face">面部捕捉</el-radio-button>
-      <el-radio-button label="body">全身捕捉</el-radio-button>
+      <el-radio-button label="faceMesh">面部捕捉</el-radio-button>
+      <el-radio-button label="holistic">全身捕捉</el-radio-button>
     </el-radio-group>
   </config-item>
   <config-item label="捕捉控制">
@@ -16,7 +16,7 @@ import ConfigItem from "@control/components/Common/ConfigItem.vue";
 import { ref } from "vue";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
-const motionCaptureType = ref("face");
+const motionCaptureType = ref("faceMesh");
 function launchCapture() {
   ipcAPI.sendToModelManager(appStore.displayWindowId, {
     channel: "control:launch-capture",

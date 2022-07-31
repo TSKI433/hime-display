@@ -10,6 +10,7 @@ import {
 } from "@display/utils/3d/ParameterMonitor";
 import { AnimationManager } from "./AnimationManager";
 import { MMDFaceMeshCaptureManager as FaceMeshCaptureManager } from "@display/utils/capture/MMDFaceMeshCaptureManager";
+import { MMDHolisticCaptureManager as HolisticCaptureManager } from "@display/utils/capture/MMDHolisticCaptureManager";
 export class MmdManager extends ModelManager {
   constructor(parentApp) {
     super(parentApp);
@@ -18,6 +19,7 @@ export class MmdManager extends ModelManager {
     this.morphMonitor = new MMDMorphMonitor();
     this.MMDLoader = new MMDLoader();
     this.faceMeshCaptureManager = null;
+    this.holisticCaptureManager = null;
     // 主要用于MouseFocusHelper的判断
     this.animationManager = null;
   }
@@ -239,9 +241,16 @@ export class MmdManager extends ModelManager {
         break;
       }
       case "control:launch-capture": {
-        this.faceMeshCaptureManager = new FaceMeshCaptureManager();
-        this.faceMeshCaptureManager.setTarget(this.model);
-        this.faceMeshCaptureManager.start();
+        const { type } = message.data;
+        if (type === "faceMesh") {
+          this.faceMeshCaptureManager = new FaceMeshCaptureManager();
+          this.faceMeshCaptureManager.setTarget(this.model);
+          this.faceMeshCaptureManager.start();
+        } else if (type === "holistic") {
+          this.holisticCaptureManager = new HolisticCaptureManager();
+          this.holisticCaptureManager.setTarget(this.model);
+          this.holisticCaptureManager.start();
+        }
         break;
       }
       case "control:bind-morph-target": {
