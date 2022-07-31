@@ -11,20 +11,10 @@ export class MMDHolisticCaptureManager extends HolisticCaptureManager {
   }
   readyToRig() {
     this.model.pose();
-    this.upperBodyBone = this.getBoneNode("上半身");
-    this.headBone = this.getBoneNode("頭");
   }
   // 全身捕捉不需要进行上半身的连带旋转操作
   rigHead(rotation, lerpRatio) {
-    this.lerpBoneRotationByBone(
-      this.headBone,
-      {
-        x: rotation.x,
-        y: rotation.y,
-        z: rotation.z,
-      },
-      lerpRatio
-    );
+    this.lerpBoneRotationByBone(this.getBoneNode("頭"), rotation, lerpRatio);
   }
   rigPose(riggedPose, lerpRatio = 0.5) {
     riggedPose.LeftUpperArm.z -= Math.PI / 4;

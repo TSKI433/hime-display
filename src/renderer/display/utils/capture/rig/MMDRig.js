@@ -50,11 +50,11 @@ function lerpMorphTargetByName(name, value, lerpRatio) {
     lerpRatio
   );
 }
-function lerpBoneRotationByBone(bone, rotation, lerpRatio) {
+function lerpBoneRotationByBone(bone, rotation, lerpRatio, dampener = 1) {
   bone.rotation.set(
-    lerp(-rotation.x, bone.rotation.x, lerpRatio),
-    lerp(rotation.y, bone.rotation.y, lerpRatio),
-    lerp(-rotation.z, bone.rotation.z, lerpRatio)
+    lerp(-rotation.x * dampener, bone.rotation.x, lerpRatio),
+    lerp(rotation.y * dampener, bone.rotation.y, lerpRatio),
+    lerp(-rotation.z * dampener, bone.rotation.z, lerpRatio)
   );
 }
 function getBoneNode(boneName) {

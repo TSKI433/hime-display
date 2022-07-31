@@ -13,8 +13,6 @@ export class MMDFaceMeshCaptureManager extends FaceMeshCaptureManager {
   }
   readyToRig() {
     this.model.pose();
-    this.upperBodyBone = this.getBoneNode("上半身");
-    this.headBone = this.getBoneNode("頭");
     // 让手臂放得更自然一点
     this.getBoneNode("右腕").rotation.z = 0.5;
     this.getBoneNode("左腕").rotation.z = -0.5;
@@ -23,22 +21,16 @@ export class MMDFaceMeshCaptureManager extends FaceMeshCaptureManager {
   rigHead(rotation, lerpRatio, bodyLinkRatio = 0.2) {
     // 让上半身会跟着头部联动，由于头部为上半身的子节点，因此上半身已完成的旋转要从头部除掉
     this.lerpBoneRotationByBone(
-      this.headBone,
-      {
-        x: rotation.x * (1 - bodyLinkRatio),
-        y: rotation.y * (1 - bodyLinkRatio),
-        z: rotation.z * (1 - bodyLinkRatio),
-      },
-      lerpRatio
+      this.getBoneNode("頭"),
+      rotation,
+      lerpRatio,
+      1 - bodyLinkRatio
     );
     this.lerpBoneRotationByBone(
-      this.upperBodyBone,
-      {
-        x: rotation.x * bodyLinkRatio,
-        y: rotation.y * bodyLinkRatio,
-        z: rotation.z * bodyLinkRatio,
-      },
-      lerpRatio
+      this.getBoneNode("上半身"),
+      rotation,
+      lerpRatio,
+      bodyLinkRatio
     );
   }
   // lerpBoneRotationByName(boneName, rotation, lerpRatio = 0.5) {
