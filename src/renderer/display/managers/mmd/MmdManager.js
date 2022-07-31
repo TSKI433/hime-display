@@ -15,6 +15,7 @@ export class MmdManager extends ModelManager {
   constructor(parentApp) {
     super(parentApp);
     this.modelType = "MMD";
+    this.shouldRender = false;
     this.transformMonitor = new TransformMonitor();
     this.morphMonitor = new MMDMorphMonitor();
     this.MMDLoader = new MMDLoader();
@@ -58,6 +59,7 @@ export class MmdManager extends ModelManager {
         modelFile,
         (mmd) => {
           console.log("[Hime Display] MMD Loaded");
+          this._clearModel();
           this.model = mmd;
           const mmdUserData = mmd.geometry.userData.MMD;
           const modelControlInfo = {
@@ -107,9 +109,12 @@ export class MmdManager extends ModelManager {
           // https://developer.mozilla.org/zh-CN/docs/Web/API/Window/setImmediate
           // 直接给我来个ReferenceError: setImmediate is not defined
           this.scene.add(mmd);
-          setTimeout(() => {
-            this._render();
-          }, 1000);
+          if (!this.shouldRender) {
+            this.shouldRender = true;
+            setTimeout(() => {
+              this._render();
+            }, 1000);
+          }
           // 必须在添加上模型后再构建信息
           modelControlInfo.transform = buildNodeInfoTreeAndList(this.scene);
           modelControlInfo.state = "success";
@@ -138,6 +143,9 @@ export class MmdManager extends ModelManager {
     this.scene.add(directionalLight);
   }
   _render() {
+    if (!this.shouldRender) {
+      return;
+    }
     if (this.stats !== null) {
       this.stats.begin();
       this.stats.end();
@@ -295,6 +303,19 @@ export class MmdManager extends ModelManager {
     this.animationManager?.destroy();
     this.animationManager = null;
     this.model.pose();
+  }
+  _clearModel() {
+    if (this.model !== null) {
+      this.scene.remove(this.model);
+      this.model.geometry.dispose();
+      this.model.material.forEach((material) => {
+        // const mapNames=['map','gradientMap','lightMap','aoMap','emissiveMap','bumpMap','normalMap','displacemantMap','specularMap','alphaMap','envMap']
+        material.map?.dispose();
+        material.gradientMap?.dispose();
+        material.dispose();
+      });
+      this.model = null;
+    }
   }
   onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
