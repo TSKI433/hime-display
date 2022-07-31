@@ -58,13 +58,18 @@ function lerpBoneRotationByBone(bone, rotation, lerpRatio, dampener = 1) {
   );
 }
 function getBoneNode(boneName) {
-  const bone = this.model.skeleton.bones.find((b) => b.name === boneName);
-  if (bone === undefined) {
-    console.warn(
-      `MotionCaptureManager: bone ${boneName} not found in the skinned mesh`
-    );
-    return null;
+  if (this.boneStore[boneName] === undefined) {
+    const bone = this.model.skeleton.bones.find((b) => b.name === boneName);
+    if (bone === undefined) {
+      console.warn(
+        `MotionCaptureManager: bone ${boneName} not found in the skinned mesh`
+      );
+      return null;
+    }
+    this.boneStore[boneName] = bone;
+    return bone;
+  } else {
+    return this.boneStore[boneName];
   }
-  return bone;
 }
 export { rigFace, lerpMorphTargetByName, lerpBoneRotationByBone, getBoneNode };

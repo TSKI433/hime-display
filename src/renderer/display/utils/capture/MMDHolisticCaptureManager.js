@@ -8,6 +8,7 @@ import {
 export class MMDHolisticCaptureManager extends HolisticCaptureManager {
   constructor() {
     super();
+    this.boneStore = {};
   }
   readyToRig() {
     this.model.pose();

@@ -10,6 +10,7 @@ import {
 export class MMDFaceMeshCaptureManager extends FaceMeshCaptureManager {
   constructor() {
     super();
+    this.boneStore = {};
   }
   readyToRig() {
     this.model.pose();
