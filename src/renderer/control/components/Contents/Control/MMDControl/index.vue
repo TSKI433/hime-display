@@ -29,7 +29,7 @@
       <el-tab-pane :label="$t(`control.object-transform`)">
         <object-transform
           v-if="controlStore.modelControlInfo?.transform !== undefined"
-          :control-info="controlStore.modelControlInfo.transform"
+          :transform-info="controlStore.modelControlInfo.transform"
         >
         </object-transform>
         <template v-else>
@@ -48,7 +48,7 @@
       <el-tab-pane :label="$t(`control.morph-target`)">
         <morph-target
           v-if="controlStore.modelControlInfo?.description !== undefined"
-          :control-info="controlStore.modelControlInfo.morph"
+          :morph-info="controlStore.modelControlInfo.morph"
         >
         </morph-target>
         <template v-else>

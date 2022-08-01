@@ -2,7 +2,7 @@
   <div>
     <config-item label="树状对象选择">
       <el-tree-select
-        :data="[controlInfo.tree]"
+        :data="[transformInfo.tree]"
         check-strictly
         v-model="nodeIdNow"
         @change="syncAutoCompleteValue"
@@ -31,7 +31,7 @@ import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
 const props = defineProps({
-  controlInfo: Object,
+  transformInfo: Object,
 });
 const transformObject = reactive({
   position: { x: 0, y: 0, z: 0 },
@@ -76,10 +76,10 @@ ipcAPI.handleSendToModelControl((event, message) => {
 const autoCompleteValue = ref("");
 function querySearch(queryString, callback) {
   const results = queryString
-    ? props.controlInfo.list.filter((item) => {
+    ? props.transformInfo.list.filter((item) => {
         return item.value.toLowerCase().indexOf(queryString.toLowerCase()) > -1;
       })
-    : props.controlInfo.list;
+    : props.transformInfo.list;
   callback(results);
 }
 // 输入预测框向树形选择的绑定是自动的
@@ -88,7 +88,7 @@ function handleSelect(item) {
 }
 // 树形选择向输入预测框的绑定
 function syncAutoCompleteValue(id) {
-  autoCompleteValue.value = props.controlInfo.list.find(
+  autoCompleteValue.value = props.transformInfo.list.find(
     (item) => item.id === id
   ).value;
 }

@@ -2,7 +2,7 @@
   <config-item label="目标选择">
     <el-select v-model="selectedMorphName" @change="BindMorphTarget">
       <el-option
-        v-for="(morphIndex, morphName) in controlInfo"
+        v-for="(morphIndex, morphName) in morphInfo"
         :label="morphName"
         :value="morphName"
       />
@@ -28,7 +28,7 @@ import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
 const props = defineProps({
-  controlInfo: Object,
+  morphInfo: Object,
 });
 // 若使用morph的index作为传递目标，可能存在难以发现的隐患
 const selectedMorphName = ref("");
