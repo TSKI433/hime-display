@@ -1,4 +1,4 @@
-import { ModelManager } from "../ModelManager";
+import { ModelManager } from "./ModelManager";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { VRM, VRMSchema } from "@pixiv/three-vrm";

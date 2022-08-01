@@ -1,4 +1,4 @@
-import { ModelManager } from "../ModelManager";
+import { ModelManager } from "./ModelManager";
 export class Live2dManager extends ModelManager {
   constructor(parentApp) {
     super(parentApp);
@@ -71,6 +71,8 @@ export class Live2dManager extends ModelManager {
         partCount: coreModel._model.parts.count,
         parameterCount: coreModel._model.parameters.count,
       },
+      parameter: coreModel._parameterIds,
+      part: coreModel._partIds,
       motion: internalModel.settings.motions,
     };
     return modelControlInfo;

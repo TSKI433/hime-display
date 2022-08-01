@@ -1,4 +1,4 @@
-import { ModelManager } from "../ModelManager";
+import { ModelManager } from "./ModelManager";
 // 由于live2d的特殊需求，没用模块系统载入pixi.js，pixi-spine模块的载入依赖于模块化pixi.js，因此暂时用成umd版本吧
 // import { Spine } from "pixi-spine";
 export class SpineManager extends ModelManager {

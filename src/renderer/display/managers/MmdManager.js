@@ -1,14 +1,14 @@
-import { ModelManager } from "../ModelManager";
+import { ModelManager } from "./ModelManager";
 import * as THREE from "three";
 import { MMDLoader } from "three/examples/jsm/loaders/MMDLoader.js";
 import { OutlineEffect } from "three/examples/jsm/effects/OutlineEffect.js";
 import { MouseFocusHelper } from "@display/utils/3d/MouseFocusHelper.js";
-import { buildNodeInfoTreeAndList } from "@display/utils/3d/utils";
+import { buildNodeInfoTreeAndList } from "@display/utils/3d/NodeInfo";
 import {
   TransformMonitor,
   MMDMorphMonitor,
 } from "@display/utils/3d/ParameterMonitor";
-import { AnimationManager } from "./AnimationManager";
+import { AnimationManager } from "@display/utils/mmd/AnimationManager";
 import { MMDFaceMeshCaptureManager as FaceMeshCaptureManager } from "@display/utils/capture/MMDFaceMeshCaptureManager";
 import { MMDHolisticCaptureManager as HolisticCaptureManager } from "@display/utils/capture/MMDHolisticCaptureManager";
 export class MmdManager extends ModelManager {

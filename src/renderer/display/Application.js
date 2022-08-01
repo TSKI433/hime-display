@@ -1,7 +1,7 @@
-import { Live2dManager } from "@display/managers/live2d/Live2dManager";
-import { MmdManager } from "@display/managers/mmd/MmdManager";
-import { VroidManager } from "./managers/vroid/VroidManager";
-import { SpineManager } from "./managers/spine/SpineManager";
+import { Live2dManager } from "@display/managers/Live2dManager";
+import { MmdManager } from "@display/managers/MmdManager";
+import { VroidManager } from "@display/managers/VroidManager";
+import { SpineManager } from "@display/managers/SpineManager";
 export class Application {
   constructor() {
     this.init();

@@ -1,5 +1,5 @@
 import { MMDAnimationHelper } from "three/examples/jsm/animation/MMDAnimationHelper.js";
-import { AudioManager } from "@display/utils/3d/AudioManager";
+import { AudioManager } from "@display/utils/mmd/AudioManager";
 import { Clock, AudioLoader, Audio, AudioListener, LoopOnce } from "three";
 export class AnimationManager {
   // 直接从上级获取MMDLoader，省得重新搞个实例
