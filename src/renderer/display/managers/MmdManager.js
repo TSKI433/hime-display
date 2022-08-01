@@ -4,10 +4,8 @@ import { MMDLoader } from "three/examples/jsm/loaders/MMDLoader.js";
 import { OutlineEffect } from "three/examples/jsm/effects/OutlineEffect.js";
 import { MouseFocusHelper } from "@display/utils/3d/MouseFocusHelper.js";
 import { buildNodeInfoTreeAndList } from "@display/utils/3d/NodeInfo";
-import {
-  TransformMonitor,
-  MMDMorphMonitor,
-} from "@display/utils/3d/ParameterMonitor";
+import { TransformMonitor } from "@display/utils/3d/Monitor";
+import { MMDMorphMonitor } from "@display/utils/mmd/Monitor";
 import { AnimationManager } from "@display/utils/mmd/AnimationManager";
 import { MMDFaceMeshCaptureManager as FaceMeshCaptureManager } from "@display/utils/capture/MMDFaceMeshCaptureManager";
 import { MMDHolisticCaptureManager as HolisticCaptureManager } from "@display/utils/capture/MMDHolisticCaptureManager";
