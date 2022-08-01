@@ -8,7 +8,7 @@
       :ellipsis="false"
       :default-active="subControlComponentNameNow"
     >
-      <el-menu-item index="ModelDescription3D">模型信息</el-menu-item>
+      <el-menu-item index="ModelDescription">模型信息</el-menu-item>
       <el-menu-item index="ObjectTransform">对象变换</el-menu-item>
       <el-menu-item index="AnimationControl">动画播放</el-menu-item>
       <el-menu-item index="MotionCapture">动作捕捉</el-menu-item>
@@ -16,55 +16,110 @@
     <el-tabs type="border-card">
       <!-- 这里用v-for实在是麻烦，还是依次设置 -->
       <el-tab-pane :label="$t(`control.model-description`)">
-        <ModelDescription3D
+        <model-description
           v-if="controlStore.modelControlInfo?.description !== undefined"
-          :control-info="controlStore.modelControlInfo.description"
+          :description="controlStore.modelControlInfo.description"
+          :description-info="descriptionInfo"
         >
-        </ModelDescription3D>
-        <template v-else>数据载入错误</template>
+        </model-description>
+        <template v-else>
+          <control-load-error></control-load-error>
+        </template>
       </el-tab-pane>
       <el-tab-pane :label="$t(`control.object-transform`)">
-        <ObjectTransform
+        <object-transform
           v-if="controlStore.modelControlInfo?.transform !== undefined"
           :control-info="controlStore.modelControlInfo.transform"
         >
-        </ObjectTransform>
-        <template v-else>数据载入错误</template>
+        </object-transform>
+        <template v-else>
+          <control-load-error></control-load-error>
+        </template>
       </el-tab-pane>
       <el-tab-pane :label="$t(`control.animation-control`)">
-        <AnimationControl
+        <animation-control
           v-if="controlStore.modelControlInfo?.description !== undefined"
         >
-        </AnimationControl>
-        <template v-else>数据载入错误</template>
+        </animation-control>
+        <template v-else>
+          <control-load-error></control-load-error>
+        </template>
       </el-tab-pane>
       <el-tab-pane :label="$t(`control.morph-target`)">
-        <MorphTarget
+        <morph-target
           v-if="controlStore.modelControlInfo?.description !== undefined"
           :control-info="controlStore.modelControlInfo.morph"
         >
-        </MorphTarget>
-        <template v-else>数据载入错误</template>
+        </morph-target>
+        <template v-else>
+          <control-load-error></control-load-error>
+        </template>
       </el-tab-pane>
       <el-tab-pane :label="$t(`control.motion-capture`)">
-        <MotionCapture
+        <motion-capture
           v-if="controlStore.modelControlInfo?.description !== undefined"
         >
-        </MotionCapture>
-        <template v-else>数据载入错误</template>
+        </motion-capture>
+        <template v-else>
+          <control-load-error></control-load-error>
+        </template>
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
 <script setup>
-import ModelDescription3D from "./ModelDescription.vue";
+import { reactive } from "vue";
+import ControlLoadError from "../Common/ControlLoadError.vue";
+import ModelDescription from "../Common/ModelDescription.vue";
 import ObjectTransform from "./ObjectTransform.vue";
 import AnimationControl from "./AnimationControl.vue";
 import MorphTarget from "./MorphTarget.vue";
 import MotionCapture from "./MotionCapture.vue";
 import { useControlStore } from "@control/store/control";
 const controlStore = useControlStore();
+const descriptionInfo = reactive({
+  name: {
+    label: "名称",
+    param: "name",
+  },
+  "extention-name": {
+    label: "扩展名",
+    param: "extensionName",
+  },
+  "vertex-count": {
+    label: "顶点数",
+    param: "vertexCount",
+  },
+  "triangle-count": {
+    label: "三角形数",
+    param: "triangleCount",
+  },
+  "bone-count": {
+    label: "骨骼数",
+    param: "boneCount",
+  },
+  "ik-count": {
+    label: "IK数",
+    param: "ikCount",
+  },
+  "rigidBody-count": {
+    label: "刚体数",
+    param: "rigidBodyCount",
+  },
+  "constraint-count": {
+    label: "约束数",
+    param: "constraintCount",
+  },
+  "grant-count": {
+    label: "付与数",
+    param: "grantCount",
+  },
+  "morph-count": {
+    label: "变形数",
+    param: "morphCount",
+  },
+});
 </script>
 
 <style lang="scss"></style>

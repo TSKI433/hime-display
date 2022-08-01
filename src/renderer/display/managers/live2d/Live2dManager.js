@@ -34,31 +34,63 @@ export class Live2dManager extends ModelManager {
     const model = this.model;
     const app = this.app;
     app.stage.addChild(model);
-    const scaleX = (innerWidth * 0.34) / model.width;
-    const scaleY = (innerHeight * 0.8) / model.height;
+    const displayConfig = this.config.display;
+    const configWidth =
+      (innerWidth *
+        (displayConfig["2d-initial-width-range"][1] -
+          displayConfig["2d-initial-width-range"][0])) /
+      100;
+    const configHeight =
+      (innerHeight *
+        (displayConfig["2d-initial-height-range"][1] -
+          displayConfig["2d-initial-height-range"][0])) /
+      100;
+    const scaleX = configWidth / model.width;
+    const scaleY = configHeight / model.height;
     model.scale.set(Math.min(scaleX, scaleY));
-    model.x = app.renderer.view.width / this.resolution - model.width;
-    model.y = app.renderer.view.height / this.resolution - model.height;
-    let then = performance.now();
-    //  直接用function的话this的指向是错的
-    const tick = (now) => {
-      if (this.stats !== null) {
-        this.stats.begin();
-        this.stats.end();
-      }
-      // 销毁模型后不再调用
-      if (!model.destroyed) {
-        model.update(now - then);
-        then = now;
-        requestAnimationFrame(tick);
-      }
+    // model.x = app.renderer.view.width / this.resolution - model.width;
+    // model.y = app.renderer.view.height / this.resolution - model.height;
+    model.x = (innerWidth * displayConfig["2d-initial-width-range"][0]) / 100;
+    model.y = (innerHeight * displayConfig["2d-initial-height-range"][0]) / 100;
+    this.then = performance.now();
+    requestAnimationFrame(this._render.bind(this));
+    const internalModel = this.model.internalModel;
+    const coreModel = internalModel.coreModel;
+    const modelControlInfo = {
+      description: {
+        name: modelInfo.name,
+        extensionName: modelInfo.extensionName,
+        vertexCount: coreModel._model.drawables.count,
+        groupCount: Object.keys(internalModel.settings.groups).length,
+        hitAreaCount: Object.keys(internalModel.hitAreas).length,
+        motionGroupCount: Object.keys(internalModel.settings.motions).length,
+        motionCount: Object.keys(internalModel.settings.motions).reduce(
+          (acc, cur) => acc + internalModel.settings.motions[cur].length,
+          0
+        ),
+        partCount: coreModel._model.parts.count,
+        parameterCount: coreModel._model.parameters.count,
+      },
+      motion: internalModel.settings.motions,
     };
-    requestAnimationFrame(tick);
+    return modelControlInfo;
     // model.on("hit", (hitAreas) => {
     //   if (hitAreas.includes("body")) {
     //     model.motion("tap_body");
     //   }
     // });
+  }
+  _render(now) {
+    if (this.stats !== null) {
+      this.stats.begin();
+      this.stats.end();
+    }
+    // 销毁模型后不再调用
+    if (!this.model.destroyed) {
+      this.model.update(now - this.then);
+      this.then = now;
+      requestAnimationFrame(this._render.bind(this));
+    }
   }
   onSendToModelControl() {}
 }
