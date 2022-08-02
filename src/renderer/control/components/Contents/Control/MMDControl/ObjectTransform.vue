@@ -1,20 +1,22 @@
 <template>
   <div>
-    <config-item label="树状对象选择">
+    <config-item label="树状选择">
       <el-tree-select
         :data="[transformInfo.tree]"
         check-strictly
         v-model="nodeIdNow"
-        @change="syncAutoCompleteValue"
       />
     </config-item>
     <!-- 我去，这几天这么巧的吗，又碰到一个Element Plus刚刚修复了的bug：https://github.com/element-plus/element-plus/issues/8542 -->
-    <config-item label="输入预测对象选择">
-      <el-autocomplete
-        v-model="autoCompleteValue"
-        :fetch-suggestions="querySearch"
-        @select="handleSelect"
-      ></el-autocomplete>
+    <config-item label="预测列表选择">
+      <el-select v-model="nodeIdNow" filterable>
+        <el-option
+          v-for="transformItem in transformInfo.list"
+          :label="transformItem.label"
+          :value="transformItem.value"
+        >
+        </el-option>
+      </el-select>
     </config-item>
     <transform
       :transform-object="transformObject"
@@ -73,25 +75,6 @@ ipcAPI.handleSendToModelControl((event, message) => {
     }
   }
 });
-const autoCompleteValue = ref("");
-function querySearch(queryString, callback) {
-  const results = queryString
-    ? props.transformInfo.list.filter((item) => {
-        return item.value.toLowerCase().indexOf(queryString.toLowerCase()) > -1;
-      })
-    : props.transformInfo.list;
-  callback(results);
-}
-// 输入预测框向树形选择的绑定是自动的
-function handleSelect(item) {
-  nodeIdNow.value = item.id;
-}
-// 树形选择向输入预测框的绑定
-function syncAutoCompleteValue(id) {
-  autoCompleteValue.value = props.transformInfo.list.find(
-    (item) => item.id === id
-  ).value;
-}
 </script>
 
 <style lang="scss"></style>

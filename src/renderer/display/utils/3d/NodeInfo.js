@@ -27,9 +27,11 @@ function buildNodeInfoTreeAndList(node, tree = {}, list = []) {
     additionalInfo += "(MMD)";
   }
   //   方便element plus接入
-  tree.value = node.id;
-  tree.label = `${node.type}${additionalInfo}`;
-  list.push({ value: `${node.type}${additionalInfo}`, id: node.id });
+  const nodeValue = node.id;
+  const nodeLabel = `${node.type}${additionalInfo}`;
+  tree.value = nodeValue;
+  tree.label = nodeLabel;
+  list.push({ label: nodeLabel, value: nodeValue });
   tree.children = [];
   node.children.forEach((child) => {
     const { tree: childInfo } = buildNodeInfoTreeAndList(child, {}, list);
