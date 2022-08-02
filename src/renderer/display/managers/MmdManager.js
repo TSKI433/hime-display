@@ -5,7 +5,7 @@ import { OutlineEffect } from "three/examples/jsm/effects/OutlineEffect.js";
 import { MouseFocusHelper } from "@display/utils/3d/MouseFocusHelper.js";
 import { buildNodeInfoTreeAndList } from "@display/utils/3d/NodeInfo";
 import { TransformMonitor } from "@display/utils/3d/Monitor";
-import { MMDMorphMonitor } from "@display/utils/mmd/Monitor";
+import { MorphMonitor } from "@display/utils/mmd/Monitor";
 import { AnimationManager } from "@display/utils/mmd/AnimationManager";
 import { MMDFaceMeshCaptureManager as FaceMeshCaptureManager } from "@display/utils/capture/MMDFaceMeshCaptureManager";
 import { MMDHolisticCaptureManager as HolisticCaptureManager } from "@display/utils/capture/MMDHolisticCaptureManager";
@@ -33,7 +33,7 @@ export class MmdManager extends ModelManager {
   switchIn() {
     this.MMDLoader = new MMDLoader();
     this.transformMonitor = new TransformMonitor();
-    this.morphMonitor = new MMDMorphMonitor();
+    this.morphMonitor = new MorphMonitor();
     this.scene = new THREE.Scene();
     this._addLight();
     // 由于要在整个屏幕上展示，刻意将视锥体垂直视野角度改为了30度，以减小模型的屏幕边缘时产生的画面畸变
@@ -206,7 +206,7 @@ export class MmdManager extends ModelManager {
         this._sendToModelControl({
           channel: "manager:update-node-morph",
           data: {
-            weight: this.morphMonitor.morph,
+            weight: this.morphMonitor.value,
           },
         });
       }

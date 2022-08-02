@@ -1,19 +1,21 @@
-class MMDMorphMonitor {
+class MorphMonitor {
   constructor() {
-    this.morph = null;
+    this.value = 0;
     this.model = null;
     this.isJustBined = false;
   }
   bind(target, model = null) {
     this.model = model;
-    this.target = target;
-    if (!Object.keys(this.model.morphTargetDictionary).includes(this.target)) {
+    this.morpName = target;
+    if (
+      !Object.keys(this.model.morphTargetDictionary).includes(this.morpName)
+    ) {
       throw new Error(
-        `MMDMorphMonitor: morph target ${this.target} not found in the model`
+        `MorphMonitor: morph target ${this.morpName} not found in the model`
       );
     }
     this.isJustBined = true;
-    this.morph = 0;
+    this.value = 0;
   }
   checkUpdate() {
     let changed = false;
@@ -22,17 +24,17 @@ class MMDMorphMonitor {
       changed = true;
     }
 
-    if (this.morph !== null && this.model !== null && changed === false) {
+    if (this.value !== null && this.model !== null && changed === false) {
       const newMorphValue =
         this.model.morphTargetInfluences[
-          this.model.morphTargetDictionary[this.target]
+          this.model.morphTargetDictionary[this.morpName]
         ];
-      if (this.morph !== newMorphValue) {
-        this.morph = newMorphValue;
+      if (this.value !== newMorphValue) {
+        this.value = newMorphValue;
         changed = true;
       }
     }
     return changed;
   }
 }
-export { MMDMorphMonitor };
+export { MorphMonitor };

@@ -1,6 +1,6 @@
 <template>
   <config-item label="目标选择">
-    <el-select v-model="selectedMorphName" @change="BindMorphTarget">
+    <el-select v-model="selectedMorphName" @change="bindMorphTarget">
       <el-option
         v-for="(morphIndex, morphName) in morphInfo"
         :label="morphName"
@@ -33,7 +33,7 @@ const props = defineProps({
 // 若使用morph的index作为传递目标，可能存在难以发现的隐患
 const selectedMorphName = ref("");
 const morphWeight = ref(0);
-function BindMorphTarget() {
+function bindMorphTarget() {
   if (selectedMorphName.value === "") return;
   ipcAPI.sendToModelManager(appStore.displayWindowId, {
     channel: "control:bind-morph-target",

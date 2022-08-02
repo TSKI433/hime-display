@@ -1,8 +1,12 @@
 import { ModelManager } from "./ModelManager";
+import { ParameterMonitor, PartMonitor } from "@display/utils/live2d/Monitor";
 export class Live2dManager extends ModelManager {
   constructor(parentApp) {
     super(parentApp);
     this.modelType = "Live2D";
+    this._sendToModelControl = null;
+    this.shouldRender = false;
+    this.parameterMonitor = null;
   }
   switchIn() {
     this.app = new PIXI.Application({
@@ -15,8 +19,13 @@ export class Live2dManager extends ModelManager {
       transparent: true,
       resolution: this.resolution,
     });
+    this.parameterMonitor = new ParameterMonitor();
+    this.partMonitor = new PartMonitor();
   }
   switchOut() {
+    this._sendToModelControl = null;
+    this.shouldRender = false;
+    this.parameterMonitor = null;
     // destroy以后无法直接获得这个上下文了
     const gl = this.app.renderer.context.gl;
     this.app.destroy();
@@ -31,6 +40,7 @@ export class Live2dManager extends ModelManager {
     this.model = await PIXI.live2d.Live2DModel.from(modelInfo.entranceFile, {
       autoUpdate: false,
     });
+
     const model = this.model;
     const app = this.app;
     app.stage.addChild(model);
@@ -53,6 +63,7 @@ export class Live2dManager extends ModelManager {
     model.x = (innerWidth * displayConfig["2d-initial-width-range"][0]) / 100;
     model.y = (innerHeight * displayConfig["2d-initial-height-range"][0]) / 100;
     this.then = performance.now();
+    this.shouldRender = true;
     requestAnimationFrame(this._render.bind(this));
     const internalModel = this.model.internalModel;
     const coreModel = internalModel.coreModel;
@@ -71,7 +82,12 @@ export class Live2dManager extends ModelManager {
         partCount: coreModel._model.parts.count,
         parameterCount: coreModel._model.parameters.count,
       },
-      parameter: coreModel._parameterIds,
+      parameter: {
+        // live2d的parameter没有固定值域
+        _parameterIds: coreModel._parameterIds,
+        _parameterMinimumValues: coreModel._parameterMinimumValues,
+        _parameterMaximumValues: coreModel._parameterMaximumValues,
+      },
       part: coreModel._partIds,
       motion: internalModel.settings.motions,
     };
@@ -83,6 +99,9 @@ export class Live2dManager extends ModelManager {
     // });
   }
   _render(now) {
+    if (!this.shouldRender) {
+      return;
+    }
     if (this.stats !== null) {
       this.stats.begin();
       this.stats.end();
@@ -93,6 +112,54 @@ export class Live2dManager extends ModelManager {
       this.then = now;
       requestAnimationFrame(this._render.bind(this));
     }
+    if (this.parameterMonitor.checkUpdate()) {
+      this._sendToModelControl({
+        channel: "manager:update-parameter",
+        data: {
+          value: this.parameterMonitor.value,
+        },
+      });
+    }
   }
-  onSendToModelControl() {}
+  onSendToModelControl(callback) {
+    this._sendToModelControl = callback;
+  }
+  handleMessage(message) {
+    switch (message.channel) {
+      case "control:bind-parameter": {
+        this._bindParameter(message.data.parameterId);
+        break;
+      }
+      case "control:set-parameter": {
+        const { parameterId, value } = message.data;
+        this._setParameter(parameterId, value);
+        break;
+      }
+      case "control:bind-part": {
+        this._bindPart(message.data.partId);
+        break;
+      }
+      case "control:set-part": {
+        const { partId, value } = message.data;
+        this._setPart(partId, value);
+        break;
+      }
+    }
+  }
+  _bindParameter(parameterId) {
+    this.parameterMonitor.bind(parameterId, this.model);
+  }
+  _setParameter(parameterId, value) {
+    const parameterIndex =
+      this.model.internalModel.coreModel._parameterIds.indexOf(parameterId);
+    this.model.internalModel.coreModel._parameterValues[parameterIndex] = value;
+  }
+  _bindPart(partId) {
+    this.partMonitor.bind(partId);
+  }
+  _setPart(partId, value) {
+    const partIndex =
+      this.model.internalModel.coreModel._partIds.indexOf(partId);
+    this.model.internalModel.coreModel._partOpacities[partIndex] = value;
+  }
 }
