@@ -120,6 +120,14 @@ export class Live2dManager extends ModelManager {
         },
       });
     }
+    if (this.partMonitor.checkUpdate()) {
+      this._sendToModelControl({
+        channel: "manager:update-part",
+        data: {
+          value: this.partMonitor.value,
+        },
+      });
+    }
   }
   onSendToModelControl(callback) {
     this._sendToModelControl = callback;
@@ -155,7 +163,7 @@ export class Live2dManager extends ModelManager {
     this.model.internalModel.coreModel._parameterValues[parameterIndex] = value;
   }
   _bindPart(partId) {
-    this.partMonitor.bind(partId);
+    this.partMonitor.bind(partId, this.model);
   }
   _setPart(partId, value) {
     const partIndex =

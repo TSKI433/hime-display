@@ -1,6 +1,6 @@
 <template>
   <config-item label="Parameter" label-position="top">
-    <config-item label="目标选择">
+    <config-item label="参数选择">
       <el-select
         v-model="selectedParameterId"
         @change="bindParameterId"
@@ -21,16 +21,34 @@
         :step="0.1"
         style="width: 60%; margin-left: 10px"
         :disabled="selectedParameterId === ''"
-        @input="setParameterValue"
       />
       {{ parameterValue }}
+    </config-item>
+  </config-item>
+  <config-item label="Part Opacity" label-position="top">
+    <config-item label="部分选择">
+      <el-select v-model="selectedPartId" @change="bindPartId" filterable>
+        <el-option v-for="partId in partInfo" :label="partId" :value="partId" />
+      </el-select>
+    </config-item>
+    <config-item label="可见度调整" style="width: 100%">
+      <el-slider
+        v-model="partOpacity"
+        :min="0"
+        :max="1"
+        :step="0.05"
+        style="width: 60%; margin-left: 10px"
+        :disabled="selectedPartId === ''"
+        @input="setPartOpacity"
+      />
+      {{ partOpacity }}
     </config-item>
   </config-item>
 </template>
 
 <script setup>
 import ConfigItem from "@control/components/Common/ConfigItem.vue";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
@@ -40,17 +58,8 @@ const props = defineProps({
 });
 const selectedParameterId = ref("");
 const parameterValue = ref(0);
-window.parameterInfo = props.parameterInfo;
 const selectedParameterIndex = computed(() => {
-  const index = props.parameterInfo._parameterIds.indexOf(
-    selectedParameterId.value
-  );
-  if (index === -1) {
-    // 返回-1会导致Vue渲染崩溃
-    return 0;
-  } else {
-    return index;
-  }
+  return props.parameterInfo._parameterIds.indexOf(selectedParameterId.value);
 });
 function bindParameterId() {
   if (selectedParameterId.value === "") return;
@@ -70,11 +79,38 @@ function setParameterValue() {
     },
   });
 }
+// 若检测input事件，会在相同的parameterValue下多次触发事件，消耗性能
+watch(parameterValue, setParameterValue);
+const selectedPartId = ref("");
+const partOpacity = ref(0);
+function bindPartId() {
+  if (selectedPartId.value === "") return;
+  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+    channel: "control:bind-part",
+    data: {
+      partId: selectedPartId.value,
+    },
+  });
+}
+function setPartOpacity() {
+  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+    channel: "control:set-part",
+    data: {
+      partId: selectedPartId.value,
+      value: partOpacity.value,
+    },
+  });
+}
+watch(partOpacity, setPartOpacity);
 ipcAPI.handleSendToModelControl((event, message) => {
   switch (message.channel) {
     case "manager:update-parameter": {
       parameterValue.value = message.data.value;
       break;
+    }
+    // 虽然没怎么遇到part可见性的动画，但是通过分析live2d的motion文件发现，partOpacity也是可以设定动画帧的
+    case "manager:update-part": {
+      partOpacity.value = message.data.value;
     }
   }
 });

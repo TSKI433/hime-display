@@ -42,5 +42,41 @@ class ParameterMonitor {
     return changed;
   }
 }
-class PartMonitor {}
+class PartMonitor {
+  constructor() {
+    this.value = 0;
+    this.model = null;
+    this.isJustBined = false;
+  }
+  bind(target, model = null) {
+    this.model = model;
+    this.partId = target;
+    if (!this.model.internalModel.coreModel._partIds.includes(this.partId)) {
+      throw new Error(
+        `PartMonitor: part ${this.parameterId} not found in the model`
+      );
+    }
+    this.isJustBined = true;
+    this.partIndex = this.model.internalModel.coreModel._partIds.indexOf(
+      this.partId
+    );
+    this.value = 0;
+  }
+  checkUpdate() {
+    let changed = false;
+    if (this.isJustBined) {
+      this.isJustBined = false;
+      changed = true;
+    }
+    if (this.value !== null && this.model !== null && changed === false) {
+      const newPartOpacity =
+        this.model.internalModel.coreModel._partOpacities[this.partIndex];
+      if (this.value !== newPartOpacity) {
+        this.value = newPartOpacity;
+        changed = true;
+      }
+    }
+    return changed;
+  }
+}
 export { ParameterMonitor, PartMonitor };
