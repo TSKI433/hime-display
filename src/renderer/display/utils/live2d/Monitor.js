@@ -1,3 +1,4 @@
+// 绝了，不知道是谁的锅，这里的live2d渲染系统设定_parameterValues和_partOpacities会发生小数偏移，例如设为0.3，他可能自动变成0.3000078397489这样的，导致我设定的参数变化监测系统直接疯狂更新，这里采用toFixed限制小数位
 class ParameterMonitor {
   constructor() {
     this.value = 0;
@@ -30,10 +31,11 @@ class ParameterMonitor {
       changed = true;
     }
     if (this.value !== null && this.model !== null && changed === false) {
-      const newParameterValue =
+      const newParameterValue = Number(
         this.model.internalModel.coreModel._parameterValues[
           this.parameterIndex
-        ];
+        ].toFixed(2)
+      );
       if (this.value !== newParameterValue) {
         this.value = newParameterValue;
         changed = true;
@@ -69,8 +71,11 @@ class PartMonitor {
       changed = true;
     }
     if (this.value !== null && this.model !== null && changed === false) {
-      const newPartOpacity =
-        this.model.internalModel.coreModel._partOpacities[this.partIndex];
+      const newPartOpacity = Number(
+        this.model.internalModel.coreModel._partOpacities[
+          this.partIndex
+        ].toFixed(2)
+      );
       if (this.value !== newPartOpacity) {
         this.value = newPartOpacity;
         changed = true;
