@@ -1,7 +1,11 @@
 <template>
   <config-item label="Parameter" label-position="top">
     <config-item label="目标选择">
-      <el-select v-model="selectedParameterId" @change="bindParameterId">
+      <el-select
+        v-model="selectedParameterId"
+        @change="bindParameterId"
+        filterable
+      >
         <el-option
           v-for="parameterId in parameterInfo._parameterIds"
           :label="parameterId"
@@ -14,7 +18,7 @@
         v-model="parameterValue"
         :min="parameterInfo._parameterMinimumValues[selectedParameterIndex]"
         :max="parameterInfo._parameterMaximumValues[selectedParameterIndex]"
-        :step="1"
+        :step="0.1"
         style="width: 60%; margin-left: 10px"
         :disabled="selectedParameterId === ''"
         @input="setParameterValue"

@@ -1,6 +1,6 @@
 <template>
   <config-item label="目标选择">
-    <el-select v-model="selectedMorphName" @change="bindMorphTarget">
+    <el-select v-model="selectedMorphName" @change="bindMorphTarget" filterable>
       <el-option
         v-for="(morphIndex, morphName) in morphInfo"
         :label="morphName"
