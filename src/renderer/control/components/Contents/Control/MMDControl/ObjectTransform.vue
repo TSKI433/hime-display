@@ -21,6 +21,7 @@
     <transform
       :transform-object="transformObject"
       @input="setNodeTransform"
+      :disabled="nodeIdNow === ''"
     ></transform>
   </div>
 </template>
@@ -49,7 +50,7 @@ watch(nodeIdNow, (newId, oldId) => {
     data: { nodeId: newId },
   });
 });
-// 这里不能watch了，因为展示器那边带来的数据更新也会触发watch，造成死循环
+// 这里和morph不一样，不用watch了，下方对"manager:update-node-transform"事件的处理（出于懒）使用了直接赋值position，rotation，scale，改变了引用对象，因此展示器那边带来的数据更新也会触发watch，带来不必要的消耗（甚至可能导致死循环，不过根据目前monitor的监测机制，应该会在第二重循环上就拦住的）
 // watch(transformObject, (newTransform) => {
 //      ipcAPI.setNodeTransform(nodeIdNow.value,toRaw(newTransform))
 // });
@@ -67,7 +68,7 @@ function setNodeTransform() {
 ipcAPI.handleSendToModelControl((event, message) => {
   switch (message.channel) {
     case "manager:update-node-transform": {
-      // 直接赋值会失去响应性
+      // 直接赋值会完全失去响应性
       transformObject.position = message.data.position;
       transformObject.rotation = message.data.rotation;
       transformObject.scale = message.data.scale;

@@ -234,8 +234,7 @@ export class MmdManager extends ModelManager {
         break;
       }
       case "control:set-node-transform": {
-        const { nodeId, transform } = message.data;
-        this._setNodeTransform(nodeId, transform);
+        this._setNodeTransform(message.data);
         break;
       }
       case "control:play-motion": {
@@ -311,14 +310,7 @@ export class MmdManager extends ModelManager {
         break;
       }
       case "control:set-morph-weight": {
-        const { morphName, weight } = message.data;
-        const morphIndex = this.model.morphTargetDictionary[morphName];
-        if (morphIndex === undefined) {
-          throw new Error(
-            `MmdManager: Morph ${morphName} not found in the model`
-          );
-        }
-        this.model.morphTargetInfluences[morphIndex] = weight;
+        this._setMorphWeight(message.data);
         break;
       }
       case "control:change-physics": {
@@ -333,7 +325,7 @@ export class MmdManager extends ModelManager {
   _bindNodeTransform(nodeId) {
     this.transformMonitor.bind(this.scene.getObjectById(nodeId));
   }
-  _setNodeTransform(nodeId, transform) {
+  _setNodeTransform({ nodeId, transform }) {
     const target = this.scene.getObjectById(nodeId);
     for (let i of ["position", "rotation", "scale"]) {
       for (let j of ["x", "y", "z"]) {
@@ -342,6 +334,17 @@ export class MmdManager extends ModelManager {
         }
       }
     }
+    // 直接手动更新Monitor的数值，防止checkUpdate机制循环发送更新消息（一般来讲会发送两次）
+    this.transformMonitor.transform = transform;
+  }
+  _setMorphWeight({ morphName, weight }) {
+    const morphIndex = this.model.morphTargetDictionary[morphName];
+    if (morphIndex === undefined) {
+      throw new Error(`MmdManager: Morph ${morphName} not found in the model`);
+    }
+    this.model.morphTargetInfluences[morphIndex] = weight;
+    // 直接手动更新Monitor的数值，防止checkUpdate机制循环发送更新消息
+    this.morphMonitor.value = weight;
   }
   _resetAnimationManager() {
     this.animationManager?.destroy();

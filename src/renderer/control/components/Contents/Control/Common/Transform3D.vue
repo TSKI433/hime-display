@@ -12,6 +12,7 @@
           :precision="2"
           v-model="transformObject.position[i]"
           @input="$emit('input')"
+          :disabled="disabled"
         ></el-input-number>
       </config-item>
     </config-item>
@@ -25,6 +26,7 @@
           :precision="2"
           v-model="transformObject.rotation[i]"
           @input="$emit('input')"
+          :disabled="disabled"
         ></el-input-number>
       </config-item>
     </config-item>
@@ -38,6 +40,7 @@
           :precision="2"
           v-model="transformObject.scale[i]"
           @input="$emit('input')"
+          :disabled="disabled"
         ></el-input-number>
       </config-item>
     </config-item>
@@ -51,6 +54,7 @@ const xyz = ["x", "y", "z"];
 const props = defineProps({
   positionStep: Number,
   transformObject: Object,
+  disabled: Boolean,
 });
 </script>
 

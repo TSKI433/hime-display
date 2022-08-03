@@ -139,8 +139,7 @@ export class Live2dManager extends ModelManager {
         break;
       }
       case "control:set-parameter": {
-        const { parameterId, value } = message.data;
-        this._setParameter(parameterId, value);
+        this._setParameter(message.data);
         break;
       }
       case "control:bind-part": {
@@ -148,8 +147,7 @@ export class Live2dManager extends ModelManager {
         break;
       }
       case "control:set-part": {
-        const { partId, value } = message.data;
-        this._setPart(partId, value);
+        this._setPart(message.data);
         break;
       }
     }
@@ -157,17 +155,21 @@ export class Live2dManager extends ModelManager {
   _bindParameter(parameterId) {
     this.parameterMonitor.bind(parameterId, this.model);
   }
-  _setParameter(parameterId, value) {
+  _setParameter({ parameterId, value }) {
     const parameterIndex =
       this.model.internalModel.coreModel._parameterIds.indexOf(parameterId);
     this.model.internalModel.coreModel._parameterValues[parameterIndex] = value;
+    // 直接手动更新Monitor的数值，防止checkUpdate机制循环发送更新消息
+    this.parameterMonitor.value = value;
   }
   _bindPart(partId) {
     this.partMonitor.bind(partId, this.model);
   }
-  _setPart(partId, value) {
+  _setPart({ partId, value }) {
     const partIndex =
       this.model.internalModel.coreModel._partIds.indexOf(partId);
     this.model.internalModel.coreModel._partOpacities[partIndex] = value;
+    // 直接手动更新Monitor的数值，防止checkUpdate机制循环发送更新消息
+    this.partMonitor.value = value;
   }
 }

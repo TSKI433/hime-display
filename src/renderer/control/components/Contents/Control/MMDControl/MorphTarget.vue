@@ -16,14 +16,13 @@
       :step="0.1"
       style="width: 60%; margin-left: 10px"
       :disabled="selectedMorphName === ''"
-      @input="setMorphWeight"
     />
   </config-item>
 </template>
 
 <script setup>
 import ConfigItem from "@control/components/Common/ConfigItem.vue";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
@@ -51,6 +50,8 @@ function setMorphWeight() {
     },
   });
 }
+// 这里和live2d的参数控制一样，不再用input事件触发setMorphWeight函数，改为watch了，理由是，el-slider控件设定step参数后，即使参数没有更新，有滑动的操作也可能触发input，这样会导致setMorphWeight函数重复触发，消耗性能，由于这里监听的morphWeight是ref包裹的原始值，所以也不用担心会像ObjectTransform.vue里面那样意外的由于watch触发setMorphWeight函数。
+watch(morphWeight, setMorphWeight);
 ipcAPI.handleSendToModelControl((event, message) => {
   switch (message.channel) {
     case "manager:update-node-morph": {
