@@ -27,5 +27,9 @@ export function sendToModelManager(displayWindowId, message) {
   ipcRenderer.sendTo(displayWindowId, "control:send-to-model-manager", message);
 }
 export function handleSendToModelControl(callback) {
+  console.log("handleSendToModelControl");
   ipcRenderer.on("display:send-to-model-control", callback);
+}
+export function removeManagerListeners() {
+  ipcRenderer.removeAllListeners("display:send-to-model-control");
 }

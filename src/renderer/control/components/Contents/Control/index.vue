@@ -21,7 +21,7 @@ import HimeSpineControl from "@control/components/Contents/Control/SpineControl/
 import HimeVRoidControl from "@control/components/Contents/Control/VRoidControl/index.vue";
 import HimeLive2DControl from "@control/components/Contents/Control/Live2DControl/index.vue";
 import { useControlStore } from "@control/store/control";
-import { computed } from "vue";
+import { computed, watch } from "vue";
 const controlStore = useControlStore();
 const controlComponents = {
   HimeMMDControl,
@@ -32,6 +32,13 @@ const controlComponents = {
 const controlComponentNow = computed(() => {
   return controlComponents[`Hime${controlStore.currentModelType}Control`];
 });
+watch(
+  () => controlStore.currentModelType,
+  () => {
+    // 切换模型类型时，清空事件监听
+    nodeAPI.ipc.removeManagerListeners();
+  }
+);
 </script>
 
 <style lang="scss">
