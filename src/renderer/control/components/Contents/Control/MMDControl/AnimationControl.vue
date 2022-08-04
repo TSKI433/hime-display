@@ -51,6 +51,9 @@
     <config-item label="物理模拟">
       <el-switch v-model="physicsSimulation" />
     </config-item>
+    <config-item label="循环播放（需载入前设定）">
+      <el-switch v-model="animationLoop" />
+    </config-item>
     <config-item label="加载">
       <el-button @click="playMotion" :disabled="!motionTableSelected"
         >载入选中动画</el-button
@@ -82,6 +85,7 @@ let currentMotionInfo = null;
 let currentAudioInfo = null;
 const motionTableSelected = ref(false);
 const audioTableSelected = ref(false);
+const animationLoop = ref(true);
 const delayTime = ref(0);
 const ipcAPI = window.nodeAPI.ipc;
 function changeCurrentMotionInfo(currentRow) {
@@ -99,6 +103,7 @@ function playMotion() {
       data: {
         motionFilePath: currentMotionInfo.entranceFile,
         physicsSimulation: physicsSimulation.value,
+        animationLoop: animationLoop.value,
       },
     });
   }
@@ -112,6 +117,8 @@ function playMotionWithAudio() {
         audioFilePath: currentAudioInfo.entranceFile,
         delayTime: delayTime.value,
         physicsSimulation: physicsSimulation.value,
+        // TODO：音频跟着loop，现在懒得做
+        animationLoop: animationLoop.value,
       },
     });
   }

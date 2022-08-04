@@ -47,8 +47,6 @@ export class AnimationManager {
         this.mixer = helperMeshObject.mixer;
         this.ikSolver = helperMeshObject.ikSolver;
         this.action = this.mixer._actions[0];
-        // 让整个动作只播放一次
-        this.action.setLoop(LoopOnce, Infinity);
         this.clip = this.action.getClip();
         this.physics = helperMeshObject.physics;
         this.totalDuration = this.clip.duration;
@@ -103,7 +101,10 @@ export class AnimationManager {
     if (this.clock.running) {
       const delta = this.clock.getDelta();
       this.helper.update(delta);
-      if (this.mixer.time >= this.totalDuration) {
+      if (
+        this.action.loop === LoopOnce &&
+        this.mixer.time >= this.totalDuration
+      ) {
         this.pause();
         // 防止炸毛
         this.pose();
@@ -120,6 +121,15 @@ export class AnimationManager {
   pause() {
     this.clock.stop();
     this.audioManager?.pause();
+  }
+  setLoop(loop) {
+    if (this.action === null) {
+      console.error("AnimationManager: action is null");
+    }
+    if (!loop) {
+      // 让整个动作只播放一次
+      this.action.setLoop(LoopOnce, Infinity);
+    }
   }
   // 尚未使用的函数
   setTime() {

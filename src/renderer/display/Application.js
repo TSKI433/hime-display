@@ -41,6 +41,7 @@ export class Application {
       console.log(
         `[Hime Display] Load model: name:${modelInfo.name}, modelType:${modelInfo.modelType}`
       );
+      // 通过managers.now切换的一大优势就是，事件监听无需手动切换
       if (this.managers.now?.modelType !== modelInfo.modelType) {
         this.managers.now?.switchOut();
         this.managers.now = this.managers[modelInfo.modelType];
