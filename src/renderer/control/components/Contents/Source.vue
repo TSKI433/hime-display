@@ -3,11 +3,11 @@
     <hime-title-with-divider>{{ $t("menu.source") }}</hime-title-with-divider>
     <el-form label-position="top" class="hime-el-form--large-label">
       <el-form-item label="数据源">
-        <!-- row-key用于辨识row，解决expand输入内容后自动折叠的问题 -->
+        <!-- row-key用于辨识row，解决expand输入内容后自动折叠，以及一旦展开就变成全部展开的问题 -->
         <el-table
           :data="appStore.database.sourcePathInfo"
           :border="true"
-          row-key="path"
+          row-key="sourcePath"
           ref="sourceTable"
           class="hime-el-table--source-path"
           size="small"
@@ -24,11 +24,13 @@
                   :inline="true"
                 >
                   <el-form-item label="检索数据类型">
+                    <!-- 官方文档里面没有说el-checkbox-button有change事件，但是经过实际测试是有的，然后就拿来用了 -->
                     <el-checkbox-button
                       v-for="sourceType in sourceTypes"
                       v-model="props.row.sourceTypes[sourceType]"
                       :key="sourceType"
                       :label="sourceType"
+                      @change="writeSourcePathInfo"
                     />
                   </el-form-item>
                 </el-form>
@@ -126,7 +128,7 @@
 </template>
 
 <script setup>
-import { watch, ref, toRaw, computed } from "vue";
+import { ref, toRaw, computed } from "vue";
 import SvgIconElButton from "@control/components/Common/SvgIconElButton.vue";
 import HimeTitleWithDivider from "@control/components/Common/TitleWithDivider.vue";
 import { useAppStore } from "@control/store/app";
@@ -151,11 +153,18 @@ const totalInfo = computed(() => [
     audio3D: appStore.database.audio3D.length,
   },
 ]);
-// 实时更新数据库
-watch(appStore.database.sourcePathInfo, (newValue) => {
-  // 这里没办法只有把整个source数据传过去
-  window.nodeAPI.database.write("sourcePathInfo", toRaw(newValue));
-});
+// 不能watch了，我人要废了……因为同步数据库也会触发watch的，需要的时候我还是手动写入数据吧
+// // 实时更新数据库
+// watch(appStore.database.sourcePathInfo, (newValue) => {
+//   // 这里没办法只有把整个source数据传过去
+//   window.nodeAPI.database.write("sourcePathInfo", toRaw(newValue));
+// });
+function writeSourcePathInfo() {
+  window.nodeAPI.database.write(
+    "sourcePathInfo",
+    toRaw(appStore.database.sourcePathInfo)
+  );
+}
 function expandRow(row) {
   sourceTable.value.toggleRowExpansion(row);
   // 这不是script setup里的用法
@@ -166,11 +175,20 @@ function showInFolder(path) {
   window.nodeAPI.showInFolder(path);
 }
 function deleteSourcePath(index) {
-  appStore.database.sourcePathInfo.splice(index, 1);
+  // 移除数据源相关的数据条目
+  const sourcePath = appStore.database.sourcePathInfo[index].sourcePath;
+  // 若不用异步函数，可能会导致同步操作在删除直接执行
+  window.nodeAPI.database.removeDataFromSourcePath(sourcePath).then(() => {
+    appStore.syncDatabase();
+    // 千万别在这条语句下方同步数据库，不然直接把preload里面的旧sourcePathInfo数据弄过来了
+    appStore.database.sourcePathInfo.splice(index, 1);
+    writeSourcePathInfo();
+  });
 }
 function addSourePath() {
   window.nodeAPI.ipc.selectPath().then((path) => {
     if (path.length > 0) {
+      // 这里不自动执行loadFromSourcePath是有深刻原因的，用户或许并不希望载入所有的sourceTypes，因此应当等到筛选sourceTypes后再手动载入
       appStore.database.sourcePathInfo.push({
         sourcePath: path[0],
         tagName: "",
@@ -183,6 +201,7 @@ function addSourePath() {
           audio3D: true,
         },
       });
+      writeSourcePathInfo();
     }
   });
 }

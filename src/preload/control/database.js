@@ -15,10 +15,41 @@ export function value() {
 export function write(value, data) {
   db.set(value, data).write();
 }
-export async function loadDataFromSourcePathInfo(sourcePathInfo) {
-  await loadDataFromPath(sourcePathInfo.sourcePath, sourcePathInfo.sourceTypes);
+export async function removeDataFromSourcePath(sourcePath) {
+  // 不愧是lodash，极致精简语法，remove({sourcePath})，优雅啊
+  // 从本源来讲，要追溯到_.matches，然后再到_.isMatch，然后再搭配上ES6的对象属性简写，最终浓缩成这个简单的语句
+  ["model", "motion3D", "audio3D"].forEach((type) => {
+    db.get(type).remove({ sourcePath }).write();
+  });
 }
-async function loadDataFromPath(dataPath, sourceTypes) {
+export async function loadDataFromSourcePathInfo(sourcePathInfo) {
+  await loadDataFromPath(
+    sourcePathInfo.sourcePath,
+    sourcePathInfo.sourceTypes,
+    sourcePathInfo.sourcePath
+  );
+  removeRemovedSourceTypeData(sourcePathInfo);
+}
+// 若更改过一个数据源的sourceTypes，需要删除一些原来sourceType允许载入的数据
+function removeRemovedSourceTypeData(sourcePathInfo) {
+  db.get("model")
+    .remove(
+      (item) =>
+        item.sourcePath === sourcePathInfo.sourcePath &&
+        !sourcePathInfo.sourceTypes[item.modelType]
+    )
+    .write();
+  if (!sourcePathInfo.sourceTypes.motion3D) {
+    db.get("motion3D")
+      .remove({ sourcePath: sourcePathInfo.sourcePath })
+      .write();
+  }
+  if (!sourcePathInfo.sourceTypes.audio3D) {
+    db.get("audio3D").remove({ sourcePath: sourcePathInfo.sourcePath }).write();
+  }
+}
+// 后面这些函数里面带的sourcePath都是最原始，不受递归影响的那个sourcePath，用于判断一个模型由哪个源检索到的，方便跟随删除
+async function loadDataFromPath(dataPath, sourceTypes, sourcePath) {
   //根据文件路径读取文件，返回文件列表
   // 全部使用箭头函数，确保this对象可以传进去
   const files = await util.promisify(fs.readdir)(dataPath);
@@ -34,12 +65,12 @@ async function loadDataFromPath(dataPath, sourceTypes) {
     const isDir = stats.isDirectory(); //是文件夹
     if (isFile) {
       //是文件
-      detectDatabaseItem(dir, sourceTypes);
+      detectDatabaseItem(dir, sourceTypes, sourcePath);
     }
     if (isDir) {
       //递归，如果是文件夹，就继续遍历该文件夹下面的文件
       // 这里不能在push里面写await，Promise.all应该接收一个Promise的列表
-      promises.push(loadDataFromPath(dir, sourceTypes));
+      promises.push(loadDataFromPath(dir, sourceTypes, sourcePath));
       // 这样写的话和同步都没有区别了
       // await this.refreshModelDB(dir);
     }
@@ -48,7 +79,7 @@ async function loadDataFromPath(dataPath, sourceTypes) {
   // 异步的关键
   return Promise.all(promises);
 }
-async function detectDatabaseItem(fileDir, sourceTypes) {
+async function detectDatabaseItem(fileDir, sourceTypes, sourcePath) {
   const extensionName = path.extname(fileDir);
   switch (extensionName) {
     case ".json": {
@@ -56,50 +87,50 @@ async function detectDatabaseItem(fileDir, sourceTypes) {
       const fileData = await util.promisify(fs.readFile)(fileDir);
       const fileJson = JSON.parse(fileData.toString());
       if (sourceTypes["Live2D"]) {
-        processLive2dJson(fileDir, fileJson);
-        processSpineJson(fileDir, fileJson);
+        processLive2dJson(fileDir, fileJson, sourcePath);
+        processSpineJson(fileDir, fileJson, sourcePath);
       }
       break;
     }
     case ".pmx": {
       if (sourceTypes["MMD"]) {
-        processPmx(fileDir);
+        processPmx(fileDir, sourcePath);
       }
       break;
     }
     case ".vrm": {
       if (sourceTypes["VRoid"]) {
-        processVrm(fileDir);
+        processVrm(fileDir, sourcePath);
       }
       break;
     }
     case ".skel": {
       if (sourceTypes["Spine"]) {
-        processSkel(fileDir);
+        processSkel(fileDir, sourcePath);
       }
       break;
     }
     case ".vmd": {
       if (sourceTypes["motion3D"]) {
-        processVmd(fileDir);
+        processVmd(fileDir, sourcePath);
       }
       break;
     }
     case ".wav": {
       if (sourceTypes["audio3D"]) {
-        processWav(fileDir);
+        processWav(fileDir, sourcePath);
       }
       break;
     }
     case ".mp3": {
       if (sourceTypes["audio3D"]) {
-        processMp3(fileDir);
+        processMp3(fileDir, sourcePath);
       }
       break;
     }
   }
 }
-function processLive2dJson(fileDir, fileJson) {
+function processLive2dJson(fileDir, fileJson, sourcePath) {
   if ("model" in fileJson) {
     writeModelInfo({
       name: splitDirName(fileDir),
@@ -107,6 +138,7 @@ function processLive2dJson(fileDir, fileJson) {
       extensionName: "moc",
       // Windows下使用file:会导致路径出错，热重载开发环境下不使用file:会导致路径报错
       entranceFile: resolveEntrancePath(fileDir),
+      sourcePath,
       // has_motion: "motions" in fileJson ? true : false;
     });
   } else if ("FileReferences" in fileJson) {
@@ -115,65 +147,73 @@ function processLive2dJson(fileDir, fileJson) {
       modelType: "Live2D",
       extensionName: "moc3",
       entranceFile: resolveEntrancePath(fileDir),
+      sourcePath,
       // has_motion:"Motions" in fileJson.FileReferences ? true : false
     });
   }
 }
-function processPmx(fileDir) {
+function processPmx(fileDir, sourcePath) {
   writeModelInfo({
     name: splitDirName(fileDir),
     modelType: "MMD",
     extensionName: "pmx",
     entranceFile: resolveEntrancePath(fileDir),
+    sourcePath,
   });
 }
-function processVrm(fileDir) {
+function processVrm(fileDir, sourcePath) {
   writeModelInfo({
     name: splitDirName(fileDir),
     modelType: "VRoid",
     extensionName: "vrm",
     entranceFile: resolveEntrancePath(fileDir),
+    sourcePath,
   });
 }
 // todo: spine模型比较特殊，即使是加载模型，版本也不向下兼容……因此之后有必要进一步对模型版本进行判断
-function processSkel(fileDir) {
+function processSkel(fileDir, sourcePath) {
   writeModelInfo({
     name: splitDirName(fileDir),
     modelType: "Spine",
     extensionName: "skel",
     entranceFile: resolveEntrancePath(fileDir),
+    sourcePath,
   });
 }
-function processSpineJson(fileDir, fileJson) {
+function processSpineJson(fileDir, fileJson, sourcePath) {
   if ("skeleton" in fileJson && "spine" in fileJson.skeleton) {
     writeModelInfo({
       name: splitDirName(fileDir),
       modelType: "Spine",
       extensionName: "json",
       entranceFile: resolveEntrancePath(fileDir),
+      sourcePath,
     });
   }
 }
-function processVmd(fileDir) {
+function processVmd(fileDir, sourcePath) {
   writeMotion3DInfo({
     // 根据我在B碗上的下载经验，有一些配布中都会带有多个版本的vmd，这些文件的名称都不是曲名，但没有办法，只能让用户手动改一下文件名了
     name: path.basename(fileDir),
     extensionName: "vmd",
     entranceFile: resolveEntrancePath(fileDir),
+    sourcePath,
   });
 }
-function processWav(fileDir) {
+function processWav(fileDir, sourcePath) {
   writeAudio3DInfo({
     name: path.basename(fileDir),
     extensionName: "wav",
     entranceFile: resolveEntrancePath(fileDir),
+    sourcePath,
   });
 }
-function processMp3(fileDir) {
+function processMp3(fileDir, sourcePath) {
   writeAudio3DInfo({
     name: path.basename(fileDir),
     extensionName: "mp3",
     entranceFile: resolveEntrancePath(fileDir),
+    sourcePath,
   });
 }
 // 因为有些模型入口文件名完全没有辨识度，如model.json，以模型入口文件的的上级目录名作为模型名称
@@ -186,17 +226,33 @@ function resolveEntrancePath(fileDir) {
 }
 function writeModelInfo(modelInfo) {
   //  防止重复写入模型数据
-  if (db.get("model").findIndex(modelInfo).value() == -1) {
+  // 现在以模型入口文件的路径作为唯一标识，如果已经存在，则不再写入。不直接用motionInfo是考虑到万一有人载入了具有包含关系的多个源路径，这会导致模型重复写入
+  if (
+    db
+      .get("model")
+      .findIndex((item) => item.entranceFile === modelInfo.entranceFile)
+      .value() == -1
+  ) {
     db.get("model").push(modelInfo).write();
   }
 }
 function writeMotion3DInfo(motionInfo) {
-  if (db.get("motion3D").findIndex(motionInfo).value() == -1) {
+  if (
+    db
+      .get("motion3D")
+      .findIndex((item) => item.entranceFile === motionInfo.entranceFile)
+      .value() == -1
+  ) {
     db.get("motion3D").push(motionInfo).write();
   }
 }
 function writeAudio3DInfo(audioInfo) {
-  if (db.get("audio3D").findIndex(audioInfo).value() == -1) {
+  if (
+    db
+      .get("audio3D")
+      .findIndex((item) => item.entranceFile === audioInfo.entranceFile)
+      .value() == -1
+  ) {
     db.get("audio3D").push(audioInfo).write();
   }
 }
