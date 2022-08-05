@@ -150,6 +150,12 @@ export class Live2dManager extends ModelManager {
         this._setPart(message.data);
         break;
       }
+      case "control:load-motion": {
+        const motionIndex = this.model.internalModel.settings.motions[
+          message.data.motion.group
+        ].findIndex((motion) => motion.File === message.data.motion.File);
+        this.model.motion(message.data.motion.group, motionIndex);
+      }
     }
   }
   _bindParameter(parameterId) {
