@@ -5,4 +5,5 @@ export default {
   "morph-target": "Morph Target",
   "camera-parameter": "Camera Parameter",
   "motion-capture": "Motion Capture",
+  "parameter-and-part": "Parameter and Part",
 };

@@ -1,5 +1,5 @@
 <template>
-  <config-item label="捕捉类型">
+  <config-item label="捕捉类型" v-if="hasHolistic">
     <el-radio-group v-model="motionCaptureType">
       <el-radio-button label="faceMesh">面部捕捉</el-radio-button>
       <el-radio-button label="holistic">全身捕捉</el-radio-button>
@@ -17,6 +17,12 @@
 import { useAppStore } from "@control/store/app";
 import ConfigItem from "@control/components/Common/ConfigItem.vue";
 import { ref } from "vue";
+const props = defineProps({
+  hasHolistic: {
+    type: Boolean,
+    default: true,
+  },
+});
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
 const capturing = ref(false);
@@ -33,7 +39,7 @@ function launchCapture() {
 function quitCapture() {
   ipcAPI.sendToModelManager(appStore.displayWindowId, {
     channel: "control:quit-capture",
-    data: {},
+    data: null,
   });
   capturing.value = false;
 }

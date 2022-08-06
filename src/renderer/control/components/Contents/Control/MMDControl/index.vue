@@ -37,17 +37,11 @@
         </template>
       </el-tab-pane>
       <el-tab-pane :label="$t(`control.animation-control`)">
-        <animation-control
-          v-if="controlStore.modelControlInfo?.description !== undefined"
-        >
-        </animation-control>
-        <template v-else>
-          <control-load-error></control-load-error>
-        </template>
+        <animation-control> </animation-control>
       </el-tab-pane>
       <el-tab-pane :label="$t(`control.morph-target`)">
         <morph-target
-          v-if="controlStore.modelControlInfo?.description !== undefined"
+          v-if="controlStore.modelControlInfo?.morph !== undefined"
           :morph-info="controlStore.modelControlInfo.morph"
         >
         </morph-target>
@@ -56,13 +50,7 @@
         </template>
       </el-tab-pane>
       <el-tab-pane :label="$t(`control.motion-capture`)">
-        <motion-capture
-          v-if="controlStore.modelControlInfo?.description !== undefined"
-        >
-        </motion-capture>
-        <template v-else>
-          <control-load-error></control-load-error>
-        </template>
+        <motion-capture> </motion-capture>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -75,7 +63,7 @@ import ModelDescription from "../Common/ModelDescription.vue";
 import ObjectTransform from "./ObjectTransform.vue";
 import AnimationControl from "./AnimationControl.vue";
 import MorphTarget from "./MorphTarget.vue";
-import MotionCapture from "./MotionCapture.vue";
+import MotionCapture from "../Common/MotionCapture.vue";
 import { useControlStore } from "@control/store/control";
 const controlStore = useControlStore();
 const descriptionInfo = reactive({

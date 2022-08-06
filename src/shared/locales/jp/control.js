@@ -2,8 +2,9 @@
 export default {
   "model-description": "モデル情報",
   "object-transform": "オブジェクト変換",
-  "animation-control": "アニメーション操作",
+  "animation-control": "アニメーションコントロール",
   "morph-target": "モーフターゲット",
   "camera-parameter": "カメラパラメータ",
   "motion-capture": "モーションキャプチャ",
+  "parameter-and-part": "パラメータとパート",
 };

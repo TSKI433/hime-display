@@ -12,20 +12,20 @@
           <control-load-error></control-load-error>
         </template>
       </el-tab-pane>
-      <el-tab-pane :label="$t(`control.parameter-and-part-control`)">
-        <parameter-and-part-control
+      <el-tab-pane :label="$t(`control.parameter-and-part`)">
+        <parameter-and-part
           v-if="
             controlStore.modelControlInfo?.parameter !== undefined &&
             controlStore.modelControlInfo?.part !== undefined
           "
           :parameter-info="controlStore.modelControlInfo.parameter"
           :part-info="controlStore.modelControlInfo.part"
-        ></parameter-and-part-control>
+        ></parameter-and-part>
         <template v-else>
           <control-load-error></control-load-error>
         </template>
       </el-tab-pane>
-      <el-tab-pane :label="$t(`control.parameter-and-part-control`)">
+      <el-tab-pane :label="$t(`control.animation-control`)">
         <animation-control
           v-if="controlStore.modelControlInfo?.motion !== undefined"
           :motion-info="controlStore.modelControlInfo.motion"
@@ -35,6 +35,9 @@
           <control-load-error></control-load-error>
         </template>
       </el-tab-pane>
+      <el-tab-pane :label="$t(`control.motion-capture`)">
+        <motion-capture :has-holistic="false"></motion-capture>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -43,8 +46,9 @@
 import { reactive } from "vue";
 import ControlLoadError from "../Common/ControlLoadError.vue";
 import ModelDescription from "../Common/ModelDescription.vue";
-import ParameterAndPartControl from "./ParameterAndPartControl.vue";
+import ParameterAndPart from "./ParameterAndPart.vue";
 import AnimationControl from "./AnimationControl.vue";
+import MotionCapture from "../Common/MotionCapture.vue";
 import { useControlStore } from "@control/store/control";
 const controlStore = useControlStore();
 const descriptionInfo = reactive({
