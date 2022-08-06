@@ -219,7 +219,7 @@ export class Live2dManager extends ModelManager {
   }
   // 不使用箭头函数会导致this的指向出错，若使用bind更改this指向，会导致返回的function和原函数不同，无法移出事件监听器
   onPointerMove = (event) => {
-    if (this.captureManagerNow === null) {
+    if (this.focusPosition === null) {
       // 初次检测，初始化focusPosition
       this.focusPosition = {};
     }
