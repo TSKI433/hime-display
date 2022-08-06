@@ -6,7 +6,10 @@
     </el-radio-group>
   </config-item>
   <config-item label="捕捉控制">
-    <el-button @click="launchCapture">启动捕捉</el-button>
+    <el-button @click="launchCapture" :disabled="capturing">启动捕捉</el-button>
+    <el-button @click="quitCapture" :disabled="!capturing" type="danger">
+      结束捕捉</el-button
+    >
   </config-item>
 </template>
 
@@ -16,6 +19,7 @@ import ConfigItem from "@control/components/Common/ConfigItem.vue";
 import { ref } from "vue";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
+const capturing = ref(false);
 const motionCaptureType = ref("faceMesh");
 function launchCapture() {
   ipcAPI.sendToModelManager(appStore.displayWindowId, {
@@ -24,6 +28,14 @@ function launchCapture() {
       type: motionCaptureType.value,
     },
   });
+  capturing.value = true;
+}
+function quitCapture() {
+  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+    channel: "control:quit-capture",
+    data: {},
+  });
+  capturing.value = false;
 }
 </script>
 

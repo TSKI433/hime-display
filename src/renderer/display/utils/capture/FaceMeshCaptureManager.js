@@ -32,13 +32,24 @@ export class FaceMeshCaptureManager {
 
     this.camera = new Camera(this.video, {
       onFrame: async () => {
-        await this.faceMesh.send({ image: this.video });
+        // 异步函数，可能在this.faceMesh为null后执行
+        await this.faceMesh?.send({ image: this.video });
       },
       width: 640,
       height: 480,
     });
     this.camera.start();
     this.running = true;
+  }
+  async quitCapture() {
+    // 由于Google的Mediapipe的文档有给了跟没给一样，只有个demo，以及连源代码也找不到，尝试了各种方法，依旧无法实现全面的垃圾回收，即使退出捕捉内存也无法释放，但目前只能这样了
+    await this.camera.stop();
+    await this.faceMesh?.close();
+    this.faceMesh.onResults(null);
+    this.faceMesh = null;
+    this.camera = null;
+    this.running = false;
+    document.body.removeChild(this.videoContainer);
   }
   drawResults(results) {
     if (results.multiFaceLandmarks.length < 1) {

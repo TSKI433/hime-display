@@ -19,8 +19,7 @@ export class MmdManager extends ModelManager {
     this.MMDLoader = null;
     this.transformMonitor = null;
     this.morphMonitor = null;
-    this.faceMeshCaptureManager = null;
-    this.holisticCaptureManager = null;
+    this.captureManagerNow = null;
     // 主要用于MouseFocusHelper的判断
     this.animationManager = null;
     this.mouseFocusHelper = null;
@@ -68,8 +67,7 @@ export class MmdManager extends ModelManager {
     this.MMDLoader = null;
     this.transformMonitor = null;
     this.morphMonitor = null;
-    this.faceMeshCaptureManager = null;
-    this.holisticCaptureManager = null;
+    this.captureManagerNow = null;
     this.animationManager = null;
     // 人查麻了，搞了半天MMD模型没被垃圾回收是mouseFocusHelper的问题，由一个脑袋开始揪住整个模型死活不放手是吧
     this.mouseFocusHelper = null;
@@ -214,10 +212,7 @@ export class MmdManager extends ModelManager {
       this.animationManager.update();
     }
     // 播放动画的时候模型还盯着鼠标看，转身都不带扭头的那效果……我实在是看不下去了
-    if (
-      this.animationManager === null &&
-      this.faceMeshCaptureManager === null
-    ) {
+    if (this.animationManager === null && this.captureManagerNow === null) {
       this.mouseFocusHelper?.focus();
     }
     this.effect.render(this.scene, this.camera);
@@ -302,14 +297,17 @@ export class MmdManager extends ModelManager {
       case "control:launch-capture": {
         const { type } = message.data;
         if (type === "faceMesh") {
-          this.faceMeshCaptureManager = new FaceMeshCaptureManager();
-          this.faceMeshCaptureManager.setTarget(this.model);
-          this.faceMeshCaptureManager.start();
+          this.captureManagerNow = new FaceMeshCaptureManager();
         } else if (type === "holistic") {
-          this.holisticCaptureManager = new HolisticCaptureManager();
-          this.holisticCaptureManager.setTarget(this.model);
-          this.holisticCaptureManager.start();
+          this.captureManagerNow = new HolisticCaptureManager();
         }
+        this.captureManagerNow.setTarget(this.model);
+        this.captureManagerNow.start();
+        break;
+      }
+      case "control:quit-capture": {
+        this.captureManagerNow.quitCapture();
+        this.captureManagerNow = null;
         break;
       }
       case "control:bind-morph-target": {
