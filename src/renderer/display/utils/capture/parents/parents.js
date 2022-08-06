@@ -1,3 +1,4 @@
+// 我时候来才知道，原来自己这里在毫不知情的情况下手动实现了mixin……我之前都没听说过这个概念啊，只是想了半天，为了防止不必要的重复，然后就这么写出来了
 function setTarget(target) {
   this.model = target;
 }

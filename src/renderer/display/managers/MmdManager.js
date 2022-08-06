@@ -57,6 +57,7 @@ export class MmdManager extends ModelManager {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.effect = new OutlineEffect(this.renderer);
     this.effect.enabled = this.config.display["3d-outline-effect"];
+    this._addEventListeners();
   }
   switchOut() {
     this._removeEventListeners();
@@ -167,7 +168,6 @@ export class MmdManager extends ModelManager {
             mmd.skeleton.bones.find((bone) => bone.name === "頭"),
             this.camera
           );
-          this._addEventListeners();
         },
         null,
         (error) => {
@@ -378,7 +378,8 @@ export class MmdManager extends ModelManager {
   }
   // 不使用肩头函数会导致this的指向出错，若使用bind更改this指向，会导致返回的function和原函数不同，无法移出事件监听器
   onPointerMove = (event) => {
-    this.mouseFocusHelper.update(event.clientX, event.clientY);
+    // 加上?，防止没载入模型时出错
+    this.mouseFocusHelper?.update(event.clientX, event.clientY);
   };
   // resize由上级的Application触发
   onWindowResize() {
