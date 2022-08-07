@@ -1,4 +1,5 @@
 import { ModelManager } from "./ModelManager";
+import { setModelBaseTransfrom } from "@display/utils/2d/utils";
 // 由于live2d的特殊需求，没用模块系统载入pixi.js，pixi-spine模块的载入依赖于模块化pixi.js，因此暂时用成umd版本吧
 // import { Spine } from "pixi-spine";
 export class SpineManager extends ModelManager {
@@ -18,29 +19,35 @@ export class SpineManager extends ModelManager {
       resolution: this.resolution,
     });
   }
-  loadModel(modelInfo) {
+  switchOut() {
+    // this._removeEventListeners();
+    // this._sendToModelControl = null;
+    // destroy以后无法直接获得这个上下文了
+    const gl = this.app.renderer.context.gl;
+    this.app.destroy();
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.clear(gl.DEPTH_BUFFER_BIT);
+    gl.clear(gl.STENCIL_BUFFER_BIT);
+  }
+  async loadModel(modelInfo) {
+    if (this.model !== null && !this.model.destroied) {
+      this.model.destroy();
+      this.app.loader.reset();
+    }
     const modelFile = modelInfo.entranceFile;
     this.app.loader
       .add("spineCharacter", modelFile)
       .load((loder, resources) => {
-        // this.model = new Spine(resources.spineCharacter.spineData);
-        this.model = new PIXI.spine.Spine(resources.spineCharacter.spineData);
-        const modelCage = new PIXI.Container();
-        modelCage.addChild(this.model);
-        // measure the spine animation and position it inside its container to align it to the origin
-        const localRect = this.model.getLocalBounds();
-        this.model.position.set(-localRect.x, -localRect.y);
-        // now we can scale, position and rotate the container as any other display object
-        const scale = Math.min(
-          (this.app.screen.width * 0.7) / modelCage.width,
-          (this.app.screen.height * 0.7) / modelCage.height
+        // 学着pixi-live2d-display开始套娃……
+        this.internalModel = new PIXI.spine.Spine(
+          resources.spineCharacter.spineData
         );
-        modelCage.scale.set(scale, scale);
-        modelCage.position.set(
-          (this.app.screen.width - modelCage.width) * 0.5,
-          (this.app.screen.height - modelCage.height) * 0.5
-        );
-        this.app.stage.addChild(modelCage);
+        const localRect = this.internalModel.getLocalBounds();
+        this.internalModel.position.set(-localRect.x, -localRect.y);
+        this.model = new PIXI.Container();
+        this.model.addChild(this.internalModel);
+        setModelBaseTransfrom(this.model, this.config.display);
+        this.app.stage.addChild(this.model);
         this.app.start();
       });
   }

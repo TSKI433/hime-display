@@ -1,6 +1,7 @@
 import { ModelManager } from "./ModelManager";
 import { ParameterMonitor, PartMonitor } from "@display/utils/live2d/Monitor";
-import { Live2DFaceMeshCaptureManager as FaceMeshCaptureManager } from "../utils/capture/Live2DFaceMeshCaptureManager";
+import { Live2DFaceMeshCaptureManager as FaceMeshCaptureManager } from "@display/utils/capture/Live2DFaceMeshCaptureManager";
+import { setModelBaseTransfrom } from "@display/utils/2d/utils";
 export class Live2dManager extends ModelManager {
   constructor(parentApp) {
     super(parentApp);
@@ -56,23 +57,7 @@ export class Live2dManager extends ModelManager {
     const app = this.app;
     app.stage.addChild(model);
     const displayConfig = this.config.display;
-    const configWidth =
-      (innerWidth *
-        (displayConfig["2d-initial-width-range"][1] -
-          displayConfig["2d-initial-width-range"][0])) /
-      100;
-    const configHeight =
-      (innerHeight *
-        (displayConfig["2d-initial-height-range"][1] -
-          displayConfig["2d-initial-height-range"][0])) /
-      100;
-    const scaleX = configWidth / model.width;
-    const scaleY = configHeight / model.height;
-    model.scale.set(Math.min(scaleX, scaleY));
-    // model.x = app.renderer.view.width / this.resolution - model.width;
-    // model.y = app.renderer.view.height / this.resolution - model.height;
-    model.x = (innerWidth * displayConfig["2d-initial-width-range"][0]) / 100;
-    model.y = (innerHeight * displayConfig["2d-initial-height-range"][0]) / 100;
+    setModelBaseTransfrom(model, displayConfig);
     this.then = performance.now();
     this.shouldRender = true;
     requestAnimationFrame(this._render.bind(this));
