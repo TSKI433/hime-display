@@ -7,13 +7,22 @@ export class Application {
     this.init();
   }
   async init() {
-    // 来自控制面板的配置项
     this.nodeAPI = window.nodeAPI;
+    // 来自控制面板的配置项
+    const configData = await this.nodeAPI.ipc.queryConfig();
+    this.config = configData.config;
+    this.windowName = configData.windowName;
     this.canvas = document.getElementById("display-canvas");
-    this.resolution = window.devicePixelRatio;
+    const pixelRatioConfig = this.config.display["pixel-ratio"];
+    this.resolution =
+      pixelRatioConfig === "system"
+        ? window.devicePixelRatio
+        : pixelRatioConfig === "retina"
+        ? 2
+        : 1;
     this.initControlWindowId();
     this.handleIpcMessages();
-    this.config = await this.nodeAPI.ipc.queryConfig();
+    this.setBackgroundColor();
     this.initStats();
     this.initManagers();
     this.handleWindowResize();
@@ -64,6 +73,12 @@ export class Application {
       );
       this.managers.now.handleMessage(message);
     });
+  }
+  setBackgroundColor() {
+    // 在全屏状态下设定背景颜色要出大问题啊
+    if (this.windowName === "displayWindowed") {
+      document.body.style.background = this.config.display["background"];
+    }
   }
   initStats() {
     this.stats = null;

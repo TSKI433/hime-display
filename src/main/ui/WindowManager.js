@@ -27,6 +27,8 @@ export class WindowManager extends EventEmitter {
     logger.info(
       `[Hime Display] new window created, windowName: ${windowName}, ID: ${window.webContents.id}`
     );
+    // 此标识主要用于展示器判断自身类型
+    window.windowName = windowName;
     this.windows[pageType] = window;
     this.windowIds[pageType] = window.webContents.id;
     window.loadURL(pageOptions.url);

@@ -41,7 +41,7 @@
           <config-item label="抗锯齿">
             <el-switch v-model="appStore.config.display['antialias']" />
           </config-item>
-          <config-item label="模型视线跟踪鼠标">
+          <config-item label="默认启动跟踪鼠标">
             <el-switch v-model="appStore.config.display['model-mouse-track']" />
           </config-item>
           <config-item label="背景颜色（仅有框窗口）">

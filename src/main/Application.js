@@ -85,7 +85,11 @@ export class Application extends EventEmitter {
       return this.windowManager.windowIds;
     });
     ipcMain.handle("display:query-config", () => {
-      return this.configDB.value();
+      return {
+        config: this.configDB.value(),
+        // 属于是让windowName搭个顺风车……免得初始化的时候多弄出一个通信来
+        windowName: this.windowManager.windows.display.windowName,
+      };
     });
     ipcMain.on("control:update-config", () => {
       this.configDB.read();
