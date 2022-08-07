@@ -49,7 +49,7 @@
       ></el-input-number>
     </config-item>
     <config-item label="物理模拟">
-      <el-switch v-model="physicsSimulation" />
+      <el-switch v-model="physicsSimulation.value" />
     </config-item>
     <config-item label="循环播放（需载入前设定）">
       <el-switch v-model="animationLoop" />
@@ -79,7 +79,7 @@
 import { useAppStore } from "@control/store/app";
 import ConfigItem from "@control/components/Common/ConfigItem.vue";
 // 发现奇妙的现象，这里不引入ref不会直接报错，而是先蹦出两三百个vue的警告来
-import { ref, watch } from "vue";
+import { reactive, ref, watch, toRaw } from "vue";
 const appStore = useAppStore();
 let currentMotionInfo = null;
 let currentAudioInfo = null;
@@ -102,7 +102,6 @@ function playMotion() {
       channel: "control:play-motion",
       data: {
         motionFilePath: currentMotionInfo.entranceFile,
-        physicsSimulation: physicsSimulation.value,
         animationLoop: animationLoop.value,
       },
     });
@@ -116,7 +115,6 @@ function playMotionWithAudio() {
         motionFilePath: currentMotionInfo.entranceFile,
         audioFilePath: currentAudioInfo.entranceFile,
         delayTime: delayTime.value,
-        physicsSimulation: physicsSimulation.value,
         // TODO：音频跟着loop，现在懒得做
         animationLoop: animationLoop.value,
       },
@@ -144,13 +142,16 @@ function quitAnimationPlay() {
   motionLoaded.value = false;
   motionPlaying.value = false;
 }
-const physicsSimulation = ref(true);
-watch(physicsSimulation, (newValue) => {
+const physicsSimulation = reactive({
+  name: "physicsSimulation",
+  value: true,
+});
+watch(physicsSimulation, () => {
+  // 发现个有意思的问题，使用watch监视reactive，回调函数返回的新旧两个参数其实都指向那个reactive对象，所以下方的判断永远不成立
+  // if (newVal.value !== oldVal.value) {
   ipcAPI.sendToModelManager(appStore.displayWindowId, {
-    channel: "control:change-physics",
-    data: {
-      physicsSimulation: newValue,
-    },
+    channel: "control:change-instant-config",
+    data: toRaw(physicsSimulation),
   });
 });
 ipcAPI.handleSendToModelControl((event, message) => {

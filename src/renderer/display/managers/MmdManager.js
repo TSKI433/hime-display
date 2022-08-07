@@ -16,6 +16,8 @@ export class MmdManager extends ModelManager {
     this._sendToModelControl = null;
     this.shouldRender = false;
 
+    // 控制面板那边对展示器由两种类型的控制，一个是config数据库中存储的配置，需要重启展示器生效，还有一种是不存储数据库的临时配置，只对当前的模型生效，也就是这里instantConfig内部存放的东西
+    this.instantConfig = null;
     this.MMDLoader = null;
     this.transformMonitor = null;
     this.morphMonitor = null;
@@ -97,6 +99,20 @@ export class MmdManager extends ModelManager {
   }
   loadModel(modelInfo) {
     return new Promise((resolve, reject) => {
+      // 放给下方的setter，使用
+      const manager = this;
+      // 载入模型时初始化即时配置
+      // 由于没有存数据库，这就要求这里的初始配置和控制面板那边的默认值保持一致
+      this.instantConfig = {
+        _physicsSimulation: true,
+        get physicsSimulation() {
+          return this._physicsSimulation;
+        },
+        set physicsSimulation(physicsSimulation) {
+          this._physicsSimulation = physicsSimulation;
+          manager.animationManager?.helper.enable("physics", physicsSimulation);
+        },
+      };
       const modelFile = modelInfo.entranceFile;
       this.MMDLoader.load(
         modelFile,
@@ -233,16 +249,19 @@ export class MmdManager extends ModelManager {
         break;
       }
       case "control:play-motion": {
-        const { motionFilePath, physicsSimulation, animationLoop } =
-          message.data;
+        const { motionFilePath, animationLoop } = message.data;
         console.log(`[Hime Diplsay] Load Motion: ${motionFilePath}`);
         this._resetAnimationManager();
         this.animationManager = new AnimationManager(this.MMDLoader);
         this.animationManager
           .loadAnimation(this.model, motionFilePath)
           .then(() => {
+            // 感觉如果animationLoop放到载入动画后即时会出现各种奇妙的情况，比如我设定只播放一遍，都放完了，然后这时突然改成要循环播放，那我究竟如何是好呢？因此这里没有使用及时更新的操作，而是在每一次载入动画的时候读取
             this.animationManager.setLoop(animationLoop);
-            this.animationManager.helper.enable("physics", physicsSimulation);
+            this.animationManager.helper.enable(
+              "physics",
+              this.instantConfig.physicsSimulation
+            );
             this._sendToModelControl({
               channel: "manager:update-motion-info",
               data: { durantion: this.animationManager.clip.duration },
@@ -251,13 +270,8 @@ export class MmdManager extends ModelManager {
         break;
       }
       case "control:play-motion-with-audio": {
-        const {
-          motionFilePath,
-          audioFilePath,
-          delayTime,
-          physicsSimulation,
-          animationLoop,
-        } = message.data;
+        const { motionFilePath, audioFilePath, delayTime, animationLoop } =
+          message.data;
         console.log(
           `[Hime Diplsay] Load Motion: ${motionFilePath} With Audio: ${audioFilePath}`
         );
@@ -272,7 +286,10 @@ export class MmdManager extends ModelManager {
           )
           .then(() => {
             this.animationManager.setLoop(animationLoop);
-            this.animationManager.helper.enable("physics", physicsSimulation);
+            this.animationManager.helper.enable(
+              "physics",
+              this.instantConfig.physicsSimulation
+            );
             this._sendToModelControl({
               channel: "manager:update-motion-info",
               data: { durantion: this.animationManager.clip.duration },
@@ -319,12 +336,10 @@ export class MmdManager extends ModelManager {
         this._setMorphWeight(message.data);
         break;
       }
-      case "control:change-physics": {
-        this.animationManager?.helper.enable(
-          "physics",
-          message.data.physicsSimulation
-        );
-        break;
+      // 这波是通信逐渐套娃化啊……这都弄出通信下的通信下的通信来了，不过这样的设计我感觉挺合理
+      case "control:change-instant-config": {
+        const { name, value } = message.data;
+        this.instantConfig[name] = value;
       }
     }
   }
