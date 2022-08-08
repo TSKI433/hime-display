@@ -94,6 +94,9 @@ export class Application extends EventEmitter {
     ipcMain.on("control:update-config", () => {
       this.configDB.read();
     });
+    ipcMain.on("control:open-dev-tool", (event, type) => {
+      this.windowManager.windows[type].webContents.openDevTools();
+    });
   }
   quitApp() {}
 }

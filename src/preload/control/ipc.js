@@ -33,3 +33,6 @@ export function handleSendToModelControl(callback) {
 export function removeManagerListeners() {
   ipcRenderer.removeAllListeners("display:send-to-model-control");
 }
+export function openDevTool(type) {
+  ipcRenderer.send("control:open-dev-tool", type);
+}
