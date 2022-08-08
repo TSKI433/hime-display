@@ -29,27 +29,41 @@ export class SpineManager extends ModelManager {
     gl.clear(gl.DEPTH_BUFFER_BIT);
     gl.clear(gl.STENCIL_BUFFER_BIT);
   }
-  async loadModel(modelInfo) {
-    if (this.model !== null && !this.model.destroied) {
-      this.model.destroy();
-      this.app.loader.reset();
-    }
-    const modelFile = modelInfo.entranceFile;
-    this.app.loader
-      .add("spineCharacter", modelFile)
-      .load((loder, resources) => {
-        // 学着pixi-live2d-display开始套娃……
-        this.internalModel = new PIXI.spine.Spine(
-          resources.spineCharacter.spineData
-        );
-        const localRect = this.internalModel.getLocalBounds();
-        this.internalModel.position.set(-localRect.x, -localRect.y);
-        this.model = new PIXI.Container();
-        this.model.addChild(this.internalModel);
-        setModelBaseTransfrom(this.model, this.config.display);
-        this.app.stage.addChild(this.model);
-        this.app.start();
-      });
+  loadModel(modelInfo) {
+    return new Promise((resolve, reject) => {
+      if (this.model !== null && !this.model.destroied) {
+        this.model.destroy();
+        this.app.loader.reset();
+      }
+      const modelFile = modelInfo.entranceFile;
+      this.app.loader
+        .add("spineCharacter", modelFile)
+        .load((loder, resources) => {
+          // 学着pixi-live2d-display开始套娃……
+          this.internalModel = new PIXI.spine.Spine(
+            resources.spineCharacter.spineData
+          );
+          const localRect = this.internalModel.getLocalBounds();
+          this.internalModel.position.set(-localRect.x, -localRect.y);
+          this.model = new PIXI.Container();
+          this.model.addChild(this.internalModel);
+          setModelBaseTransfrom(this.model, this.config.display);
+          this.app.stage.addChild(this.model);
+          this.app.start();
+          const modelControlInfo = {
+            description: {
+              name: modelInfo.name,
+              extensionName: modelInfo.extensionName,
+              animationCount: this.internalModel.spineData.animations.length,
+              boneCount: this.internalModel.spineData.bones.length,
+              slotCount: this.internalModel.spineData.slots.length,
+              ikCount: this.internalModel.spineData.ikConstraints.length,
+              skinCount: this.internalModel.spineData.skins.length,
+            },
+          };
+          resolve(modelControlInfo);
+        });
+    });
   }
   onSendToModelControl() {}
 }
