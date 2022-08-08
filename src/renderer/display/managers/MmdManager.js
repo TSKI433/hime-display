@@ -371,6 +371,9 @@ export class MmdManager extends ModelManager {
     this.animationManager?.destroy();
     this.animationManager = null;
     this.model.pose();
+    for (let i = 0; i < this.model.morphTargetInfluences.length; i++) {
+      this.model.morphTargetInfluences[i] = 0;
+    }
   }
   _clearModel() {
     if (this.model !== null) {
