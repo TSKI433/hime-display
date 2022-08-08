@@ -20,6 +20,7 @@ export class Application {
         : pixelRatioConfig === "retina"
         ? 2
         : 1;
+    this.antialias = this.config.display["antialias"];
     this.initControlWindowId();
     this.handleIpcMessages();
     this.setBackgroundColor();

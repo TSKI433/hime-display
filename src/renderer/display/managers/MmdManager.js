@@ -50,7 +50,7 @@ export class MmdManager extends ModelManager {
     // 其二，之后要载入音频的时候，会把AudioListener加到camera下，这样一来，相机的移动就可以连带着listener移动，就像给相机挂了个耳机一样（然而目前用的不是THREE的PositionalAudio，这波操作似乎什么用都没有……）
     this.scene.add(this.camera);
     this.renderer = new THREE.WebGLRenderer({
-      antialias: true,
+      antialias: this.antialias,
       aplpha: true,
       canvas: this.canvas,
     });

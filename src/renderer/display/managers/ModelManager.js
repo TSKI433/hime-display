@@ -4,6 +4,7 @@ export class ModelManager {
     this.config = parentApp.config;
     this.stats = parentApp.stats;
     this.resolution = parentApp.resolution;
+    this.antialias = parentApp.antialias;
     this.model = null;
   }
 }

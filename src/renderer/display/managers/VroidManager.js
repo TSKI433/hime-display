@@ -16,7 +16,7 @@ export class VroidManager extends ModelManager {
     this.scene = new THREE.Scene();
     // renderer
     this.renderer = new THREE.WebGLRenderer({
-      antialias: true,
+      antialias: this.antialias,
       aplpha: true,
       canvas: this.canvas,
     });

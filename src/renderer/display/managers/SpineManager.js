@@ -13,7 +13,7 @@ export class SpineManager extends ModelManager {
       view: this.canvas,
       // 即使canvas已经通过CSS配置占满全屏，不做这一影响设置依旧会使得画面拉伸
       resizeTo: window,
-      antialias: true,
+      antialias: this.antialias,
       autoDensity: true,
       transparent: true,
       resolution: this.resolution,
