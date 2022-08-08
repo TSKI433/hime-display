@@ -29,7 +29,8 @@
           </el-select>
         </el-form-item>
         <el-form-item label="启动开发者工具">
-          <div style="flex-direction: row">
+          <!-- 配置项的样式被调整过了，这里懒得拉样式，整个div框起来算了 -->
+          <div>
             <el-button
               @click="openDevTool('display')"
               :disabled="appStore.displayWindowId === -1"
