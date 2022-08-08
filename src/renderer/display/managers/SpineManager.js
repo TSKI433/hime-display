@@ -50,20 +50,48 @@ export class SpineManager extends ModelManager {
           setModelBaseTransfrom(this.model, this.config.display);
           this.app.stage.addChild(this.model);
           this.app.start();
+          const motionInfo = [];
+          this.internalModel.spineData.animations.forEach((animation) => {
+            motionInfo.push({
+              name: animation.name,
+              duration: Number(animation.duration.toFixed(2)),
+            });
+          });
           const modelControlInfo = {
             description: {
               name: modelInfo.name,
               extensionName: modelInfo.extensionName,
+              versionNumber: this.internalModel.spineData.version,
               animationCount: this.internalModel.spineData.animations.length,
               boneCount: this.internalModel.spineData.bones.length,
               slotCount: this.internalModel.spineData.slots.length,
               ikCount: this.internalModel.spineData.ikConstraints.length,
               skinCount: this.internalModel.spineData.skins.length,
             },
+            motion: motionInfo,
           };
           resolve(modelControlInfo);
         });
     });
   }
   onSendToModelControl() {}
+  handleMessage(message) {
+    switch (message.channel) {
+      case "control:play-motion": {
+        const {
+          motion: { name },
+          animationLoop,
+        } = message.data;
+        this.internalModel.state.setAnimation(0, name, animationLoop);
+        break;
+      }
+      case "control:quit-motion": {
+        // 需要提供一个动画转换为空轨道的时长，这里直接设定为1秒了
+        this.internalModel.state.setEmptyAnimations(1);
+        // 下方的方法会导致模型维持在当前动作的最后一帧
+        // this.internalModel.state.clearTracks();
+        break;
+      }
+    }
+  }
 }

@@ -307,7 +307,7 @@ export class MmdManager extends ModelManager {
         }
         break;
       }
-      case "control:quit-animation-play": {
+      case "control:quit-motion": {
         this._resetAnimationManager();
         break;
       }

@@ -12,6 +12,16 @@
           <control-load-error></control-load-error>
         </template>
       </el-tab-pane>
+      <el-tab-pane :label="$t(`control.animation-control`)">
+        <animation-control
+          v-if="controlStore.modelControlInfo?.motion !== undefined"
+          :motion-info="controlStore.modelControlInfo.motion"
+        >
+        </animation-control>
+        <template v-else>
+          <control-load-error></control-load-error>
+        </template>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -20,6 +30,7 @@
 import { reactive } from "vue";
 import ControlLoadError from "../Common/ControlLoadError.vue";
 import ModelDescription from "../Common/ModelDescription.vue";
+import AnimationControl from "./AnimationControl.vue";
 import { useControlStore } from "@control/store/control";
 const controlStore = useControlStore();
 const descriptionInfo = reactive({
@@ -30,6 +41,10 @@ const descriptionInfo = reactive({
   "extention-name": {
     label: "扩展名",
     param: "extensionName",
+  },
+  "version-number": {
+    label: "版本号",
+    param: "versionNumber",
   },
   "animation-count": {
     label: "动作数",

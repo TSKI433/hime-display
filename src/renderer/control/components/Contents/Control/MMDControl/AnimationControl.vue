@@ -136,7 +136,7 @@ function setMotionState() {
 }
 function quitAnimationPlay() {
   ipcAPI.sendToModelManager(appStore.displayWindowId, {
-    channel: "control:quit-animation-play",
+    channel: "control:quit-motion",
     data: null,
   });
   motionLoaded.value = false;
