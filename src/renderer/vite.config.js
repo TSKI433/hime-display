@@ -34,8 +34,8 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        control: "./src/renderer/control/control.html",
-        display: "./src/renderer/display/display.html",
+        control: "./src/renderer/control.html",
+        display: "./src/renderer/display.html",
       },
     },
   },

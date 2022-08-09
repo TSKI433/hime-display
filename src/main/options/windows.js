@@ -17,13 +17,13 @@ export const windowsOptions = {
         // nodeIntegration: true,
         // contextIsolation: false,
         // webSecurity: false,
-        devTools: import.meta.env.DEV,
+        devTools: true,
         preload: resolve(__dirname, "./control-preload.cjs.js"),
       },
     },
     url: import.meta.env.DEV
-      ? `http://localhost:${DEV_SERVER_PORT}/control/control.html`
-      : "file://" + resolve(__dirname, "../control/control.html"),
+      ? `http://localhost:${DEV_SERVER_PORT}/control.html`
+      : "file://" + resolve(__dirname, "../renderer/control.html"),
     dev: {
       autoOpenDevTool: true,
     },
@@ -43,13 +43,13 @@ export const windowsOptions = {
         // contextIsolation: false,
         // 便于访问本地文件
         webSecurity: false,
-        devTools: import.meta.env.DEV,
+        devTools: true,
         preload: resolve(__dirname, "./display-preload.cjs.js"),
       },
     },
     url: import.meta.env.DEV
-      ? `http://localhost:${DEV_SERVER_PORT}/display/display.html`
-      : "file://" + resolve(__dirname, "../renderer/display/display.html"),
+      ? `http://localhost:${DEV_SERVER_PORT}/display.html`
+      : "file://" + resolve(__dirname, "../renderer/display.html"),
     dev: {
       autoOpenDevTool: true,
     },
@@ -67,13 +67,13 @@ export const windowsOptions = {
         // nodeIntegration: true,
         // contextIsolation: false,
         webSecurity: false,
-        devTools: import.meta.env.DEV,
+        devTools: true,
         preload: resolve(__dirname, "./display-preload.cjs.js"),
       },
     },
     url: import.meta.env.DEV
-      ? `http://localhost:${DEV_SERVER_PORT}/display/display.html`
-      : "file://" + resolve(__dirname, "../renderer/display/display.html"),
+      ? `http://localhost:${DEV_SERVER_PORT}/display.html`
+      : "file://" + resolve(__dirname, "../renderer/display.html"),
     dev: {
       autoOpenDevTool: true,
     },

@@ -60,19 +60,24 @@
 	然后我尝试了一下直接通过electron的这个页面引入node环境，的确成功require了，依旧会出现各种问题，而且安全性进一步没有保证了
 	最终发现，还是直接引入js文件最管用，你们随意往window下面挂对象吧，我不管了，打包个寂寞…… -->
 	<script src="./lib/common/stats.min.js"></script>
-	<script src="./lib/three//ammo.wasm.js"></script>
+	<script src="./lib/three/ammo.wasm.js"></script>
 	<script>
 		// 初始化物理引擎
 		Ammo().then(function (AmmoLib) {
 			Ammo = AmmoLib;
 		});
 	</script>
+	<!-- 构建出了文件，改为在此引入mediapipe，详见NOTE.md -->
+	<script src="./lib/@mediapipe/cdn/holistic.js"></script>
+	<script src="./lib/@mediapipe/cdn/face_mesh.js"></script>
+	<script src="./lib/@mediapipe/cdn/camera_utils.js"></script>
+	<script src="./lib/@mediapipe/cdn/drawing_utils.js"></script>
 	<script src="./lib/live2d/live2dcubismcore.min.js"></script>
 	<script src="./lib/live2d/live2d.min.js"></script>
 	<script src="./lib/live2d/pixi.min.js"></script>
 	<script src="./lib/live2d/index.min.js"></script>
 	<script src="./lib/spine/pixi-spine.umd.js"></script>
-	<script type="module" src="./main.js"></script>
+	<script type="module" src="./display/main.js"></script>
 	<!-- <video src="" class="capture-video"></video> -->
 </body>
 
