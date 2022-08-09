@@ -16,6 +16,11 @@
     "start": "node ./scripts/dev-runner",
     "build": "node ./scripts/build"
   },
+  "dependencies": {
+    "electron-is": "^3.0.0",
+    "electron-log": "^4.4.7",
+    "lowdb": "1.0.0"
+  },
   "devDependencies": {
     "chalk": "^4.1.2",
     "electron": "^19.0.4",
