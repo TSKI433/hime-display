@@ -5,7 +5,7 @@ import low from "lowdb";
 import lowFileSync from "lowdb/adapters/FileSync";
 import { APP_CONFIG_PATH, APP_DATA_PATH } from "./options/paths";
 import { defaultConfig } from "@shared/defaults/defaultConfig";
-import { ipcMain, dialog } from "electron";
+import { ipcMain, dialog, systemPreferences } from "electron";
 export class Application extends EventEmitter {
   constructor() {
     super();
@@ -17,6 +17,7 @@ export class Application extends EventEmitter {
     this.initWindowManager();
     this.initThemeManager();
     this.handleIpcMessages();
+    this.askForMediaAccess();
   }
   startApp() {
     if (this.configDB.get(["general", "open-control-at-launch"]).value()) {
@@ -97,6 +98,9 @@ export class Application extends EventEmitter {
     ipcMain.on("control:open-dev-tool", (event, type) => {
       this.windowManager.windows[type].webContents.openDevTools();
     });
+  }
+  askForMediaAccess() {
+    systemPreferences.askForMediaAccess("camera");
   }
   quitApp() {}
 }
