@@ -1,8 +1,13 @@
 import { Face } from "kalidokit";
-import * as faceMeshRoot from "@mediapipe/face_mesh";
-import { Camera } from "@mediapipe/camera_utils";
-import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 import { setTarget, createVideo, onResults } from "./parents/parents.js";
+// 经过测试发现，build后对mediapipe的打包存在问题，因此改为html引入
+// import * as faceMeshRoot from "@mediapipe/face_mesh";
+// import { Camera } from "@mediapipe/camera_utils";
+// import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
+const faceMeshRoot = window;
+const Camera = window.Camera;
+const drawConnectors = window.drawConnectors;
+const drawLandmarks = window.drawLandmarks;
 // 虽然在node_modules中有训练好的数据，然而我根本不知道应该如何写路径引入，于是先复制粘贴了一份到项目目录下
 const solutionPath = "./lib/@mediapipe/face_mesh/";
 export class FaceMeshCaptureManager {

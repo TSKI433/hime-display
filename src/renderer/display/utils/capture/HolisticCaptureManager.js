@@ -1,8 +1,13 @@
 import { Face, Pose, Hand } from "kalidokit";
-import * as holisticRoot from "@mediapipe/holistic";
-import { Camera } from "@mediapipe/camera_utils";
-import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 import { setTarget, createVideo, onResults } from "./parents/parents.js";
+// 经过测试发现，build后对mediapipe的打包存在问题，因此改为html引入
+// import * as holisticRoot from "@mediapipe/holistic";
+// import { Camera } from "@mediapipe/camera_utils";
+// import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
+const holisticRoot = window;
+const Camera = window.Camera;
+const drawConnectors = window.drawConnectors;
+const drawLandmarks = window.drawLandmarks;
 const solutionPath = "./lib/@mediapipe/holistic/";
 export class HolisticCaptureManager {
   constructor() {
