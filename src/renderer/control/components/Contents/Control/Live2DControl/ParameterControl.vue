@@ -44,11 +44,17 @@
     </config-item>
   </config-item>
   <el-divider style="margin: 12px 0" />
+  <config-item label="自动呼吸">
+    <el-switch v-model="autoBreath.value" />
+  </config-item>
+  <config-item label="自动眨眼">
+    <el-switch v-model="autoEyeBlink.value" />
+  </config-item>
 </template>
 
 <script setup>
 import ConfigItem from "@control/components/Common/ConfigItem.vue";
-import { computed, ref, watch } from "vue";
+import { computed, ref, watch, reactive, toRaw } from "vue";
 import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
@@ -113,6 +119,26 @@ ipcAPI.handleSendToModelControl((event, message) => {
       partOpacity.value = message.data.value;
     }
   }
+});
+const autoBreath = reactive({
+  name: "autoBreath",
+  value: true,
+});
+watch(autoBreath, () => {
+  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+    channel: "control:change-instant-config",
+    data: toRaw(autoBreath),
+  });
+});
+const autoEyeBlink = reactive({
+  name: "autoEyeBlink",
+  value: true,
+});
+watch(autoEyeBlink, () => {
+  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+    channel: "control:change-instant-config",
+    data: toRaw(autoEyeBlink),
+  });
 });
 </script>
 

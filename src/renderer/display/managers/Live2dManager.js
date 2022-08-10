@@ -44,6 +44,43 @@ export class Live2dManager extends ModelManager {
     gl.clear(gl.STENCIL_BUFFER_BIT);
   }
   async loadModel(modelInfo) {
+    const manager = this;
+    this.instantConfig = {
+      _autoBreath: true,
+      get autoBreath() {
+        return this._autoBreath;
+      },
+      set autoBreath(value) {
+        this._autoBreath = value;
+        if (value) {
+          manager.model.internalModel.breath = this.store.breath;
+        } else {
+          if (this.store.breath === null) {
+            this.store.breath = manager.model.internalModel.breath;
+          }
+          manager.model.internalModel.breath = null;
+        }
+      },
+      _autoEyeBlink: true,
+      get autoEyeBlink() {
+        return this._autoEyeBlink;
+      },
+      set autoEyeBlink(value) {
+        this._autoEyeBlink = value;
+        if (value) {
+          manager.model.internalModel.eyeBlink = this.store.eyeBlink;
+        } else {
+          if (this.store.eyeBlink === null) {
+            this.store.eyeBlink = manager.model.internalModel.eyeBlink;
+          }
+          manager.model.internalModel.eyeBlink = null;
+        }
+      },
+      store: {
+        breath: null,
+        eyeBlink: null,
+      },
+    };
     if (this.model !== null && !this.model.destroied) {
       this.model.destroy();
     }
@@ -172,6 +209,11 @@ export class Live2dManager extends ModelManager {
       case "control:quit-capture": {
         this.captureManagerNow.quitCapture();
         this.captureManagerNow = null;
+        break;
+      }
+      case "control:change-instant-config": {
+        const { name, value } = message.data;
+        this.instantConfig[name] = value;
         break;
       }
     }

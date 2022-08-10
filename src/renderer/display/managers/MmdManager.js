@@ -340,6 +340,7 @@ export class MmdManager extends ModelManager {
       case "control:change-instant-config": {
         const { name, value } = message.data;
         this.instantConfig[name] = value;
+        break;
       }
     }
   }
