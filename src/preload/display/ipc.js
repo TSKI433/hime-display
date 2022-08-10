@@ -33,3 +33,6 @@ export function sendToModelControl(controlWindowId, message) {
 export function handleSendToModelManager(callback) {
   ipcRenderer.on("control:send-to-model-manager", callback);
 }
+export function askForMediaAccess() {
+  return ipcRenderer.invoke("display:ask-for-media-access");
+}

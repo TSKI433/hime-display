@@ -1,5 +1,10 @@
 import { Face, Pose, Hand } from "kalidokit";
-import { setTarget, createVideo, onResults } from "./parents/parents.js";
+import {
+  setTarget,
+  createVideo,
+  onResults,
+  askForMediaAccess,
+} from "./parents/parents.js";
 // 经过测试发现，build后对mediapipe的打包存在问题，因此改为html引入
 // import * as holisticRoot from "@mediapipe/holistic";
 // import { Camera } from "@mediapipe/camera_utils";
@@ -15,7 +20,12 @@ export class HolisticCaptureManager {
     this.onRiggedHolisticCallback = null;
     this.running = false;
   }
-  start() {
+  async start() {
+    if (!(await this.askForMediaAccess())) {
+      // i18n也是不存在的……为一个提示引入整个i18next实在是划不来
+      alert("Can't access camera.");
+      return;
+    }
     if (this.readyToRig !== undefined) {
       this.readyToRig();
     }
@@ -164,3 +174,4 @@ export class HolisticCaptureManager {
 HolisticCaptureManager.prototype.setTarget = setTarget;
 HolisticCaptureManager.prototype.createVideo = createVideo;
 HolisticCaptureManager.prototype.onResults = onResults;
+HolisticCaptureManager.prototype.askForMediaAccess = askForMediaAccess;

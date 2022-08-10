@@ -1,5 +1,10 @@
 import { Face } from "kalidokit";
-import { setTarget, createVideo, onResults } from "./parents/parents.js";
+import {
+  setTarget,
+  createVideo,
+  onResults,
+  askForMediaAccess,
+} from "./parents/parents.js";
 // 经过测试发现，build后对mediapipe的打包存在问题，因此改为html引入
 // import * as faceMeshRoot from "@mediapipe/face_mesh";
 // import { Camera } from "@mediapipe/camera_utils";
@@ -17,7 +22,12 @@ export class FaceMeshCaptureManager {
     this.running = false;
   }
 
-  start() {
+  async start() {
+    if (!(await this.askForMediaAccess())) {
+      // i18n也是不存在的……为一个提示引入整个i18next实在是划不来
+      alert("Can't access camera.");
+      return;
+    }
     if (this.readyToRig !== undefined) {
       this.readyToRig();
     }
@@ -101,3 +111,4 @@ export class FaceMeshCaptureManager {
 FaceMeshCaptureManager.prototype.setTarget = setTarget;
 FaceMeshCaptureManager.prototype.createVideo = createVideo;
 FaceMeshCaptureManager.prototype.onResults = onResults;
+FaceMeshCaptureManager.prototype.askForMediaAccess = askForMediaAccess;

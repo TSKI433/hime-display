@@ -18,4 +18,8 @@ function onResults(results) {
   this.drawResults(results);
   this.animateModel(results);
 }
-export { setTarget, createVideo, onResults };
+function askForMediaAccess() {
+  // 这个函数属于是返回promise但本身并不异步，同步返回异步结果……因此不用加async
+  return window.nodeAPI.ipc.askForMediaAccess();
+}
+export { setTarget, createVideo, onResults, askForMediaAccess };
