@@ -25,7 +25,7 @@
     </config-item>
   </config-item>
   <el-divider style="margin: 12px 0" />
-  <config-item label="Part Opacity" label-position="top">
+  <config-item label="Part可见度" label-position="top">
     <config-item label="部分选择">
       <el-select v-model="selectedPartId" @change="bindPartId" filterable>
         <el-option v-for="partId in partInfo" :label="partId" :value="partId" />

@@ -41,10 +41,17 @@
           <config-item label="抗锯齿">
             <el-switch v-model="appStore.config.display['antialias']" />
           </config-item>
-          <config-item label="默认启动跟踪鼠标">
-            <el-switch v-model="appStore.config.display['model-mouse-track']" />
+        </el-form-item>
+        <el-form-item label="透明窗口配置">
+          <config-item label="点击穿透">
+            <el-radio-group v-model="appStore.config.display['click-through']">
+              <el-radio-button label="all"> 所有区域 </el-radio-button>
+              <el-radio-button label="opacity"> 非透明区域 </el-radio-button>
+            </el-radio-group>
           </config-item>
-          <config-item label="背景颜色（仅有框窗口）">
+        </el-form-item>
+        <el-form-item label="有框窗口配置">
+          <config-item label="背景颜色">
             <el-color-picker
               v-model="appStore.config.display.background"
               show-alpha
