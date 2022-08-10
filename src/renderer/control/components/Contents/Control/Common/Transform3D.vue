@@ -63,6 +63,7 @@ const props = defineProps({
   display: flex;
   .hime-transform--3d__item {
     margin-right: 20px;
+    margin-top: 12px;
   }
 }
 </style>

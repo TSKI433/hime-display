@@ -22,9 +22,9 @@
         style="width: 60%; margin-left: 10px"
         :disabled="selectedParameterId === ''"
       />
-      {{ parameterValue }}
     </config-item>
   </config-item>
+  <el-divider style="margin: 12px 0" />
   <config-item label="Part Opacity" label-position="top">
     <config-item label="部分选择">
       <el-select v-model="selectedPartId" @change="bindPartId" filterable>
@@ -41,9 +41,9 @@
         :disabled="selectedPartId === ''"
         @input="setPartOpacity"
       />
-      {{ partOpacity }}
     </config-item>
   </config-item>
+  <el-divider style="margin: 12px 0" />
 </template>
 
 <script setup>

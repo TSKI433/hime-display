@@ -3,12 +3,7 @@
     class="hime-config-item"
     :class="{ 'hime-config-item--top': labelPosition === 'top' }"
   >
-    <div
-      class="hime-config-item__label"
-      :class="{ 'hime-config-item__label--top': labelPosition === 'top' }"
-    >
-      {{ label }}:
-    </div>
+    <div class="hime-config-item__label">{{ label }}:</div>
     <slot> </slot>
   </div>
 </template>
@@ -35,13 +30,14 @@ const props = defineProps({
   &.hime-config-item--top {
     flex-direction: column;
     align-items: flex-start;
-    margin-top: 12px;
+    margin-top: initial;
+    & > .hime-config-item__label {
+      margin: 0 0 12px;
+      font-weight: bold;
+    }
   }
   .hime-config-item__label {
     margin-right: 10px;
-    &.hime-config-item__label--top {
-      margin-bottom: 6px;
-    }
   }
 }
 </style>
