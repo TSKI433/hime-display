@@ -7,6 +7,7 @@ export class Live2dManager extends ModelManager {
     super(parentApp);
     this.modelType = "Live2D";
     this._sendToModelControl = null;
+    this.instantConfig = null;
     this.shouldRender = false;
     this.parameterMonitor = null;
     this.captureManagerNow = null;
@@ -32,6 +33,7 @@ export class Live2dManager extends ModelManager {
     this._removeEventListeners();
     this._sendToModelControl = null;
     this.shouldRender = false;
+    this.instantConfig = null;
     this.parameterMonitor = null;
     this.captureManagerNow = null;
     this.focusPosition = null;
@@ -76,6 +78,7 @@ export class Live2dManager extends ModelManager {
           manager.model.internalModel.eyeBlink = null;
         }
       },
+      trackMouse: true,
       store: {
         breath: null,
         eyeBlink: null,
@@ -140,7 +143,11 @@ export class Live2dManager extends ModelManager {
       this.stats.end();
     }
     // 如果正在进行面部捕捉，鼠标跟踪会将捕捉结果覆盖掉
-    if (this.focusPosition !== null && this.captureManagerNow === null) {
+    if (
+      this.instantConfig?.trackMouse &&
+      this.focusPosition !== null &&
+      this.captureManagerNow === null
+    ) {
       // 不像文档（https://guansss.github.io/pixi-live2d-display/interactions/）这样直接将focus函数写在事件监听里，而是在渲染时调用，应该能减少非必要的focus运行次数
       this.model.focus(this.focusPosition.x, this.focusPosition.y);
     }

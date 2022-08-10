@@ -44,6 +44,9 @@
     </config-item>
   </config-item>
   <el-divider style="margin: 12px 0" />
+  <config-item label="鼠标跟踪">
+    <el-switch v-model="trackMouse.value" />
+  </config-item>
   <config-item label="自动呼吸">
     <el-switch v-model="autoBreath.value" />
   </config-item>
@@ -119,6 +122,16 @@ ipcAPI.handleSendToModelControl((event, message) => {
       partOpacity.value = message.data.value;
     }
   }
+});
+const trackMouse = reactive({
+  name: "trackMouse",
+  value: true,
+});
+watch(trackMouse, () => {
+  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+    channel: "control:change-instant-config",
+    data: toRaw(trackMouse),
+  });
 });
 const autoBreath = reactive({
   name: "autoBreath",

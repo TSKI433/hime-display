@@ -67,6 +67,7 @@ export class MmdManager extends ModelManager {
     this._sendToModelControl = null;
     this.shouldRender = false;
 
+    this.instantConfig = null;
     this.MMDLoader = null;
     this.transformMonitor = null;
     this.morphMonitor = null;
