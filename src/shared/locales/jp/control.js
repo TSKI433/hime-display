@@ -6,5 +6,5 @@ export default {
   "morph-target": "モーフターゲット",
   "camera-parameter": "カメラパラメータ",
   "motion-capture": "モーションキャプチャ",
-  "parameter-and-part": "パラメータとパート",
+  "parameter-control": "パラメータコントロール",
 };

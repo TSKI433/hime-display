@@ -12,15 +12,15 @@
           <control-load-error></control-load-error>
         </template>
       </el-tab-pane>
-      <el-tab-pane :label="$t(`control.parameter-and-part`)">
-        <parameter-and-part
+      <el-tab-pane :label="$t(`control.parameter-control`)">
+        <parameter-control
           v-if="
             controlStore.modelControlInfo?.parameter !== undefined &&
             controlStore.modelControlInfo?.part !== undefined
           "
           :parameter-info="controlStore.modelControlInfo.parameter"
           :part-info="controlStore.modelControlInfo.part"
-        ></parameter-and-part>
+        ></parameter-control>
         <template v-else>
           <control-load-error></control-load-error>
         </template>
@@ -46,7 +46,7 @@
 import { reactive } from "vue";
 import ControlLoadError from "../Common/ControlLoadError.vue";
 import ModelDescription from "../Common/ModelDescription.vue";
-import ParameterAndPart from "./ParameterAndPart.vue";
+import ParameterControl from "./ParameterControl.vue";
 import AnimationControl from "./AnimationControl.vue";
 import MotionCapture from "../Common/MotionCapture.vue";
 import { useControlStore } from "@control/store/control";
