@@ -4,7 +4,7 @@
 
 electron builder没有自动的将node_modules需要的库复制到构建的应用中。
 
-这个其实是yarn的workspace的锅，采用了workspace后依赖信息没有在根目录的
+这个其实是yarn的workspace的锅，采用了workspace后依赖信息没有在根目录的，解决方案就是将主进程的依赖全部在根目录的package下写一遍，我也没工夫将你这个workspace取消掉了。
 
 ## lib
 
@@ -110,3 +110,73 @@ const camera = systemPreferences.askForMediaAccess('camera');
 * https://stackoverflow.com/questions/72024011/electron-app-not-asking-for-camera-and-microphone-permission-on-macos-monterey
 * https://github.com/electron/electron/issues/17640
 
+## Windows下的路径解析
+
+构建应用后到Windows环境测试，发现Spine，MMD均无法正确载入，根据控制台的报错，发现这两种模型的贴图载入路径变成了以当前展示器html所在位置为根目录的相对路径，形如`win-unpacked/resources/app/dist/renderer/skin.bmp`
+
+由于Three.js的源代码十分清晰（业界楷模！），决定先从解决MMD的问题入手。
+
+不知道什么原因，控制台的资源载入报错完全没有堆栈信息，我直接现场爆炸，后来以Three的MMDLoader为入口，经过大量断点检测和堆栈查询（过程十分复杂，跳转了十多个文件），最终找到万恶之源，位于Three项目目录下的`src/loaders/LoaderUtils.js`文件中的extractUrlBase函数，内容如下：
+
+```javascript
+	static extractUrlBase( url ) {
+
+		const index = url.lastIndexOf( '/' );
+
+		if ( index === - 1 ) return './';
+
+		return url.slice( 0, index + 1 );
+
+	}
+```
+
+现在问题就变得简单了，Windows下的路径，他斜杠是`\`啊，根本就搜不到`\`，这在浏览器中并不成问题，但是这里通过，于是经过路径解析后，模型的根就变成了"./"，于是乎就爆炸了……
+
+于是我面前现在有这么几条路可以走：
+
+1. 把extractUrlBase直接改了，但我估计这么干，直接发送提交请求到three的仓库里估计也不会被同意，毕竟这个需求比较特殊，在eletron这种阴间环境下使用file协议载入整个网页……
+
+2. 在堆栈上一级的examples/jsm/loaders/MMDLoader.js文件中做手脚，解析路径的代码在MMDLoader类的load函数里，内容如下：
+
+   ```javascript
+   // Load MMD assets as Three.js Object
+   
+   	/**
+   	 * Loads Model file (.pmd or .pmx) as a SkinnedMesh.
+   	 *
+   	 * @param {string} url - url to Model(.pmd or .pmx) file
+   	 * @param {function} onLoad
+   	 * @param {function} onProgress
+   	 * @param {function} onError
+   	 */
+   	load( url, onLoad, onProgress, onError ) {
+   
+   		const builder = this.meshBuilder.setCrossOrigin( this.crossOrigin );
+   
+   		// resource path
+   
+   		let resourcePath;
+   
+   		if ( this.resourcePath !== '' ) {
+   
+   			resourcePath = this.resourcePath;
+   
+   		} else if ( this.path !== '' ) {
+   
+   			resourcePath = this.path;
+   
+   		} else {
+   
+   			resourcePath = LoaderUtils.extractUrlBase( url );
+   
+   		}
+   //此处省略一堆代码
+   
+   	}
+   ```
+
+   我只要想办法给this.path或者this.resourcePath弄上点什么东西就行了，但是这个也是要涉及到改源码的
+
+3. 究极解决办法，我发现啊，electron在Windows下的资源路径，原来是`/`和`\`（需要转译成`\\`）都认的，那我只要一开始把数据内部存储的路径的斜杠全部改成`/`不就行了？感觉这个想法有点大胆啊，一做测试，没想到真的就成了，完美啊，其实Spine那边也是同一个道理，然后就成功解决所有问题了
+
+总结：Windows的文件路径斜杠就是业界毒瘤，万恶之源！
