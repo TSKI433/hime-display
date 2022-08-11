@@ -2,6 +2,7 @@ import { ModelManager } from "./ModelManager";
 import * as THREE from "three";
 import { MMDLoader } from "three/examples/jsm/loaders/MMDLoader.js";
 import { OutlineEffect } from "three/examples/jsm/effects/OutlineEffect.js";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { MouseFocusHelper } from "@display/utils/3d/MouseFocusHelper.js";
 import { buildNodeInfoTreeAndList } from "@display/utils/3d/NodeInfo";
 import { TransformMonitor } from "@display/utils/3d/Monitor";
@@ -25,6 +26,7 @@ export class MmdManager extends ModelManager {
     // 主要用于MouseFocusHelper的判断
     this.animationManager = null;
     this.mouseFocusHelper = null;
+    this.orbitControls = null;
 
     this.scene = null;
     this.camera = null;
@@ -59,7 +61,24 @@ export class MmdManager extends ModelManager {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.effect = new OutlineEffect(this.renderer);
     this.effect.enabled = this.config.display["3d-outline-effect"];
+    this._initOrbitControls();
     this._addEventListeners();
+  }
+  _addLight() {
+    const ambient = new THREE.AmbientLight(0x666666);
+    this.scene.add(ambient);
+    const directionalLight = new THREE.DirectionalLight(0x887766);
+    directionalLight.position.z = 100;
+    this.scene.add(directionalLight);
+  }
+  _initOrbitControls() {
+    this.orbitControls = new OrbitControls(
+      this.camera,
+      this.renderer.domElement
+    );
+    // 将控制目标点抬高至和相机平齐，不然刚启动时位置不对
+    this.orbitControls.target.y = this.camera.position.y;
+    this.orbitControls.update();
   }
   switchOut() {
     this._removeEventListeners();
@@ -75,6 +94,7 @@ export class MmdManager extends ModelManager {
     this.animationManager = null;
     // 人查麻了，搞了半天MMD模型没被垃圾回收是mouseFocusHelper的问题，由一个脑袋开始揪住整个模型死活不放手是吧
     this.mouseFocusHelper = null;
+    this.orbitControls = null;
 
     this.scene.traverse((obj) => {
       if (obj.isMesh) {
@@ -100,43 +120,13 @@ export class MmdManager extends ModelManager {
   }
   loadModel(modelInfo) {
     return new Promise((resolve, reject) => {
-      // 放给下方的setter，使用
-      const manager = this;
-      // 载入模型时初始化即时配置
-      // 由于没有存数据库，这就要求这里的初始配置和控制面板那边的默认值保持一致
-      this.instantConfig = {
-        _physicsSimulation: true,
-        get physicsSimulation() {
-          return this._physicsSimulation;
-        },
-        set physicsSimulation(physicsSimulation) {
-          this._physicsSimulation = physicsSimulation;
-          manager.animationManager?.helper.enable("physics", physicsSimulation);
-        },
-      };
-      const modelFile = modelInfo.entranceFile;
+      this._initInstantConfig();
       this.MMDLoader.load(
-        modelFile,
+        modelInfo.entranceFile,
         (mmd) => {
           console.log("[Hime Display] MMD Loaded");
           this._clearModel();
           this.model = mmd;
-          const mmdUserData = mmd.geometry.userData.MMD;
-          const modelControlInfo = {
-            description: {
-              name: modelInfo.name,
-              extensionName: modelInfo.extensionName,
-              vertexCount: mmd.geometry.attributes.normal.count,
-              triangleCount: mmd.geometry.index.count / 3,
-              boneCount: mmdUserData.bones.length,
-              ikCount: mmdUserData.iks.length,
-              rigidBodyCount: mmdUserData.rigidBodies.length,
-              constraintCount: mmdUserData.constraints.length,
-              grantCount: mmdUserData.grants.length,
-              morphCount: mmd.geometry.morphTargets.length,
-            },
-            morph: this.model.morphTargetDictionary,
-          };
           // 世界未解之谜，只要载入mmd模型，直接在这里调用this.scene.add(mmd)，WebGL上下文就会有一定概率渲染着渲染着就弄丢了，然后整个程序直接卡死…
           // 然后在程序卡一阵子自动退出后，主进程会报出两条报错信息：
           // ERROR:command_buffer_proxy_impl.cc(293)] GPU state invalid after WaitForTokenInRange.
@@ -169,7 +159,7 @@ export class MmdManager extends ModelManager {
           // 震惊！！！setImmediate居然不是标准特性……
           // https://developer.mozilla.org/zh-CN/docs/Web/API/Window/setImmediate
           // 直接给我来个ReferenceError: setImmediate is not defined
-          this.scene.add(mmd);
+          this.scene.add(this.model);
           // 后来发现又个windows下的cancelAnimationFrame的API，但这是一个这是一个实验中的功能，所以还是不用了
           if (!this.shouldRender) {
             this.shouldRender = true;
@@ -177,29 +167,58 @@ export class MmdManager extends ModelManager {
               this._render();
             }, 1000);
           }
-          // 必须在添加上模型后再构建信息
-          modelControlInfo.transform = buildNodeInfoTreeAndList(this.scene);
-          modelControlInfo.state = "success";
-          resolve(modelControlInfo);
-          this.mouseFocusHelper = new MouseFocusHelper(
-            mmd.skeleton.bones.find((bone) => bone.name === "頭"),
-            this.camera
-          );
+          this._initMouceFocusHelper();
+          resolve(this._buildModelControlInfo(modelInfo));
         },
         null,
         (error) => {
           console.error(`[Hime Display] MMD Load Error: ${error}`);
-          resolve({ state: "error", errorMessage: error.message });
         }
       );
     });
   }
-  _addLight() {
-    const ambient = new THREE.AmbientLight(0x666666);
-    this.scene.add(ambient);
-    const directionalLight = new THREE.DirectionalLight(0x887766);
-    directionalLight.position.z = 100;
-    this.scene.add(directionalLight);
+  _initInstantConfig() {
+    // 放给下方的setter，使用
+    const manager = this;
+    // 载入模型时初始化即时配置
+    // 由于没有存数据库，这就要求这里的初始配置和控制面板那边的默认值保持一致
+    this.instantConfig = {
+      _physicsSimulation: true,
+      get physicsSimulation() {
+        return this._physicsSimulation;
+      },
+      set physicsSimulation(physicsSimulation) {
+        this._physicsSimulation = physicsSimulation;
+        manager.animationManager?.helper.enable("physics", physicsSimulation);
+      },
+    };
+  }
+  _initMouceFocusHelper() {
+    this.mouseFocusHelper = new MouseFocusHelper(
+      this.model.skeleton.bones.find((bone) => bone.name === "頭"),
+      this.camera
+    );
+  }
+  _buildModelControlInfo(modelInfo) {
+    const mmdUserData = this.model.geometry.userData.MMD;
+    const modelControlInfo = {
+      description: {
+        name: modelInfo.name,
+        extensionName: modelInfo.extensionName,
+        vertexCount: this.model.geometry.attributes.normal.count,
+        triangleCount: this.model.geometry.index.count / 3,
+        boneCount: mmdUserData.bones.length,
+        ikCount: mmdUserData.iks.length,
+        rigidBodyCount: mmdUserData.rigidBodies.length,
+        constraintCount: mmdUserData.constraints.length,
+        grantCount: mmdUserData.grants.length,
+        morphCount: this.model.geometry.morphTargets.length,
+      },
+      morph: this.model.morphTargetDictionary,
+    };
+    // 必须在添加上模型后再构建信息
+    modelControlInfo.transform = buildNodeInfoTreeAndList(this.scene);
+    return modelControlInfo;
   }
   _render() {
     if (!this.shouldRender) {
