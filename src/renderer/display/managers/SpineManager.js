@@ -1,5 +1,5 @@
 import { ModelManager } from "./ModelManager";
-import { setModelBaseTransfrom } from "@display/utils/2d/utils";
+import { setModelBaseTransfrom, draggable } from "@display/utils/2d/utils";
 // 由于live2d的特殊需求，没用模块系统载入pixi.js，pixi-spine模块的载入依赖于模块化pixi.js，因此暂时用成umd版本吧
 // import { Spine } from "pixi-spine";
 export class SpineManager extends ModelManager {
@@ -49,6 +49,9 @@ export class SpineManager extends ModelManager {
           this.model.addChild(this.internalModel);
           setModelBaseTransfrom(this.model, this.config.display);
           this.app.stage.addChild(this.model);
+          if (this.config.display["2d-draggable"]) {
+            draggable(this.model);
+          }
           this.app.start();
           const motionInfo = [];
           this.internalModel.spineData.animations.forEach((animation) => {

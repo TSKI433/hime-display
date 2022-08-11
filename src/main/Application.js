@@ -36,6 +36,7 @@ export class Application extends EventEmitter {
   }
   initConfigDB() {
     this.configDB = low(new lowFileSync(APP_CONFIG_PATH));
+    // 看样子lowdb的这个defaults只能浅层defaults，到第二级就不管用了
     this.configDB.defaults(defaultConfig).write();
   }
   initWindowManager() {

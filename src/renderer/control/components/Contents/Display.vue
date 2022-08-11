@@ -90,6 +90,9 @@
               <span> 100% </span>
             </div>
           </config-item>
+          <config-item label="拖拽移动">
+            <el-switch v-model="appStore.config.display['2d-draggable']" />
+          </config-item>
         </el-form-item>
         <el-form-item label="3D渲染配置">
           <config-item label="轮廓线效果">

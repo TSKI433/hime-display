@@ -15,6 +15,7 @@ export const defaultConfig = {
     background: "#000000",
     "2d-initial-width-range": [75, 100],
     "2d-initial-height-range": [20, 100],
+    "2d-draggable": true,
     "3d-outline-effect": true,
     // "model-mouse-track": true,
     // "3d-physics-simulation": true,

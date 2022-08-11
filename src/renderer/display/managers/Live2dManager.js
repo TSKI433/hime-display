@@ -1,7 +1,7 @@
 import { ModelManager } from "./ModelManager";
 import { ParameterMonitor, PartMonitor } from "@display/utils/live2d/Monitor";
 import { Live2DFaceMeshCaptureManager as FaceMeshCaptureManager } from "@display/utils/capture/Live2DFaceMeshCaptureManager";
-import { setModelBaseTransfrom } from "@display/utils/2d/utils";
+import { setModelBaseTransfrom, draggable } from "@display/utils/2d/utils";
 export class Live2dManager extends ModelManager {
   constructor(parentApp) {
     super(parentApp);
@@ -96,6 +96,9 @@ export class Live2dManager extends ModelManager {
     const model = this.model;
     const app = this.app;
     app.stage.addChild(model);
+    if (this.config.display["2d-draggable"]) {
+      draggable(model);
+    }
     const displayConfig = this.config.display;
     setModelBaseTransfrom(model, displayConfig);
     this.then = performance.now();
