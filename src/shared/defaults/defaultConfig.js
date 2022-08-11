@@ -17,6 +17,7 @@ export const defaultConfig = {
     "2d-initial-height-range": [20, 100],
     "2d-draggable": true,
     "3d-outline-effect": true,
+    "3d-orbit-controls": true,
     // "model-mouse-track": true,
     // "3d-physics-simulation": true,
     // "3d-camera-type": "perspective",

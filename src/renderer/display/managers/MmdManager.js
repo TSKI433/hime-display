@@ -61,7 +61,7 @@ export class MmdManager extends ModelManager {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.effect = new OutlineEffect(this.renderer);
     this.effect.enabled = this.config.display["3d-outline-effect"];
-    this._initOrbitControls();
+    this.config.display["3d-orbit-controls"] && this._initOrbitControls();
     this._addEventListeners();
   }
   _addLight() {

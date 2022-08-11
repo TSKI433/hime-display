@@ -98,6 +98,9 @@
           <config-item label="轮廓线效果">
             <el-switch v-model="appStore.config.display['3d-outline-effect']" />
           </config-item>
+          <config-item label="相机轨道控制">
+            <el-switch v-model="appStore.config.display['3d-orbit-controls']" />
+          </config-item>
         </el-form-item>
       </el-form>
     </el-scrollbar>
