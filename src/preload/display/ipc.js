@@ -36,3 +36,6 @@ export function handleSendToModelManager(callback) {
 export function askForMediaAccess() {
   return ipcRenderer.invoke("display:ask-for-media-access");
 }
+export function setIgnoreMouseEvents(...args) {
+  ipcRenderer.send("display:set-ignore-mouse-events", ...args);
+}

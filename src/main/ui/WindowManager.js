@@ -56,11 +56,11 @@ export class WindowManager extends EventEmitter {
     }
     if (windowName === "controlPanel") {
       //保持display窗口一直处于聚焦状态，以处理鼠标事件
-      // window.on("blur", () => {
-      //   if (this.windows.display !== null) {
-      //     this.windows.display.focus();
-      //   }
-      // });
+      window.on("blur", () => {
+        if (this.windows.display?.windowName === "displayFullScreen") {
+          this.windows.display.focus();
+        }
+      });
     }
     this.allUpdateWindowIds();
     return this.windows[pageType];

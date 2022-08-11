@@ -16,16 +16,6 @@
               </el-radio-button>
             </el-radio-group>
           </config-item>
-          <config-item label="覆盖于其他窗口上方">
-            <el-switch
-              v-model="appStore.config.display['keep-display-at-top']"
-            />
-          </config-item>
-          <config-item label="在所有工作区显示">
-            <el-switch
-              v-model="appStore.config.display['show-in-all-workspaces']"
-            />
-          </config-item>
         </el-form-item>
         <el-form-item label="模型显示设置">
           <config-item label="显示像素比">
@@ -46,8 +36,18 @@
           <config-item label="点击穿透">
             <el-radio-group v-model="appStore.config.display['click-through']">
               <el-radio-button label="all"> 所有区域 </el-radio-button>
-              <el-radio-button label="opacity"> 非透明区域 </el-radio-button>
+              <el-radio-button label="transparent"> 透明区域 </el-radio-button>
             </el-radio-group>
+          </config-item>
+          <config-item label="覆盖于其他窗口上方">
+            <el-switch
+              v-model="appStore.config.display['keep-display-at-top']"
+            />
+          </config-item>
+          <config-item label="在所有工作区显示">
+            <el-switch
+              v-model="appStore.config.display['show-in-all-workspaces']"
+            />
           </config-item>
         </el-form-item>
         <el-form-item label="有框窗口配置">

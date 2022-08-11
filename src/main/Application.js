@@ -101,6 +101,9 @@ export class Application extends EventEmitter {
     ipcMain.handle("display:ask-for-media-access", () => {
       return this.askForMediaAccess();
     });
+    ipcMain.on("display:set-ignore-mouse-events", (event, ...args) => {
+      this.windowManager.windows.display.setIgnoreMouseEvents(...args);
+    });
   }
   async askForMediaAccess() {
     if (is.macOS()) {

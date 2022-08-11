@@ -21,6 +21,14 @@ export class Application {
         ? 2
         : 1;
     this.antialias = this.config.display["antialias"];
+    if (
+      this.windowName === "displayFullScreen" &&
+      this.config.display["click-through"] === "transparent"
+    ) {
+      this.rgba = new Uint8Array(4);
+      this.ignoreFlag = true;
+      this.detectClickThrough();
+    }
     this.initControlWindowId();
     this.handleIpcMessages();
     this.setBackgroundColor();
@@ -94,5 +102,38 @@ export class Application {
         this.managers.now.onWindowResize();
       }
     });
+  }
+  detectClickThrough() {
+    // Windows7获取不到webgl2的上下文，因此获取webgl，如果获取了一种type的上下文，再获取其他上下文会报错，但是获取webgl2失败并不影响
+    // 无论是pixi.js还是three.js都会有现获取webgl2的上下文，找不到再切换到webgl，因此我这里的操作即使在启动渲染进程之前操作也不会有问题
+    // 但要是在渲染启动之前获取过webgl的上下文，那webgl2就没戏了
+    // 我怎么又栽在这个该死的参数preserveDrawingBuffer上了？？？？？？
+    // 说实话我感觉这webgl的接口做的是真的阴间，文档找不到多少，也没有谁告诉我抠个像素要把preserveDrawingBuffer设为true啊，（虽然我之前弄过一次了，忘了……）
+    // 然后关于获取上下文，相当于是第一次获取时进行一个初始化，之后全是返回第一次获取到的实例，换句话说，如果运行了this.canvas.getContext("webgl2")后再运行this.canvas.getContext("webgl2", { preserveDrawingBuffer: true })的话，这个preserveDrawingBuffer根本就没有被正确配置，而且一点提示都没有
+    this.context =
+      this.canvas.getContext("webgl2", { preserveDrawingBuffer: true }) ||
+      this.canvas.getContext("webgl", { preserveDrawingBuffer: true });
+    const detect = (event) => {
+      this.context.readPixels(
+        event.clientX * this.resolution,
+        this.canvas.height - event.clientY * this.resolution, //2d坐标系和3d坐标系的转换，坐标原点由左上角变为屏幕左下角
+        1,
+        1,
+        this.context.RGBA,
+        this.context.UNSIGNED_BYTE,
+        this.rgba
+      );
+      if (this.rgba[3] != 0 && this.ignoreFlag == true) {
+        console.log("[Hime Display] Click through detected", false);
+        this.nodeAPI.ipc.setIgnoreMouseEvents(false);
+        this.ignoreFlag = false;
+      } else if (this.rgba[3] == 0 && this.ignoreFlag == false) {
+        console.log("[Hime Display] Click through detected", true);
+        this.nodeAPI.ipc.setIgnoreMouseEvents(true, { forward: true });
+        this.ignoreFlag = true;
+      }
+    };
+    // 对比之下，pointermove事件返回的坐标带有小数
+    this.canvas.addEventListener("mousemove", detect);
   }
 }
