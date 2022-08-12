@@ -18,24 +18,48 @@ export function setModelBaseTransfrom(model, displayConfig) {
   model.y = (innerHeight * displayConfig["2d-initial-height-range"][0]) / 100;
 }
 export function draggable(model) {
-  // 折磨死我了，终于找到了问题所在，之前使用pixi-live2d-display都是直接用自动的interact，现在加载模型时设定为autoInteract: false就不一样了，本以为这个参数也就控制了个hit事件和鼠标跟踪，结果一看源码发现这也给模型的interactive设定为true了，进一步追溯，发现这是一个pixi.js的属性，设定为true才能正常响应事件，若为false，即使模型的_events可以看到事件，依旧是无法正常响应的。然后spine那边根本就没有对这个属性进行操作，所以自然也不能响应事件
-  model.interactive = true;
+  // 别看就是一点一按，这指针事件的判断复杂程度超乎想象，来梳理一下事件触发顺序：
+  // 点按：pointerdown,click,pointerup
+  // 拖拽：pointerdown,pointermove,dragstart,click,pointerup,dragend
   model.on("pointerdown", (e) => {
-    console.log("pointerdown");
-    if (e.data.button == 0) {
-      //防止右键触发移动事件
-      model.dragging = true;
+    // console.log("pointerdown");
+    //防止右键触发移动事件
+    if (e.data.button === 0) {
       model._pointerX = e.data.global.x - model.x;
       model._pointerY = e.data.global.y - model.y;
+      // 不单单是一时的事件响应，pointerdown需要成为一个持续的状态
+      model.afterPointerDown = true;
+      // model.dragEmitted用于给pointermove提供判断，在第一次移动是触发drag事件
+      model.dragEmitted = false;
     }
   });
   model.on("pointermove", (e) => {
-    if (model.dragging) {
+    if (model.afterPointerDown) {
+      // console.log("pointermove");
+      if (!model.dragEmitted) {
+        // 初次在点按拖拽前提下触发移动事件时触发自己一拍脑袋想出来的拖拽事件
+        model.emit("dragstart");
+        model.dragEmitted = true;
+      }
       model.position.x = e.data.global.x - model._pointerX;
       model.position.y = e.data.global.y - model._pointerY;
+      // 拖拽会触发click，model.dragged用于click事件判断到底有没有拖过
       model.dragged = true;
     }
   });
-  model.on("pointerupoutside", () => (model.dragging = false));
-  model.on("pointerup", () => (model.dragging = false));
+  model.on("pointerupoutside", () => {
+    // console.log("pointerupoutside");
+    if (model.dragEmitted) {
+      model.emit("dragend");
+    }
+    model.afterPointerDown = false;
+  });
+  model.on("pointerup", () => {
+    // console.log("pointerup");
+    // 只有真正拖动过模型才能触发dragend事件
+    if (model.dragEmitted) {
+      model.emit("dragend");
+    }
+    model.afterPointerDown = false;
+  });
 }
