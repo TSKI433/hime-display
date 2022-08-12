@@ -29,7 +29,7 @@ export function draggable(model) {
       model._pointerY = e.data.global.y - model.y;
       // 不单单是一时的事件响应，pointerdown需要成为一个持续的状态
       model.afterPointerDown = true;
-      // model.dragEmitted用于给pointermove提供判断，在第一次移动是触发drag事件
+      // model.dragEmitted有两个作用，一个是用于给pointermove提供判断，在第一次移动是触发drag事件；另一个是交给click事件判断该事件是单纯的click还是拖拽了
       model.dragEmitted = false;
     }
   });
@@ -43,8 +43,6 @@ export function draggable(model) {
       }
       model.position.x = e.data.global.x - model._pointerX;
       model.position.y = e.data.global.y - model._pointerY;
-      // 拖拽会触发click，model.dragged用于click事件判断到底有没有拖过
-      model.dragged = true;
     }
   });
   model.on("pointerupoutside", () => {

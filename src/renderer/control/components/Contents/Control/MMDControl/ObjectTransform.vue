@@ -1,29 +1,27 @@
 <template>
-  <div>
-    <config-item label="树状选择">
-      <el-tree-select
-        :data="[transformInfo.tree]"
-        check-strictly
-        v-model="nodeIdNow"
-      />
-    </config-item>
-    <!-- 我去，这几天这么巧的吗，又碰到一个Element Plus刚刚修复了的bug：https://github.com/element-plus/element-plus/issues/8542 -->
-    <config-item label="预测列表选择">
-      <el-select v-model="nodeIdNow" filterable>
-        <el-option
-          v-for="transformItem in transformInfo.list"
-          :label="transformItem.label"
-          :value="transformItem.value"
-        >
-        </el-option>
-      </el-select>
-    </config-item>
-    <transform
-      :transform-object="transformObject"
-      @input="setNodeTransform"
-      :disabled="nodeIdNow === ''"
-    ></transform>
-  </div>
+  <config-item label="树状选择">
+    <el-tree-select
+      :data="[transformInfo.tree]"
+      check-strictly
+      v-model="nodeIdNow"
+    />
+  </config-item>
+  <!-- 我去，这几天这么巧的吗，又碰到一个Element Plus刚刚修复了的bug：https://github.com/element-plus/element-plus/issues/8542 -->
+  <config-item label="预测列表选择">
+    <el-select v-model="nodeIdNow" filterable>
+      <el-option
+        v-for="transformItem in transformInfo.list"
+        :label="transformItem.label"
+        :value="transformItem.value"
+      >
+      </el-option>
+    </el-select>
+  </config-item>
+  <transform
+    :transform-object="transformObject"
+    @input="setNodeTransform"
+    :disabled="nodeIdNow === ''"
+  ></transform>
 </template>
 
 <script setup>

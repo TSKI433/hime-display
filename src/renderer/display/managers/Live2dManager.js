@@ -46,6 +46,24 @@ export class Live2dManager extends ModelManager {
     gl.clear(gl.STENCIL_BUFFER_BIT);
   }
   async loadModel(modelInfo) {
+    this._initInstantConfig();
+    this._clearModel();
+    this.model = await PIXI.live2d.Live2DModel.from(modelInfo.entranceFile, {
+      // 更新和交互都交由之后手动控制
+      autoUpdate: false,
+      autoInteract: false,
+    });
+    this.app.stage.addChild(this.model);
+    // 折磨死我了，终于找到了问题所在，之前使用pixi-live2d-display都是直接用自动的interact，现在加载模型时设定为autoInteract: false就不一样了，本以为这个参数也就控制了个hit事件和鼠标跟踪，结果一看源码发现这也给模型的interactive设定为true了，进一步追溯，发现这是一个pixi.js的属性，设定为true才能正常响应事件，若为false，即使模型的_events可以看到事件，依旧是无法正常响应的。然后spine那边根本就没有对这个属性进行操作，所以自然也不能响应事件
+    this.model.interactive = true;
+    if (this.config.display["2d-draggable"]) {
+      draggable(this.model);
+    }
+    this._bindEventAnimation();
+    this._startRender();
+    return this._buildModelControlInfo(modelInfo);
+  }
+  _initInstantConfig() {
     const manager = this;
     this.instantConfig = {
       _autoBreath: true,
@@ -79,31 +97,39 @@ export class Live2dManager extends ModelManager {
         }
       },
       trackMouse: true,
+      clickAnimation: "random",
+      dragAnimation: "none",
       store: {
         breath: null,
         eyeBlink: null,
       },
     };
+  }
+  _clearModel() {
     if (this.model !== null && !this.model.destroied) {
       this.model.destroy();
     }
-    this.model = await PIXI.live2d.Live2DModel.from(modelInfo.entranceFile, {
-      // 更新和交互都交由之后手动控制
-      autoUpdate: false,
-      autoInteract: false,
+  }
+  _bindEventAnimation() {
+    this.model.on("click", () => {
+      // 防止拖拽过程连带触发点击事件，只要dragEmitted为true，说明pointermove事件绝对被触发过
+      // 这里有一个很巧妙的地方，如果不调用draggable函数，dragEmitted只能是undefined，下方判断依旧能正确触发，因此不需要手动判断是否启动了拖拽
+      if (!this.model.dragEmitted) {
+        this._loadMotionByPath(this.instantConfig.clickAnimation);
+      }
     });
-
-    const model = this.model;
-    const app = this.app;
-    app.stage.addChild(model);
-    if (this.config.display["2d-draggable"]) {
-      draggable(model);
-    }
+    this.model.on("dragstart", () => {
+      this._loadMotionByPath(this.instantConfig.dragAnimation);
+    });
+  }
+  _startRender() {
     const displayConfig = this.config.display;
-    setModelBaseTransfrom(model, displayConfig);
+    setModelBaseTransfrom(this.model, displayConfig);
     this.then = performance.now();
     this.shouldRender = true;
     requestAnimationFrame(this._render.bind(this));
+  }
+  _buildModelControlInfo(modelInfo) {
     const internalModel = this.model.internalModel;
     const coreModel = internalModel.coreModel;
     const modelControlInfo = {
@@ -131,11 +157,6 @@ export class Live2dManager extends ModelManager {
       motion: internalModel.settings.motions,
     };
     return modelControlInfo;
-    // model.on("hit", (hitAreas) => {
-    //   if (hitAreas.includes("body")) {
-    //     model.motion("tap_body");
-    //   }
-    // });
   }
   _render(now) {
     if (!this.shouldRender) {
@@ -200,10 +221,7 @@ export class Live2dManager extends ModelManager {
         break;
       }
       case "control:play-motion": {
-        const motionIndex = this.model.internalModel.settings.motions[
-          message.data.motion.group
-        ].findIndex((motion) => motion.File === message.data.motion.File);
-        this.model.motion(message.data.motion.group, motionIndex);
+        this._loadMotion(message.data.motion);
         break;
       }
       // 目前看来，面部捕捉和动画播放并不冲突，所以可以同时进行，动画播放的优先级高于面部捕捉
@@ -248,14 +266,64 @@ export class Live2dManager extends ModelManager {
     // 直接手动更新Monitor的数值，防止checkUpdate机制循环发送更新消息
     this.partMonitor.value = value;
   }
+  _loadMotion(motionInfo) {
+    const motionIndex = this.model.internalModel.settings.motions[
+      motionInfo.group
+    ].findIndex((motion) =>
+      // moc与moc3的入口文件属性名不同
+      motionInfo.File
+        ? motion.File === motionInfo.File
+        : motionInfo.file
+        ? motion.file === motionInfo.file
+        : false
+    );
+    this.model.motion(motionInfo.group, motionIndex);
+  }
   _addEventListeners() {
-    document.addEventListener("pointermove", this.onPointerMove);
+    document.addEventListener("pointermove", this._onPointerMove);
   }
   _removeEventListeners() {
-    document.removeEventListener("pointermove", this.onPointerMove);
+    document.removeEventListener("pointermove", this._onPointerMove);
+  }
+  _loadMotionByPath(motionPath) {
+    // 自定义的两个正常不会出现的路径名，方便统一的进行载入
+    if (motionPath === "none") {
+      return;
+    } else if (motionPath === "random") {
+      const motionGroups = Object.keys(
+        this.model.internalModel.settings.motions
+      );
+      const randomGruoup =
+        motionGroups[Math.floor(Math.random() * motionGroups.length)];
+      this.model.motion(randomGruoup);
+    } else {
+      const motions = this.model.internalModel.settings.motions;
+      let motionIndex, motionGroup;
+      for (let groupName of Object.keys(motions)) {
+        motionIndex = motions[groupName].findIndex((motion) =>
+          motion.File
+            ? motion.File === motionPath
+            : motion.file
+            ? motion.file === motionPath
+            : false
+        );
+        if (motionIndex !== -1) {
+          motionGroup = groupName;
+          break;
+        }
+      }
+      if (motionIndex === -1) {
+        // 一般来讲不可能触发
+        throw new Error(
+          "Model Event Animation: Can't find motion file: " + motionPath
+        );
+      } else {
+        this.model.motion(motionGroup, motionIndex);
+      }
+    }
   }
   // 不使用箭头函数会导致this的指向出错，若使用bind更改this指向，会导致返回的function和原函数不同，无法移出事件监听器
-  onPointerMove = (event) => {
+  _onPointerMove = (event) => {
     if (this.focusPosition === null) {
       // 初次检测，初始化focusPosition
       this.focusPosition = {};

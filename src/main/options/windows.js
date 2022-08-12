@@ -25,7 +25,7 @@ export const windowsOptions = {
       ? `http://localhost:${DEV_SERVER_PORT}/control.html`
       : "file://" + resolve(__dirname, "../renderer/control.html"),
     dev: {
-      autoOpenDevTool: true,
+      autoOpenDevTool: false,
     },
     pageType: "control",
   },
@@ -51,7 +51,7 @@ export const windowsOptions = {
       ? `http://localhost:${DEV_SERVER_PORT}/display.html`
       : "file://" + resolve(__dirname, "../renderer/display.html"),
     dev: {
-      autoOpenDevTool: true,
+      autoOpenDevTool: false,
     },
     pageType: "display",
   },
@@ -75,7 +75,7 @@ export const windowsOptions = {
       ? `http://localhost:${DEV_SERVER_PORT}/display.html`
       : "file://" + resolve(__dirname, "../renderer/display.html"),
     dev: {
-      autoOpenDevTool: true,
+      autoOpenDevTool: false,
     },
     pageType: "display",
   },
