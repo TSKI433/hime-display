@@ -41,20 +41,20 @@
 
 <script setup>
 import HimeTitleWithDivider from "@control/components/Common/TitleWithDivider.vue";
-import { ref, toRaw, markRaw } from "vue";
+import { ref, toRaw, markRaw, reactive } from "vue";
 import { useAppStore } from "@control/store/app";
 import { useControlStore } from "@control/store/control";
 const appStore = useAppStore();
 const controlStore = useControlStore();
-let currentModelInfo = null;
+const currentModelInfo = reactive({ value: null });
 const modelTableSelected = ref(false);
 const ipcAPI = window.nodeAPI.ipc;
 function changeCurrentModelInfo(currentRow) {
   modelTableSelected.value = true;
-  currentModelInfo = currentRow;
+  currentModelInfo.value = currentRow;
 }
 function loadModelNow() {
-  const rawModelInfo = toRaw(currentModelInfo);
+  const rawModelInfo = toRaw(currentModelInfo.value);
   controlStore.currentModelType = rawModelInfo.modelType;
   controlStore.modelControlInfoLoading = true;
   controlStore.modelControlInfo = null;

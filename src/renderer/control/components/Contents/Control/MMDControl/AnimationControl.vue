@@ -81,8 +81,8 @@ import ConfigItem from "@control/components/Common/ConfigItem.vue";
 // 发现奇妙的现象，这里不引入ref不会直接报错，而是先蹦出两三百个vue的警告来
 import { reactive, ref, watch, toRaw } from "vue";
 const appStore = useAppStore();
-let currentMotionInfo = null;
-let currentAudioInfo = null;
+const currentMotionInfo = reactive({ value: null });
+const currentAudioInfo = reactive({ value: null });
 const motionTableSelected = ref(false);
 const audioTableSelected = ref(false);
 const animationLoop = ref(true);
@@ -90,30 +90,30 @@ const delayTime = ref(0);
 const ipcAPI = window.nodeAPI.ipc;
 function changeCurrentMotionInfo(currentRow) {
   motionTableSelected.value = true;
-  currentMotionInfo = currentRow;
+  currentMotionInfo.value = currentRow;
 }
 function changeCurrentAudioInfo(currentRow) {
   audioTableSelected.value = true;
-  currentAudioInfo = currentRow;
+  currentAudioInfo.value = currentRow;
 }
 function playMotion() {
-  if (currentMotionInfo !== null) {
+  if (currentMotionInfo.value !== null) {
     ipcAPI.sendToModelManager(appStore.displayWindowId, {
       channel: "control:play-motion",
       data: {
-        motionFilePath: currentMotionInfo.entranceFile,
+        motionFilePath: currentMotionInfo.value.entranceFile,
         animationLoop: animationLoop.value,
       },
     });
   }
 }
 function playMotionWithAudio() {
-  if (currentMotionInfo !== null && currentAudioInfo !== null) {
+  if (currentMotionInfo.value !== null && currentAudioInfo.value !== null) {
     ipcAPI.sendToModelManager(appStore.displayWindowId, {
       channel: "control:play-motion-with-audio",
       data: {
-        motionFilePath: currentMotionInfo.entranceFile,
-        audioFilePath: currentAudioInfo.entranceFile,
+        motionFilePath: currentMotionInfo.value.entranceFile,
+        audioFilePath: currentAudioInfo.value.entranceFile,
         delayTime: delayTime.value,
         // TODO：音频跟着loop，现在懒得做
         animationLoop: animationLoop.value,

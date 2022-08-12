@@ -27,12 +27,12 @@
 </template>
 
 <script setup>
-import { ref, toRaw } from "vue";
+import { ref, toRaw, reactive } from "vue";
 import ConfigItem from "@control/components/Common/ConfigItem.vue";
 import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
-let currentMotion = null;
+const currentMotion = reactive({ value: null });
 const motionTabelSelected = ref(false);
 const animationLoop = ref(true);
 const props = defineProps({
@@ -40,13 +40,13 @@ const props = defineProps({
 });
 function changeCurrentMotion(currentRow) {
   motionTabelSelected.value = true;
-  currentMotion = currentRow;
+  currentMotion.value = currentRow;
 }
 function loadMotionNow() {
   ipcAPI.sendToModelManager(appStore.displayWindowId, {
     channel: "control:play-motion",
     data: {
-      motion: toRaw(currentMotion),
+      motion: toRaw(currentMotion.value),
       animationLoop: animationLoop.value,
     },
   });

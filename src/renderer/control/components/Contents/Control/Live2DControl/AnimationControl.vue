@@ -51,7 +51,8 @@ import ConfigItem from "@control/components/Common/ConfigItem.vue";
 import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
-let currentMotion = null;
+// 直接赋值为null在各种响应式需求下会很不妙
+const currentMotion = reactive({ value: null });
 const motionTabelSelected = ref(false);
 const props = defineProps({
   motionInfo: Object,
@@ -72,13 +73,13 @@ const motions = computed(function () {
 });
 function changeCurrentMotion(currentRow) {
   motionTabelSelected.value = true;
-  currentMotion = currentRow;
+  currentMotion.value = currentRow;
 }
 function loadMotionNow() {
   ipcAPI.sendToModelManager(appStore.displayWindowId, {
     channel: "control:play-motion",
     data: {
-      motion: toRaw(currentMotion),
+      motion: toRaw(currentMotion.value),
     },
   });
 }
@@ -102,10 +103,10 @@ function setEventAnimation(animation) {
     instantConfig.value = animation;
     instantConfig.label = animation;
   } else {
-    instantConfig.value = currentMotion.File
-      ? currentMotion.File
-      : currentMotion.file;
-    instantConfig.label = currentMotion.name;
+    instantConfig.value = currentMotion.value.File
+      ? currentMotion.value.File
+      : currentMotion.value.file;
+    instantConfig.label = currentMotion.value.name;
   }
   ipcAPI.sendToModelManager(appStore.displayWindowId, {
     channel: "control:change-instant-config",
