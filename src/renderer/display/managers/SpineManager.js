@@ -6,6 +6,7 @@ export class SpineManager extends ModelManager {
   constructor(parentApp) {
     super(parentApp);
     this.modelType = "Spine";
+    this.instantConfig = null;
   }
   switchIn() {
     this.app = new PIXI.Application({
@@ -22,6 +23,7 @@ export class SpineManager extends ModelManager {
   switchOut() {
     // this._removeEventListeners();
     // this._sendToModelControl = null;
+    this.instantConfig = null;
     // destroy以后无法直接获得这个上下文了
     const gl = this.app.renderer.context.gl;
     this.app.destroy();
@@ -31,10 +33,8 @@ export class SpineManager extends ModelManager {
   }
   loadModel(modelInfo) {
     return new Promise((resolve, reject) => {
-      if (this.model !== null && !this.model.destroied) {
-        this.model.destroy();
-        this.app.loader.reset();
-      }
+      this._initInstantConfig();
+      this._clearModel();
       const modelFile = modelInfo.entranceFile;
       this.app.loader
         .add("spineCharacter", modelFile)
@@ -49,33 +49,67 @@ export class SpineManager extends ModelManager {
           this.model.addChild(this.internalModel);
           setModelBaseTransfrom(this.model, this.config.display);
           this.app.stage.addChild(this.model);
+          this.model.interactive = true;
           if (this.config.display["2d-draggable"]) {
             draggable(this.model);
           }
+          this._bindEventAnimation();
           this.app.start();
-          const motionInfo = [];
-          this.internalModel.spineData.animations.forEach((animation) => {
-            motionInfo.push({
-              name: animation.name,
-              duration: Number(animation.duration.toFixed(2)),
-            });
-          });
-          const modelControlInfo = {
-            description: {
-              name: modelInfo.name,
-              extensionName: modelInfo.extensionName,
-              versionNumber: this.internalModel.spineData.version,
-              animationCount: this.internalModel.spineData.animations.length,
-              boneCount: this.internalModel.spineData.bones.length,
-              slotCount: this.internalModel.spineData.slots.length,
-              ikCount: this.internalModel.spineData.ikConstraints.length,
-              skinCount: this.internalModel.spineData.skins.length,
-            },
-            motion: motionInfo,
-          };
-          resolve(modelControlInfo);
+
+          resolve(this._buildModelControlInfo(modelInfo));
         });
     });
+  }
+  _initInstantConfig() {
+    this.instantConfig = {
+      clickAnimation: "random",
+      dragAnimation: "none",
+    };
+  }
+  _clearModel() {
+    if (this.model !== null && !this.model.destroied) {
+      this.model.destroy();
+      this.app.loader.reset();
+    }
+  }
+  _bindEventAnimation() {
+    // 对于Spine，点击动画默认播放一次，拖拽动画循环播放
+    this.model.on("click", () => {
+      // 防止拖拽过程连带触发点击事件，只要dragEmitted为true，说明pointermove事件绝对被触发过
+      // 这里有一个很巧妙的地方，如果不调用draggable函数，dragEmitted只能是undefined，下方判断依旧能正确触发，因此不需要手动判断是否启动了拖拽
+      if (!this.model.dragEmitted) {
+        this._loadMotionByPath(this.instantConfig.clickAnimation, false);
+      }
+    });
+    this.model.on("dragstart", () => {
+      this._loadMotionByPath(this.instantConfig.dragAnimation, true);
+    });
+    this.model.on("dragend", () => {
+      this.internalModel.state.setEmptyAnimations(0.3);
+    });
+  }
+  _buildModelControlInfo(modelInfo) {
+    const motionInfo = [];
+    this.internalModel.spineData.animations.forEach((animation) => {
+      motionInfo.push({
+        name: animation.name,
+        duration: Number(animation.duration.toFixed(2)),
+      });
+    });
+    const modelControlInfo = {
+      description: {
+        name: modelInfo.name,
+        extensionName: modelInfo.extensionName,
+        versionNumber: this.internalModel.spineData.version,
+        animationCount: this.internalModel.spineData.animations.length,
+        boneCount: this.internalModel.spineData.bones.length,
+        slotCount: this.internalModel.spineData.slots.length,
+        ikCount: this.internalModel.spineData.ikConstraints.length,
+        skinCount: this.internalModel.spineData.skins.length,
+      },
+      motion: motionInfo,
+    };
+    return modelControlInfo;
   }
   onSendToModelControl() {}
   handleMessage(message) {
@@ -95,6 +129,27 @@ export class SpineManager extends ModelManager {
         // this.internalModel.state.clearTracks();
         break;
       }
+      case "control:change-instant-config": {
+        const { name, value } = message.data;
+        this.instantConfig[name] = value;
+        break;
+      }
+    }
+  }
+  _loadMotionByPath(motionPath, loop) {
+    if (motionPath === "none") {
+      return;
+    } else if (motionPath === "random") {
+      const animationNames = this.internalModel.spineData.animations.map(
+        (a) => a.name
+      );
+      this.internalModel.state.setAnimation(
+        0,
+        animationNames[Math.floor(Math.random() * animationNames.length)],
+        loop
+      );
+    } else {
+      this.internalModel.state.setAnimation(0, motionPath, loop);
     }
   }
 }

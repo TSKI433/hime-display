@@ -4,7 +4,7 @@
       :data="motionInfo"
       @current-change="changeCurrentMotion"
       highlight-current-row
-      height="300"
+      height="200"
       size="small"
       tooltip-effect="light"
     >
@@ -24,22 +24,29 @@
     <el-button @click="loadMotionNow"> 载入当前动作 </el-button>
     <el-button @click="quitMotion"> 退出动画播放 </el-button>
   </config-item>
+  <el-divider style="margin: 12px 0" />
+  <event-animation
+    :current-motion="currentMotion"
+    :motion-table-selected="motionTableSelected"
+    modelType="Spine"
+  ></event-animation>
 </template>
 
 <script setup>
 import { ref, toRaw, reactive } from "vue";
 import ConfigItem from "@control/components/Common/ConfigItem.vue";
+import EventAnimation from "../Common/EventAnimation.vue";
 import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
 const currentMotion = reactive({ value: null });
-const motionTabelSelected = ref(false);
+const motionTableSelected = ref(false);
 const animationLoop = ref(true);
 const props = defineProps({
   motionInfo: Object,
 });
 function changeCurrentMotion(currentRow) {
-  motionTabelSelected.value = true;
+  motionTableSelected.value = true;
   currentMotion.value = currentRow;
 }
 function loadMotionNow() {

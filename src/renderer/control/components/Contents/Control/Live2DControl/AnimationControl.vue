@@ -23,37 +23,23 @@
     <el-button @click="loadMotionNow"> 载入当前动作 </el-button>
   </config-item>
   <el-divider style="margin: 12px 0" />
-  <config-item label="事件动画">
-    <el-select v-model="eventSelected" style="width: 80px; margin-right: 12px">
-      <el-option value="click" />
-      <el-option value="drag" />
-    </el-select>
-    <el-button @click="setEventAnimation('none')"> 无动画 </el-button>
-    <el-button @click="setEventAnimation('random')"> 随机动画 </el-button>
-    <el-button
-      @click="setEventAnimation('database')"
-      :disabled="!motionTabelSelected"
-    >
-      列表选中动画
-    </el-button>
-  </config-item>
-  <config-item label="当前点击动画">
-    {{ clickAnimation.label }}
-  </config-item>
-  <config-item label="当前拖拽动画">
-    {{ dragAnimation.label }}
-  </config-item>
+  <event-animation
+    :current-motion="currentMotion"
+    :motion-table-selected="motiontableSelected"
+    model-type="Live2D"
+  ></event-animation>
 </template>
 
 <script setup>
 import { computed, ref, toRaw, reactive } from "vue";
 import ConfigItem from "@control/components/Common/ConfigItem.vue";
+import EventAnimation from "../Common/EventAnimation.vue";
 import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
 // 直接赋值为null在各种响应式需求下会很不妙
 const currentMotion = reactive({ value: null });
-const motionTabelSelected = ref(false);
+const motiontableSelected = ref(false);
 const props = defineProps({
   motionInfo: Object,
 });
@@ -72,7 +58,7 @@ const motions = computed(function () {
   return motionList;
 });
 function changeCurrentMotion(currentRow) {
-  motionTabelSelected.value = true;
+  motiontableSelected.value = true;
   currentMotion.value = currentRow;
 }
 function loadMotionNow() {
@@ -81,36 +67,6 @@ function loadMotionNow() {
     data: {
       motion: toRaw(currentMotion.value),
     },
-  });
-}
-
-const clickAnimation = reactive({
-  name: "clickAnimation",
-  value: "random",
-  // label用于UI显示
-  label: "random",
-});
-const dragAnimation = reactive({
-  name: "dragAnimation",
-  value: "none",
-  label: "none",
-});
-const eventSelected = ref("click");
-function setEventAnimation(animation) {
-  const instantConfig =
-    eventSelected.value === "click" ? clickAnimation : dragAnimation;
-  if (animation === "none" || animation === "random") {
-    instantConfig.value = animation;
-    instantConfig.label = animation;
-  } else {
-    instantConfig.value = currentMotion.value.File
-      ? currentMotion.value.File
-      : currentMotion.value.file;
-    instantConfig.label = currentMotion.value.name;
-  }
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
-    channel: "control:change-instant-config",
-    data: toRaw(instantConfig),
   });
 }
 </script>
