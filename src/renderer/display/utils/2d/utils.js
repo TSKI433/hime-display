@@ -20,7 +20,7 @@ export function setModelBaseTransfrom(model, displayConfig) {
 export function draggable(model) {
   // 别看就是一点一按，这指针事件的判断复杂程度超乎想象，来梳理一下事件触发顺序：
   // 点按：pointerdown,click,pointerup
-  // 拖拽：pointerdown,pointermove,dragstart,click,pointerup,dragend
+  // 拖拽：pointerdown,pointermove,dragstart,(pointermove,dragging)*N,click,pointerup,dragend
   model.on("pointerdown", (e) => {
     // console.log("pointerdown");
     //防止右键触发移动事件
@@ -43,6 +43,7 @@ export function draggable(model) {
       }
       model.position.x = e.data.global.x - model._pointerX;
       model.position.y = e.data.global.y - model._pointerY;
+      model.emit("dragging");
     }
   });
   model.on("pointerupoutside", () => {

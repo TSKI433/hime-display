@@ -53,6 +53,7 @@ export class SpineManager extends ModelManager {
           if (this.config.display["2d-draggable"]) {
             draggable(this.model);
           }
+          this.model.on("dragging", this._updateModelTransform.bind(this));
           this._bindEventAnimation();
           this.app.start();
 
@@ -71,6 +72,17 @@ export class SpineManager extends ModelManager {
       this.model.destroy();
       this.app.loader.reset();
     }
+  }
+  _updateModelTransform() {
+    this._sendToModelControl({
+      channel: "manager:update-model-transform",
+      data: {
+        x: this.model.x,
+        y: this.model.y,
+        // 目前缩放不提供xy方向的分别缩放
+        scale: this.model.scale.x,
+      },
+    });
   }
   _bindEventAnimation() {
     // 对于Spine，点击动画默认播放一次，拖拽动画循环播放
@@ -111,7 +123,9 @@ export class SpineManager extends ModelManager {
     };
     return modelControlInfo;
   }
-  onSendToModelControl() {}
+  onSendToModelControl(callback) {
+    this._sendToModelControl = callback;
+  }
   handleMessage(message) {
     switch (message.channel) {
       case "control:play-motion": {
@@ -132,6 +146,16 @@ export class SpineManager extends ModelManager {
       case "control:change-instant-config": {
         const { name, value } = message.data;
         this.instantConfig[name] = value;
+        break;
+      }
+      case "control:set-model-transform": {
+        this.model.x = message.data.x;
+        this.model.y = message.data.y;
+        this.model.scale.set(message.data.scale);
+        break;
+      }
+      case "control:query-model-transform": {
+        this._updateModelTransform();
         break;
       }
     }

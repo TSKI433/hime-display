@@ -12,6 +12,9 @@
           <control-load-error></control-load-error>
         </template>
       </el-tab-pane>
+      <el-tab-pane :label="$t(`control.object-transform`)">
+        <transform></transform>
+      </el-tab-pane>
       <el-tab-pane :label="$t(`control.parameter-control`)">
         <parameter-control
           v-if="
@@ -46,6 +49,7 @@
 import { reactive } from "vue";
 import ControlLoadError from "../Common/ControlLoadError.vue";
 import ModelDescription from "../Common/ModelDescription.vue";
+import Transform from "../Common/Transform2D.vue";
 import ParameterControl from "./ParameterControl.vue";
 import AnimationControl from "./AnimationControl.vue";
 import MotionCapture from "../Common/MotionCapture.vue";

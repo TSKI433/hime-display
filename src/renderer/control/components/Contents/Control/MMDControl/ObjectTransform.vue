@@ -62,7 +62,7 @@ function setNodeTransform() {
   });
 }
 
-// 照理来讲，模型控制这一级的组件没用keep-alive，动态组件切换后事件监听也能正确弄过去？
+// 照理来讲，模型控制这一级的组件没用keep-alive，动态组件切换后事件监听也能正确弄过去？（目前已在切换组件时已进行了事件监听清理）
 ipcAPI.handleSendToModelControl((event, message) => {
   switch (message.channel) {
     case "manager:update-node-transform": {
