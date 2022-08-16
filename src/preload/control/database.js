@@ -116,6 +116,12 @@ async function detectDatabaseItem(fileDir, sourceTypes, sourcePath) {
       }
       break;
     }
+    case ".fbx": {
+      if (sourceTypes["motion3D"]) {
+        processFbx(fileDir, sourcePath);
+      }
+      break;
+    }
     case ".wav": {
       if (sourceTypes["audio3D"]) {
         processWav(fileDir, sourcePath);
@@ -195,6 +201,14 @@ function processVmd(fileDir, sourcePath) {
     // 根据我在B碗上的下载经验，有一些配布中都会带有多个版本的vmd，这些文件的名称都不是曲名，但没有办法，只能让用户手动改一下文件名了
     name: path.basename(fileDir),
     extensionName: "vmd",
+    entranceFile: resolveEntrancePath(fileDir),
+    sourcePath,
+  });
+}
+function processFbx(fileDir, sourcePath) {
+  writeMotion3DInfo({
+    name: path.basename(fileDir),
+    extensionName: "fbx",
     entranceFile: resolveEntrancePath(fileDir),
     sourcePath,
   });

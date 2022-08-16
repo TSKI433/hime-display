@@ -97,7 +97,17 @@ export class Live2dManager extends ModelManager {
           manager.model.internalModel.eyeBlink = null;
         }
       },
-      trackMouse: true,
+      _trackMouse: true,
+      get trackMouse() {
+        return this._trackMouse;
+      },
+      set trackMouse(value) {
+        this._trackMouse = value;
+        if (!value) {
+          manager.model.internalModel.focusController.targetX = 0;
+          manager.model.internalModel.focusController.targetY = 0;
+        }
+      },
       clickAnimation: "random",
       dragAnimation: "none",
       store: {

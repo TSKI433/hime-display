@@ -38,7 +38,7 @@ export class SpineManager extends ModelManager {
       const modelFile = modelInfo.entranceFile;
       this.app.loader
         .add("spineCharacter", modelFile)
-        .load((loder, resources) => {
+        .load((loader, resources) => {
           // 学着pixi-live2d-display开始套娃……
           this.internalModel = new PIXI.spine.Spine(
             resources.spineCharacter.spineData
