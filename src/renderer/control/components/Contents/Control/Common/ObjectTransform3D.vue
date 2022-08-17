@@ -25,7 +25,7 @@
 </template>
 
 <script setup>
-import Transform from "../Common/Transform3D.vue";
+import Transform from "./Transform3D.vue";
 import ConfigItem from "@control/components/Common/ConfigItem.vue";
 import { reactive, ref, watch, toRaw } from "vue";
 import { useAppStore } from "@control/store/app";
