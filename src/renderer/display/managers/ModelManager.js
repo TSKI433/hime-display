@@ -7,4 +7,7 @@ export class ModelManager {
     this.antialias = parentApp.antialias;
     this.model = null;
   }
+  onSendToModelControl(callback) {
+    this._sendToModelControl = callback;
+  }
 }
