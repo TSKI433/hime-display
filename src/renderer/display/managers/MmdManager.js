@@ -1,8 +1,7 @@
-import { ModelManager } from "./ModelManager";
+import { ModelManager3D } from "./ModelManager3D";
 import * as THREE from "three";
 import { MMDLoader } from "three/examples/jsm/loaders/MMDLoader.js";
 import { OutlineEffect } from "three/examples/jsm/effects/OutlineEffect.js";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { MouseFocusHelper } from "@display/utils/3d/MouseFocusHelper.js";
 import { buildNodeInfoTreeAndList } from "@display/utils/3d/NodeInfo";
 import { TransformMonitor } from "@display/utils/3d/Monitor";
@@ -10,37 +9,21 @@ import { MorphMonitor } from "@display/utils/mmd/Monitor";
 import { AnimationManager } from "@display/utils/mmd/AnimationManager";
 import { MMDFaceMeshCaptureManager as FaceMeshCaptureManager } from "@display/utils/capture/MMDFaceMeshCaptureManager";
 import { MMDHolisticCaptureManager as HolisticCaptureManager } from "@display/utils/capture/MMDHolisticCaptureManager";
-export class MmdManager extends ModelManager {
+export class MmdManager extends ModelManager3D {
   constructor(parentApp) {
     super(parentApp);
     this.modelType = "MMD";
-    this._sendToModelControl = null;
-    this.shouldRender = false;
-
-    // 控制面板那边对展示器由两种类型的控制，一个是config数据库中存储的配置，需要重启展示器生效，还有一种是不存储数据库的临时配置，只对当前的模型生效，也就是这里instantConfig内部存放的东西
-    this.instantConfig = null;
-    this.MMDLoader = null;
-    this.transformMonitor = null;
-    this.morphMonitor = null;
-    this.captureManagerNow = null;
-    // 主要用于MouseFocusHelper的判断
-    this.animationManager = null;
-    this.mouseFocusHelper = null;
-    this.orbitControls = null;
-
-    this.scene = null;
-    this.camera = null;
-    this.renderer = null;
-    this.effect = null;
-    this.model = null;
+    this._initObjects();
   }
   switchIn() {
-    this.MMDLoader = new MMDLoader();
+    this.ModelLoader = new MMDLoader();
     this.transformMonitor = new TransformMonitor();
     this.morphMonitor = new MorphMonitor();
+    // scene
     this.scene = new THREE.Scene();
     this._addLight();
     // 由于要在整个屏幕上展示，刻意将视锥体垂直视野角度改为了30度，以减小模型的屏幕边缘时产生的画面畸变
+    //camera
     this.camera = new THREE.PerspectiveCamera(
       30,
       window.innerWidth / window.innerHeight,
@@ -52,6 +35,7 @@ export class MmdManager extends ModelManager {
     // 其一，在构建节点树的时候会连着Camera进去，这样相机的位置就能和其他对象统一控制了
     // 其二，之后要载入音频的时候，会把AudioListener加到camera下，这样一来，相机的移动就可以连带着listener移动，就像给相机挂了个耳机一样（然而目前用的不是THREE的PositionalAudio，这波操作似乎什么用都没有……）
     this.scene.add(this.camera);
+    //renderer
     this.renderer = new THREE.WebGLRenderer({
       antialias: this.antialias,
       aplpha: true,
@@ -60,6 +44,7 @@ export class MmdManager extends ModelManager {
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.setPixelRatio(this.resolution);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+    //effect
     this.effect = new OutlineEffect(this.renderer);
     this.effect.enabled = this.config.display["3d-outline-effect"];
     this.config.display["3d-orbit-controls"] && this._initOrbitControls();
@@ -72,58 +57,10 @@ export class MmdManager extends ModelManager {
     directionalLight.position.z = 100;
     this.scene.add(directionalLight);
   }
-  _initOrbitControls() {
-    this.orbitControls = new OrbitControls(
-      this.camera,
-      this.renderer.domElement
-    );
-    // 将控制目标点抬高至和相机平齐，不然刚启动时位置不对
-    this.orbitControls.target.y = this.camera.position.y;
-    this.orbitControls.update();
-  }
-  switchOut() {
-    this._removeEventListeners();
-    this._clearModel();
-    this._sendToModelControl = null;
-    this.shouldRender = false;
-
-    this.instantConfig = null;
-    this.MMDLoader = null;
-    this.transformMonitor = null;
-    this.morphMonitor = null;
-    this.captureManagerNow = null;
-    this.animationManager = null;
-    // 人查麻了，搞了半天MMD模型没被垃圾回收是mouseFocusHelper的问题，由一个脑袋开始揪住整个模型死活不放手是吧
-    this.mouseFocusHelper = null;
-    this.orbitControls = null;
-
-    this.scene.traverse((obj) => {
-      if (obj.isMesh) {
-        // 这里本来应该除了mmd就没有mesh了，还是这么的写一下，但是其他的meshtexture就不知道是什么情况了，先不处理
-        obj.material.dispose();
-        obj.geometry.dispose();
-      }
-      if (obj.dispose !== undefined) {
-        // 看了一下THREE.Light类是有dispose方法的，默认是个预留空函数，这里用的平行光和环境光都没有对此函数进行覆盖，但为了之后考虑还是调用一下
-        obj.dispose();
-      }
-    });
-    // 上方遍历函数中调用用改变children数组，导致错误，此处处理也是使用Object.values做了浅层克隆
-    Object.values(this.scene.children).forEach((obj) => {
-      this.scene.remove(obj);
-    });
-    this.renderer.clear();
-    this.renderer.dispose();
-    this.scene = null;
-    this.camera = null;
-    this.renderer = null;
-    this.effect = null;
-    this.model = null;
-  }
   loadModel(modelInfo) {
     return new Promise((resolve, reject) => {
       this._initInstantConfig();
-      this.MMDLoader.load(
+      this.ModelLoader.load(
         modelInfo.entranceFile,
         (mmd) => {
           console.log("[Hime Display] MMD Loaded");
@@ -151,7 +88,7 @@ export class MmdManager extends ModelManager {
           // 6.通过各种打断点判断，这玩意儿和资源加载似乎就没什么关系
           // 7.MMD加载资源的时候，本来纹理的加载的就是异步的，他会先创建material再加载图片，图片未加载时在场景中呈现为透明状态，这没什么问题，从时间线的分析上来看，模型是加载完成和图片加载完成的顺序和软件崩不崩没有直接联系
           // 8.测试发现，只要有一次载入成功，之后的几次模型载入必定成功，由此推测这很可能是跟某个东西的初始化或缓存什么的相关
-          // 9.测试发现，如果先让renderer渲染着，再让模型加载，甚至在MMDLoader调用回调函数之前软件就已经崩了，这说明这个问题甚至跟把mmd模型丢scene渲染都没有直接关系
+          // 9.测试发现，如果先让renderer渲染着，再让模型加载，甚至在ModelLoader调用回调函数之前软件就已经崩了，这说明这个问题甚至跟把mmd模型丢scene渲染都没有直接关系
           // 10.接第8条，发现不单单是之后几次必定成功，只要主进程不退出，重启展示器页面也必定不崩，而且之前崩的状态是直接波及到主进程和渲染器进程，是整个应用全部卡死，由此推测，这个问题或许已经超出了前端的范畴了，是Electron内部对Chromium处理的什么问题
           // 现在得出的不触发问题的方法，在render之前一段时间（大概要一秒多）就载入MMD模型
           // 目前我感觉比较好的解决方案，要求不就是要加载第一个MMD模型隔一段时间后才能调用渲染器进程嘛，那我一上来就加载个模型，加载完后什么事都不干，之后不久什么问题都没有了？实践证明真的是这样，不过对这个模型也有要求，我试过直接放一根骨头的模型，无效；拿着Blender随便造了个MMD立方体，带个基础材质，还是无效；把材质弄成纹理贴图，依旧无效……合着和材质半点关系没有是吧，好吧管你问题出在哪儿，那只能直接上真模型了。顺带一提，这个问题还仅仅在pmx模型出现，pmd一点问题也没有
@@ -218,15 +155,14 @@ export class MmdManager extends ModelManager {
         morphCount: this.model.geometry.morphTargets.length,
       },
       morph: this.model.morphTargetDictionary,
+      // 必须在添加上模型后再构建信息
+      transform: buildNodeInfoTreeAndList(this.scene),
     };
-    // 必须在添加上模型后再构建信息
-    modelControlInfo.transform = buildNodeInfoTreeAndList(this.scene);
     return modelControlInfo;
   }
-  _render() {
-    if (!this.shouldRender) {
-      return;
-    }
+
+  // 渲染时需要更新的各种对象
+  _updateObjects() {
     if (this.stats !== null) {
       this.stats.begin();
       this.stats.end();
@@ -254,8 +190,6 @@ export class MmdManager extends ModelManager {
     if (this.animationManager === null && this.captureManagerNow === null) {
       this.mouseFocusHelper?.focus();
     }
-    this.effect.render(this.scene, this.camera);
-    requestAnimationFrame(this._render.bind(this));
   }
   handleMessage(message) {
     switch (message.channel) {
@@ -272,7 +206,7 @@ export class MmdManager extends ModelManager {
         console.log(`[Hime Diplsay] Load Motion: ${motionFilePath}`);
         this._resetAnimationManager();
         this.animationManager = new AnimationManager(
-          this.MMDLoader,
+          this.ModelLoader,
           this.instantConfig.mixamoLegTranslateMode
         );
         this.animationManager
@@ -299,7 +233,7 @@ export class MmdManager extends ModelManager {
         );
         this._resetAnimationManager();
         this.animationManager = new AnimationManager(
-          this.MMDLoader,
+          this.ModelLoader,
           this.instantConfig.mixamoLegTranslateMode
         );
         this.animationManager
@@ -369,21 +303,7 @@ export class MmdManager extends ModelManager {
       }
     }
   }
-  _bindNodeTransform(nodeId) {
-    this.transformMonitor.bind(this.scene.getObjectById(nodeId));
-  }
-  _setNodeTransform({ nodeId, transform }) {
-    const target = this.scene.getObjectById(nodeId);
-    for (let i of ["position", "rotation", "scale"]) {
-      for (let j of ["x", "y", "z"]) {
-        if (target[i][j] !== transform[i][j]) {
-          target[i][j] = transform[i][j];
-        }
-      }
-    }
-    // 直接手动更新Monitor的数值，防止checkUpdate机制循环发送更新消息（一般来讲会发送两次）
-    this.transformMonitor.transform = transform;
-  }
+
   _setMorphWeight({ morphName, weight }) {
     const morphIndex = this.model.morphTargetDictionary[morphName];
     if (morphIndex === undefined) {
@@ -401,34 +321,10 @@ export class MmdManager extends ModelManager {
       this.model.morphTargetInfluences[i] = 0;
     }
   }
-  _clearModel() {
-    if (this.model !== null) {
-      this.scene.remove(this.model);
-      this.model.geometry.dispose();
-      this.model.material.forEach((material) => {
-        // const mapNames=['map','gradientMap','lightMap','aoMap','emissiveMap','bumpMap','normalMap','displacemantMap','specularMap','alphaMap','envMap']
-        material.map?.dispose();
-        material.gradientMap?.dispose();
-        material.dispose();
-      });
-      this.model = null;
-    }
-  }
-  _addEventListeners() {
-    document.addEventListener("pointermove", this.onPointerMove);
-  }
-  _removeEventListeners() {
-    document.removeEventListener("pointermove", this.onPointerMove);
-  }
+
   // 不使用肩头函数会导致this的指向出错，若使用bind更改this指向，会导致返回的function和原函数不同，无法移出事件监听器
-  onPointerMove = (event) => {
+  _onPointerMove = (event) => {
     // 加上?，防止没载入模型时出错
     this.mouseFocusHelper?.update(event.clientX, event.clientY);
   };
-  // resize由上级的Application触发
-  onWindowResize() {
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
-    this.effect.setSize(window.innerWidth, window.innerHeight);
-  }
 }
