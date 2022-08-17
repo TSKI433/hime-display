@@ -191,6 +191,7 @@ export class MmdManager extends ModelManager {
         this._physicsSimulation = physicsSimulation;
         manager.animationManager?.helper.enable("physics", physicsSimulation);
       },
+      mixamoLegTranslateMode: "ik",
     };
   }
   _initMouceFocusHelper() {
@@ -272,7 +273,10 @@ export class MmdManager extends ModelManager {
         const { motionFilePath, animationLoop } = message.data;
         console.log(`[Hime Diplsay] Load Motion: ${motionFilePath}`);
         this._resetAnimationManager();
-        this.animationManager = new AnimationManager(this.MMDLoader);
+        this.animationManager = new AnimationManager(
+          this.MMDLoader,
+          this.instantConfig.mixamoLegTranslateMode
+        );
         this.animationManager
           .loadAnimation(this.model, motionFilePath)
           .then(() => {
@@ -296,7 +300,10 @@ export class MmdManager extends ModelManager {
           `[Hime Diplsay] Load Motion: ${motionFilePath} With Audio: ${audioFilePath}`
         );
         this._resetAnimationManager();
-        this.animationManager = new AnimationManager(this.MMDLoader);
+        this.animationManager = new AnimationManager(
+          this.MMDLoader,
+          this.instantConfig.mixamoLegTranslateMode
+        );
         this.animationManager
           .loadAnimationWithAudio(
             this.model,

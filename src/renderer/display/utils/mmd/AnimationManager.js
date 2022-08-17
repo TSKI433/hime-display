@@ -1,10 +1,17 @@
 import { MMDAnimationHelper } from "three/examples/jsm/animation/MMDAnimationHelper.js";
 import { AudioManager } from "@display/utils/mmd/AudioManager";
 import { Clock, AudioLoader, Audio, AudioListener, LoopOnce } from "three";
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
+import {
+  convertAnimation as mixamoConvertAnimation,
+  convertAnimationWithIK as mixamoConvertAnimationWithIK,
+} from "@display/utils/animation/Mixamo2MMDAnimationConverter.js";
+import { getBaseCenterHeight } from "@display/utils/animation/utils.js";
 export class AnimationManager {
   // 直接从上级获取MMDLoader，省得重新搞个实例
-  constructor(MMDLoader) {
+  constructor(MMDLoader, mixamoLegTranslateMode = "ik") {
     this.MMDLoader = MMDLoader;
+    this.FBXLoader = new FBXLoader();
     this.clock = new Clock();
     this.helper = new MMDAnimationHelper();
     this.ready = false;
@@ -19,10 +26,12 @@ export class AnimationManager {
     this.audio = null;
     this.audioManager = null;
     this.listener = null;
+    this.mixamoLegTranslateMode = mixamoLegTranslateMode;
   }
   destroy() {
     this.audioManager?.destroy();
     this.MMDLoader = null;
+    this.FBXLoader = null;
     this.clock = null;
     this.mixer = null;
     this.action = null;
@@ -40,19 +49,60 @@ export class AnimationManager {
       this.model = model;
       // 防止之前的对象变换和模型播放对模型姿态造成影响
       this.pause();
-      this.MMDLoader.loadAnimation(motionFilePath, model, (vmd) => {
-        this.helper.add(model, { animation: vmd, physics: true });
-        const helperMeshObject = this.helper.objects.get(model);
-        //   付与(grant)？？算了吧，做个寂寞
-        this.mixer = helperMeshObject.mixer;
-        this.ikSolver = helperMeshObject.ikSolver;
-        this.action = this.mixer._actions[0];
-        this.clip = this.action.getClip();
-        this.physics = helperMeshObject.physics;
-        this.totalDuration = this.clip.duration;
-        resolve();
-      });
+      const extname = motionFilePath.split(".").pop();
+      if (extname === "vmd") {
+        this.MMDLoader.loadAnimation(motionFilePath, model, (vmd) => {
+          this._initAnimation(vmd);
+          resolve();
+        });
+      } else if (extname === "fbx") {
+        this.FBXLoader.load(motionFilePath, (fbx) => {
+          if (
+            fbx.animations.length === 0 ||
+            fbx.animations[0].name !== "mixamo.com"
+          ) {
+            reject();
+            throw new Error(
+              "AnimationManager: Loaded fbx file is not exported from www.mixamo.com"
+            );
+          }
+          // 为了获取正确的缩放参数，从mixamo载入的fbx必须包含模型数据
+          const scale =
+            getBaseCenterHeight(fbx, "mixamo") /
+            getBaseCenterHeight(model, "mmd");
+          if (this.mixamoLegTranslateMode === "rotate") {
+            this._initAnimation(
+              mixamoConvertAnimation(fbx.animations[0], scale),
+              // 关闭IK解算
+              false
+            );
+          } else if (this.mixamoLegTranslateMode == "ik") {
+            this._initAnimation(
+              mixamoConvertAnimationWithIK(
+                fbx.animations[0],
+                scale,
+                fbx.children.find((bone) => bone.name === "mixamorigHips")
+              )
+            );
+          }
+
+          resolve();
+        });
+      }
     });
+  }
+  _initAnimation(animation, useIK = true) {
+    this.helper.add(this.model, { animation, physics: true });
+    // 对于mixamo的旋转解算模式，需要关闭IK解算，否则腿部直接爆炸
+    this.helper.enable("ik", useIK);
+    const helperMeshObject = this.helper.objects.get(this.model);
+    //   付与(grant)？？算了吧，做个寂寞
+    this.mixer = helperMeshObject.mixer;
+    this.ikSolver = helperMeshObject.ikSolver;
+    this.action = this.mixer._actions[0];
+    this.clip = this.action.getClip();
+    this.physics = helperMeshObject.physics;
+    this.totalDuration = this.clip.duration;
   }
   _MMDLoadAudio(audioFilePath, delayTime) {
     return new Promise((resolve, reject) => {

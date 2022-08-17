@@ -51,6 +51,12 @@
     <config-item label="物理模拟">
       <el-switch v-model="physicsSimulation.value" />
     </config-item>
+    <config-item label="mixamo腿部转译模式（需载入前设定）">
+      <el-select v-model="mixamoLegTranslateMode.value">
+        <el-option label="IK解算" value="ik" />
+        <el-option label="旋转解算" value="rotate" />
+      </el-select>
+    </config-item>
     <config-item label="循环播放（需载入前设定）">
       <el-switch v-model="animationLoop" />
     </config-item>
@@ -152,6 +158,16 @@ watch(physicsSimulation, () => {
   ipcAPI.sendToModelManager(appStore.displayWindowId, {
     channel: "control:change-instant-config",
     data: toRaw(physicsSimulation),
+  });
+});
+const mixamoLegTranslateMode = reactive({
+  name: "mixamoLegTranslateMode",
+  value: "ik",
+});
+watch(mixamoLegTranslateMode, () => {
+  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+    channel: "control:change-instant-config",
+    data: toRaw(mixamoLegTranslateMode),
   });
 });
 ipcAPI.handleSendToModelControl((event, message) => {
