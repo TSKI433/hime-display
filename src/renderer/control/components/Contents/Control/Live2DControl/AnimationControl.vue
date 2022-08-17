@@ -33,7 +33,7 @@
 <script setup>
 import { computed, ref, toRaw, reactive } from "vue";
 import ConfigItem from "@control/components/Common/ConfigItem.vue";
-import EventAnimation from "../Common/EventAnimation.vue";
+import EventAnimation from "../Common/2d/EventAnimation.vue";
 import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;

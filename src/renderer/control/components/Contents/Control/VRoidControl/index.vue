@@ -46,7 +46,7 @@
 import { reactive } from "vue";
 import ControlLoadError from "../Common/ControlLoadError.vue";
 import ModelDescription from "../Common/ModelDescription.vue";
-import ObjectTransform from "../Common/ObjectTransform3D.vue";
+import ObjectTransform from "../Common/3d/ObjectTransform3D.vue";
 // import AnimationControl from "./AnimationControl.vue";
 // import MorphTarget from "./MorphTarget.vue";
 // import MotionCapture from "../Common/MotionCapture.vue";

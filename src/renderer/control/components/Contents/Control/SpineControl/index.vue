@@ -33,7 +33,7 @@
 import { reactive } from "vue";
 import ControlLoadError from "../Common/ControlLoadError.vue";
 import ModelDescription from "../Common/ModelDescription.vue";
-import Transform from "../Common/Transform2D.vue";
+import Transform from "../Common/2d/Transform2D.vue";
 import AnimationControl from "./AnimationControl.vue";
 import { useControlStore } from "@control/store/control";
 const controlStore = useControlStore();

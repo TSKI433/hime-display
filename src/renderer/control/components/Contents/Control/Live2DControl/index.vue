@@ -49,7 +49,7 @@
 import { reactive } from "vue";
 import ControlLoadError from "../Common/ControlLoadError.vue";
 import ModelDescription from "../Common/ModelDescription.vue";
-import Transform from "../Common/Transform2D.vue";
+import Transform from "../Common/2d/Transform2D.vue";
 import ParameterControl from "./ParameterControl.vue";
 import AnimationControl from "./AnimationControl.vue";
 import MotionCapture from "../Common/MotionCapture.vue";

@@ -1,22 +1,28 @@
 <template>
-  <config-item label="目标选择">
-    <el-select v-model="selectedMorphName" @change="bindMorphTarget" filterable>
-      <el-option
-        v-for="(morphIndex, morphName) in morphInfo"
-        :label="morphName"
-        :value="morphName"
+  <config-item label="Parameter" label-position="top">
+    <config-item label="目标选择">
+      <el-select
+        v-model="selectedMorphName"
+        @change="bindMorphTarget"
+        filterable
+      >
+        <el-option
+          v-for="(morphIndex, morphName) in morphInfo"
+          :label="morphName"
+          :value="morphName"
+        />
+      </el-select>
+    </config-item>
+    <config-item label="参数调整" style="width: 100%">
+      <el-slider
+        v-model="morphWeight"
+        :min="0"
+        :max="1"
+        :step="0.1"
+        style="width: 60%; margin-left: 10px"
+        :disabled="selectedMorphName === ''"
       />
-    </el-select>
-  </config-item>
-  <config-item label="参数调整">
-    <el-slider
-      v-model="morphWeight"
-      :min="0"
-      :max="1"
-      :step="0.1"
-      style="width: 60%; margin-left: 10px"
-      :disabled="selectedMorphName === ''"
-    />
+    </config-item>
   </config-item>
 </template>
 

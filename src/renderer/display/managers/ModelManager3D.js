@@ -17,8 +17,12 @@ class ModelManager3D extends ModelManager {
       if (obj.isMesh) {
         // 这里本来应该除了mmd就没有mesh了，还是这么的写一下，但是其他的meshtexture就不知道是什么情况了，先不处理
         // Vroid可能会没有
-        obj.material?.dispose();
-        obj.geometry?.dispose();
+        if (obj.material.dispose !== undefined) {
+          obj.material?.dispose();
+        }
+        if (obj.geometry.dispose !== undefined) {
+          obj.geometry?.dispose();
+        }
       }
       if (obj.dispose !== undefined) {
         // 看了一下THREE.Light类是有dispose方法的，默认是个预留空函数，这里用的平行光和环境光都没有对此函数进行覆盖，但为了之后考虑还是调用一下
