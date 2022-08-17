@@ -20,6 +20,7 @@ export class VroidManager extends ModelManager {
     this.mouseFocusHelper = null;
   }
   switchIn() {
+    this.GLTFloader = new GLTFLoader();
     this.scene = new THREE.Scene();
     // renderer
     this.renderer = new THREE.WebGLRenderer({
@@ -45,7 +46,15 @@ export class VroidManager extends ModelManager {
     light.position.set(1.0, 1.0, 1.0).normalize();
     this.scene.add(light);
   }
-  render() {
+  switchOut() {
+    this.GLTFloader = null;
+    this.model = null;
+    this.renderer.dispose();
+    this.renderer = null;
+    this.camera = null;
+    this.scene = null;
+  }
+  _render() {
     if (this.stats !== null) {
       this.stats.begin();
       this.stats.end();
@@ -57,8 +66,8 @@ export class VroidManager extends ModelManager {
   }
   loadModel(modelInfo) {
     const modelFile = modelInfo.entranceFile;
-    const GLTFloader = new GLTFLoader();
-    GLTFloader.load(modelFile, (gltf) => {
+
+    this.GLTFloader.load(modelFile, (gltf) => {
       VRM.from(gltf).then((vrm) => {
         console.log("[Hime Display] VRM Loaded");
         this.model = vrm;
@@ -76,5 +85,5 @@ export class VroidManager extends ModelManager {
       });
     });
   }
-  onSendToModelControl() {}
+  handleMessage(message) {}
 }

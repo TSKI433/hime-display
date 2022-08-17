@@ -118,6 +118,7 @@ export class MmdManager extends ModelManager {
     this.camera = null;
     this.renderer = null;
     this.effect = null;
+    this.model = null;
   }
   loadModel(modelInfo) {
     return new Promise((resolve, reject) => {
@@ -255,10 +256,6 @@ export class MmdManager extends ModelManager {
     }
     this.effect.render(this.scene, this.camera);
     requestAnimationFrame(this._render.bind(this));
-  }
-
-  onSendToModelControl(callback) {
-    this._sendToModelControl = callback;
   }
   handleMessage(message) {
     switch (message.channel) {

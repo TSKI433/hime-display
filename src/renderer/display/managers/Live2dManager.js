@@ -38,6 +38,7 @@ export class Live2dManager extends ModelManager {
     this._sendToModelControl = null;
     this.shouldRender = false;
     this.instantConfig = null;
+    this.partMonitor = null;
     this.parameterMonitor = null;
     this.captureManagerNow = null;
     this.focusPosition = null;
@@ -48,6 +49,9 @@ export class Live2dManager extends ModelManager {
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.clear(gl.DEPTH_BUFFER_BIT);
     gl.clear(gl.STENCIL_BUFFER_BIT);
+    this.app = null;
+    this.model?.destroy();
+    this.model = null;
   }
   async loadModel(modelInfo) {
     this._initInstantConfig();
@@ -224,9 +228,6 @@ export class Live2dManager extends ModelManager {
         },
       });
     }
-  }
-  onSendToModelControl(callback) {
-    this._sendToModelControl = callback;
   }
   handleMessage(message) {
     switch (message.channel) {

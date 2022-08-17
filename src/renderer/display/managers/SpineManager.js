@@ -7,6 +7,8 @@ export class SpineManager extends ModelManager {
     super(parentApp);
     this.modelType = "Spine";
     this.instantConfig = null;
+
+    this.app = null;
     this.model = null;
     this.internalModel = null;
   }
@@ -32,6 +34,10 @@ export class SpineManager extends ModelManager {
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.clear(gl.DEPTH_BUFFER_BIT);
     gl.clear(gl.STENCIL_BUFFER_BIT);
+    this.app = null;
+    this.model?.destroy();
+    this.model = null;
+    this.internalModel = null;
   }
   loadModel(modelInfo) {
     return new Promise((resolve, reject) => {
@@ -124,9 +130,6 @@ export class SpineManager extends ModelManager {
       motion: motionInfo,
     };
     return modelControlInfo;
-  }
-  onSendToModelControl(callback) {
-    this._sendToModelControl = callback;
   }
   handleMessage(message) {
     switch (message.channel) {
