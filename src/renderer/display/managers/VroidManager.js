@@ -11,6 +11,13 @@ export class VroidManager extends ModelManager {
   constructor(parentApp) {
     super(parentApp);
     this.modelType = "VRoid";
+    this.GLTFloader = null;
+
+    this.scene = null;
+    this.renderer = null;
+    this.camera = null;
+    this.model = null;
+    this.mouseFocusHelper = null;
   }
   switchIn() {
     this.scene = new THREE.Scene();
@@ -50,8 +57,8 @@ export class VroidManager extends ModelManager {
   }
   loadModel(modelInfo) {
     const modelFile = modelInfo.entranceFile;
-    const loaderGLTF = new GLTFLoader();
-    loaderGLTF.load(modelFile, (gltf) => {
+    const GLTFloader = new GLTFLoader();
+    GLTFloader.load(modelFile, (gltf) => {
       VRM.from(gltf).then((vrm) => {
         console.log("[Hime Display] VRM Loaded");
         this.model = vrm;

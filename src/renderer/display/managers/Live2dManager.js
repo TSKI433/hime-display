@@ -10,8 +10,12 @@ export class Live2dManager extends ModelManager {
     this.instantConfig = null;
     this.shouldRender = false;
     this.parameterMonitor = null;
+    this.partMonitor = null;
     this.captureManagerNow = null;
     this.focusPosition = null;
+
+    this.app = null;
+    this.model = null;
   }
   switchIn() {
     this.app = new PIXI.Application({

@@ -7,6 +7,8 @@ export class SpineManager extends ModelManager {
     super(parentApp);
     this.modelType = "Spine";
     this.instantConfig = null;
+    this.model = null;
+    this.internalModel = null;
   }
   switchIn() {
     this.app = new PIXI.Application({

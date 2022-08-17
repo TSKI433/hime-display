@@ -32,6 +32,7 @@ export class MmdManager extends ModelManager {
     this.camera = null;
     this.renderer = null;
     this.effect = null;
+    this.model = null;
   }
   switchIn() {
     this.MMDLoader = new MMDLoader();
