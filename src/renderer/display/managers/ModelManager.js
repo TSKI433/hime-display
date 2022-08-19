@@ -5,7 +5,6 @@ export class ModelManager {
     this.stats = parentApp.stats;
     this.resolution = parentApp.resolution;
     this.antialias = parentApp.antialias;
-    this.model = null;
   }
   onSendToModelControl(callback) {
     this._sendToModelControl = callback;

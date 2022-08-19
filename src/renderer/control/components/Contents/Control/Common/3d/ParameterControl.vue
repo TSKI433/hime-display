@@ -7,7 +7,7 @@
         filterable
       >
         <el-option
-          v-for="(morphIndex, morphName) in morphInfo"
+          v-for="morphName in morphInfo"
           :label="morphName"
           :value="morphName"
         />

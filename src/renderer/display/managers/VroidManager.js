@@ -18,6 +18,7 @@ export class VroidManager extends ModelManager3D {
     this._initObjects();
   }
   switchIn() {
+    this.clock = new THREE.Clock();
     this.ModelLoader = new GLTFLoader();
     this.transformMonitor = new TransformMonitor();
     this.morphMonitor = new MorphMonitor();
@@ -60,10 +61,12 @@ export class VroidManager extends ModelManager3D {
         VRM.from(gltf).then((vrm) => {
           console.log("[Hime Display] VRM Loaded");
           this._clearModel();
-          this.model = vrm;
+          this.model = vrm.scene;
+          // 为了保证3D控制的通用性，将顶部的vrm对象挂载到了内部的模型上
+          this.model.vrm = vrm;
           // 模型绕Y轴旋转180度
-          this.model.scene.rotateY(Math.PI);
-          this.scene.add(this.model.scene);
+          this.model.rotateY(Math.PI);
+          this.scene.add(this.model);
           if (!this.shouldRender) {
             this.shouldRender = true;
             this._render();
@@ -80,7 +83,7 @@ export class VroidManager extends ModelManager3D {
 
   _initMouceFocusHelper() {
     this.mouseFocusHelper = new MouseFocusHelper(
-      this.model.humanoid.getBoneNode(VRMSchema.HumanoidBoneName.Head),
+      this.model.vrm.humanoid.getBoneNode(VRMSchema.HumanoidBoneName.Head),
       this.camera
     );
   }
@@ -90,6 +93,7 @@ export class VroidManager extends ModelManager3D {
         name: modelInfo.name,
         extensionName: modelInfo.extensionName,
       },
+      morph: Object.values(VRMSchema.BlendShapePresetName),
       // 必须在添加上模型后再构建信息
       transform: buildNodeInfoTreeAndList(this.scene),
     };
@@ -102,6 +106,8 @@ export class VroidManager extends ModelManager3D {
     }
     this.mouseFocusHelper?.focus();
     this.mouseFocusHelper?.object.quaternion.multiply(turnHeadQuaternion);
+    // 此项更新一个是物理模拟，另一个是morph
+    this.model.vrm.update(this.clock.getDelta());
   }
   handleMessage(message) {
     switch (message.channel) {
@@ -113,6 +119,18 @@ export class VroidManager extends ModelManager3D {
         this._setNodeTransform(message.data);
         break;
       }
+      case "control:bind-morph-target": {
+        const { morphName } = message.data;
+        this.morphMonitor.bind(morphName, this.model);
+        break;
+      }
+      case "control:set-morph-weight": {
+        this._setMorphWeight(message.data);
+        break;
+      }
     }
+  }
+  _setMorphWeight({ morphName, weight }) {
+    this.model.vrm.blendShapeProxy.setValue(morphName, weight);
   }
 }

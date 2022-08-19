@@ -154,7 +154,7 @@ export class MmdManager extends ModelManager3D {
         grantCount: mmdUserData.grants.length,
         morphCount: this.model.geometry.morphTargets.length,
       },
-      morph: this.model.morphTargetDictionary,
+      morph: Object.keys(this.model.morphTargetDictionary),
       // 必须在添加上模型后再构建信息
       transform: buildNodeInfoTreeAndList(this.scene),
     };
