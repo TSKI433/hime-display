@@ -75,38 +75,22 @@ const descriptionInfo = reactive({
     label: "扩展名",
     param: "extensionName",
   },
-  // "vertex-count": {
-  //   label: "顶点数",
-  //   param: "vertexCount",
-  // },
-  // "triangle-count": {
-  //   label: "三角形数",
-  //   param: "triangleCount",
-  // },
-  // "bone-count": {
-  //   label: "骨骼数",
-  //   param: "boneCount",
-  // },
-  // "ik-count": {
-  //   label: "IK数",
-  //   param: "ikCount",
-  // },
-  // "rigidBody-count": {
-  //   label: "刚体数",
-  //   param: "rigidBodyCount",
-  // },
-  // "constraint-count": {
-  //   label: "约束数",
-  //   param: "constraintCount",
-  // },
-  // "grant-count": {
-  //   label: "付与数",
-  //   param: "grantCount",
-  // },
-  // "morph-count": {
-  //   label: "变形数",
-  //   param: "morphCount",
-  // },
+  "model-version": {
+    label: "模型版本",
+    param: "modelVersion",
+  },
+  "author-name": {
+    label: "作者",
+    param: "author",
+  },
+  "sexual-usage": {
+    label: "色情用途",
+    param: "sexualUssageName",
+  },
+  "violent-usage": {
+    label: "暴力用途",
+    param: "violentUssageName",
+  },
 });
 </script>
 

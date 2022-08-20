@@ -97,6 +97,10 @@ export class VroidManager extends ModelManager3D {
       description: {
         name: modelInfo.name,
         extensionName: modelInfo.extensionName,
+        modelVersion: this.model.vrm.meta.version,
+        author: this.model.vrm.meta.author,
+        sexualUssageName: this.model.vrm.meta.sexualUssageName,
+        violentUssageName: this.model.vrm.meta.violentUssageName,
       },
       morph: Object.values(VRMSchema.BlendShapePresetName),
       // 必须在添加上模型后再构建信息
