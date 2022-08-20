@@ -7,6 +7,7 @@ import { buildNodeInfoTreeAndList } from "@display/utils/3d/NodeInfo";
 import { TransformMonitor } from "@display/utils/3d/Monitor";
 import { MorphMonitor } from "@display/utils/vroid/Monitor";
 import { VRoidFaceMeshCaptureManager as FaceMeshCaptureManager } from "@display/utils/capture/VRoidFaceMeshCaptureManager";
+import { VRoidHolisticCaptureManager as HolisticCaptureManager } from "@display/utils/capture/VRoidHolisticCaptureManager";
 import { VRM, VRMSchema } from "@pixiv/three-vrm";
 
 // 用于转头……VRM使用的坐标系和THREE是反的，不转的话模型永远是后脑勺对着你
@@ -153,7 +154,7 @@ export class VroidManager extends ModelManager3D {
         if (type === "faceMesh") {
           this.captureManagerNow = new FaceMeshCaptureManager();
         } else if (type === "holistic") {
-          // this.captureManagerNow = new HolisticCaptureManager();
+          this.captureManagerNow = new HolisticCaptureManager();
         }
         this.captureManagerNow.setTarget(this.model);
         this.captureManagerNow.start();
