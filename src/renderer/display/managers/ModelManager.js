@@ -1,3 +1,4 @@
+// 所有管理器的祖先
 export class ModelManager {
   constructor(parentApp) {
     this.canvas = parentApp.canvas;

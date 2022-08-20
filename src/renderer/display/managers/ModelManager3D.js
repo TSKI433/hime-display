@@ -1,3 +1,4 @@
+// 统筹两个3D模型公用的功能
 import { ModelManager } from "./ModelManager";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 class ModelManager3D extends ModelManager {

@@ -1,5 +1,5 @@
 import { MMDAnimationHelper } from "three/examples/jsm/animation/MMDAnimationHelper.js";
-import { AudioManager } from "@display/utils/mmd/AudioManager";
+import { AudioManager } from "@display/utils/3d/AudioManager";
 import { Clock, AudioLoader, Audio, AudioListener, LoopOnce } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 import {

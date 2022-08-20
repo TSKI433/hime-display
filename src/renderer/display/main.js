@@ -1,2 +1,2 @@
 import { Application } from "@display/Application";
-new Application();
+window.app = new Application();
