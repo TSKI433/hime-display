@@ -2,10 +2,11 @@ import { ModelManager3D } from "./ModelManager3D";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OutlineEffect } from "three/examples/jsm/effects/OutlineEffect.js";
+import { MouseFocusHelper } from "@display/utils/3d/MouseFocusHelper.js";
 import { buildNodeInfoTreeAndList } from "@display/utils/3d/NodeInfo";
 import { TransformMonitor } from "@display/utils/3d/Monitor";
 import { MorphMonitor } from "@display/utils/vroid/Monitor";
-import { MouseFocusHelper } from "@display/utils/3d/MouseFocusHelper.js";
+import { VRoidFaceMeshCaptureManager as FaceMeshCaptureManager } from "@display/utils/capture/VRoidFaceMeshCaptureManager";
 import { VRM, VRMSchema } from "@pixiv/three-vrm";
 
 // 用于转头……VRM使用的坐标系和THREE是反的，不转的话模型永远是后脑勺对着你
@@ -64,6 +65,10 @@ export class VroidManager extends ModelManager3D {
           this.model = vrm.scene;
           // 为了保证3D控制的通用性，将顶部的vrm对象挂载到了内部的模型上
           this.model.vrm = vrm;
+          // 手动添加一个模型复位函数
+          this.model.pose = function () {
+            this.vrm.humanoid.resetPose();
+          };
           // 模型绕Y轴旋转180度
           this.model.rotateY(Math.PI);
           this.scene.add(this.model);
@@ -104,8 +109,28 @@ export class VroidManager extends ModelManager3D {
       this.stats.begin();
       this.stats.end();
     }
-    this.mouseFocusHelper?.focus();
-    this.mouseFocusHelper?.object.quaternion.multiply(turnHeadQuaternion);
+    if (this._sendToModelControl !== null) {
+      if (this.transformMonitor.checkUpdate()) {
+        this._sendToModelControl({
+          channel: "manager:update-node-transform",
+          data: this.transformMonitor.transform,
+        });
+      }
+      if (this.morphMonitor.checkUpdate()) {
+        this._sendToModelControl({
+          channel: "manager:update-node-morph",
+          data: {
+            weight: this.morphMonitor.value,
+          },
+        });
+      }
+    }
+    // 播放动画的时候模型还盯着鼠标看，转身都不带扭头的那效果……我实在是看不下去了
+    if (this.animationManager === null && this.captureManagerNow === null) {
+      this.mouseFocusHelper?.focus();
+      // 解决VRoid的Y轴反转问题
+      this.mouseFocusHelper?.object.quaternion.multiply(turnHeadQuaternion);
+    }
     // 此项更新一个是物理模拟，另一个是morph
     this.model.vrm.update(this.clock.getDelta());
   }
@@ -117,6 +142,22 @@ export class VroidManager extends ModelManager3D {
       }
       case "control:set-node-transform": {
         this._setNodeTransform(message.data);
+        break;
+      }
+      case "control:launch-capture": {
+        const { type } = message.data;
+        if (type === "faceMesh") {
+          this.captureManagerNow = new FaceMeshCaptureManager();
+        } else if (type === "holistic") {
+          // this.captureManagerNow = new HolisticCaptureManager();
+        }
+        this.captureManagerNow.setTarget(this.model);
+        this.captureManagerNow.start();
+        break;
+      }
+      case "control:quit-capture": {
+        this.captureManagerNow.quitCapture();
+        this.captureManagerNow = null;
         break;
       }
       case "control:bind-morph-target": {

@@ -3,7 +3,6 @@ const { lerp } = Vector;
 function rigFace(riggedFace, lerpRatio = 0.5) {
   // 使用Kalidokit提供的stabilizeBlink对眨眼进行进一步优化，还有得进一步考虑wink的启动机制，ウィンク与まばたき变形的关系有待考虑，目前先全部改用まばたき变形
   const BlinkMorphIndex = this.model.morphTargetDictionary["まばたき"];
-  // debugger;
   if (BlinkMorphIndex === undefined) {
     console.warn(
       `MotionCaptureManager: morph target まばたき not found in the skinned mesh`
@@ -50,20 +49,7 @@ function lerpMorphTargetByName(name, value, lerpRatio) {
     lerpRatio
   );
 }
-function lerpBoneRotationByBone(bone, rotation, lerpRatio, dampener = 1) {
-  bone.rotation.set(
-    lerp(-rotation.x * dampener, bone.rotation.x, lerpRatio),
-    lerp(rotation.y * dampener, bone.rotation.y, lerpRatio),
-    lerp(-rotation.z * dampener, bone.rotation.z, lerpRatio)
-  );
-}
-function lerpBonePositionByBone(bone, position, lerpRatio, dampener = 1) {
-  bone.position.set(
-    lerp(position.x * dampener, bone.position.x, lerpRatio),
-    lerp(position.y * dampener, bone.position.y, lerpRatio),
-    lerp(position.z * dampener, bone.position.z, lerpRatio)
-  );
-}
+
 function getBoneNode(boneName) {
   if (this.boneStore[boneName] === undefined) {
     const bone = this.model.skeleton.bones.find((b) => b.name === boneName);
@@ -79,10 +65,5 @@ function getBoneNode(boneName) {
     return this.boneStore[boneName];
   }
 }
-export {
-  rigFace,
-  lerpMorphTargetByName,
-  lerpBoneRotationByBone,
-  lerpBonePositionByBone,
-  getBoneNode,
-};
+export { rigFace, lerpMorphTargetByName, getBoneNode };
+export { lerpBoneRotationByBone, lerpBonePositionByBone } from "./3DRig.js";

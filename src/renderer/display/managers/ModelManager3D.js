@@ -79,6 +79,8 @@ class ModelManager3D extends ModelManager {
         material.gradientMap?.dispose();
         material.dispose();
       });
+      // 针对VRM的清理
+      this.model.vrm?.dispose();
       this.model = null;
     }
   }
