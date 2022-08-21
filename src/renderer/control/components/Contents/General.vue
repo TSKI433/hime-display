@@ -2,8 +2,8 @@
   <div class="hime-content">
     <hime-title-with-divider>{{ $t("menu.general") }}</hime-title-with-divider>
     <el-scrollbar height="100%">
-      <el-form label-width="200px" class="hime-el-form--config">
-        <el-form-item label="启动应用配置">
+      <el-form label-width="170px" class="hime-el-form--config">
+        <el-form-item label="启动应用">
           <config-item label="打开控制面板">
             <el-switch
               v-model="appStore.config.general['open-control-at-launch']"
@@ -28,7 +28,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="启动开发者工具">
+        <el-form-item label="开发者工具">
           <!-- 配置项的样式被调整过了，这里懒得拉样式，整个div框起来算了 -->
           <div>
             <el-button

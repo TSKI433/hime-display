@@ -3,8 +3,8 @@
     <!-- <el-form label-position="top" class="hime-el-form--large-label"> -->
     <hime-title-with-divider>{{ $t("menu.display") }}</hime-title-with-divider>
     <el-scrollbar height="100%">
-      <el-form label-width="200px" class="hime-el-form--config">
-        <el-form-item label="展示器窗口设置">
+      <el-form label-width="170px" class="hime-el-form--config">
+        <el-form-item label="展示器窗口">
           <config-item label="窗口类型">
             <el-radio-group v-model="appStore.config.display['display-mode']">
               <!-- 我感觉这里的element plus给我整懵了，填在label里面的东西其实却是value？ -->
@@ -17,7 +17,7 @@
             </el-radio-group>
           </config-item>
         </el-form-item>
-        <el-form-item label="模型显示设置">
+        <el-form-item label="模型显示">
           <config-item label="显示像素比">
             <el-radio-group v-model="appStore.config.display['pixel-ratio']">
               <el-radio-button label="normal"> 普通 </el-radio-button>
@@ -32,11 +32,20 @@
             <el-switch v-model="appStore.config.display['antialias']" />
           </config-item>
         </el-form-item>
-        <el-form-item label="透明窗口配置">
+        <el-form-item label="透明窗口">
           <config-item label="点击穿透">
             <el-radio-group v-model="appStore.config.display['click-through']">
               <el-radio-button label="all"> 所有区域 </el-radio-button>
               <el-radio-button label="transparent"> 透明区域 </el-radio-button>
+            </el-radio-group>
+          </config-item>
+          <config-item label="显示范围(macOS)">
+            <el-radio-group v-model="appStore.config.display['display-range']">
+              <el-radio-button label="singleDesktop"> 单桌面 </el-radio-button>
+              <el-radio-button label="allDesktops"> 所有桌面 </el-radio-button>
+              <el-radio-button label="allWorkspaces">
+                所有工作区
+              </el-radio-button>
             </el-radio-group>
           </config-item>
           <config-item label="覆盖于其他窗口上方">
@@ -44,13 +53,8 @@
               v-model="appStore.config.display['keep-display-at-top']"
             />
           </config-item>
-          <config-item label="在所有工作区显示">
-            <el-switch
-              v-model="appStore.config.display['show-in-all-workspaces']"
-            />
-          </config-item>
         </el-form-item>
-        <el-form-item label="有框窗口配置">
+        <el-form-item label="有框窗口">
           <config-item label="背景颜色">
             <el-color-picker
               v-model="appStore.config.display.background"
@@ -59,7 +63,7 @@
             />
           </config-item>
         </el-form-item>
-        <el-form-item label="2D渲染配置">
+        <el-form-item label="2D渲染">
           <config-item label="宽度">
             <div class="hime-el-slicder--with-label">
               <span> 0% </span>
@@ -94,7 +98,7 @@
             <el-switch v-model="appStore.config.display['2d-draggable']" />
           </config-item>
         </el-form-item>
-        <el-form-item label="3D渲染配置">
+        <el-form-item label="3D渲染">
           <config-item label="轮廓线效果">
             <el-switch v-model="appStore.config.display['3d-outline-effect']" />
           </config-item>

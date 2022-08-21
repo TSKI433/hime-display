@@ -7,11 +7,11 @@ export const defaultConfig = {
   display: {
     "display-mode": "displayFullScreen",
     "pixel-ratio": "retina",
-    "show-fps": false,
+    "show-fps": true,
     antialias: true,
     "click-through": "all",
+    "display-range": "singleDesktop",
     "keep-display-at-top": true,
-    "show-in-all-workspaces": true,
     background: "#000000",
     "2d-initial-width-range": [75, 100],
     "2d-initial-height-range": [20, 100],

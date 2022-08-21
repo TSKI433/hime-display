@@ -46,12 +46,27 @@ export class WindowManager extends EventEmitter {
         forward: true,
       });
       if (this.configDB.get(["display", "keep-display-at-top"]).value()) {
-        window.setAlwaysOnTop(true, "screen-saver", 1);
+        // 之前这个级别太高了，搞不好会出大问题……
+        // window.setAlwaysOnTop(true, "screen-saver", 1);
+        window.setAlwaysOnTop(true);
       }
-      if (this.configDB.get(["display", "show-in-all-workspaces"]).value()) {
-        window.setVisibleOnAllWorkspaces(true, {
-          visibleOnFullScreen: true, //在所有窗口上显示，全屏应用也不例外
-        });
+
+      switch (this.configDB.get(["display", "display-range"]).value()) {
+        case "singleDesktop": {
+          break;
+        }
+        case "allDesktops": {
+          window.setVisibleOnAllWorkspaces(true);
+          break;
+        }
+        case "allWorkspaces": {
+          window.setVisibleOnAllWorkspaces(true, {
+            visibleOnFullScreen: true, //在所有窗口上显示，全屏应用也不例外，目前已证实这个操作会带来一些问题，例如菜单栏无法正确显示，好像跟内部的进程转换有关
+            // 实测该项目设定为true时，在全屏状态下窗口不会显示
+            // skipTransformProcessType: true,
+          });
+          break;
+        }
       }
     }
     if (windowName === "controlPanel") {
