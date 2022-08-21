@@ -20,7 +20,8 @@ class TransformMonitor {
       this.isJustBined = false;
       changed = true;
     }
-    if (this.transform !== null && changed === false) {
+    // 即使由isJustBined改变了changed，也应当由下方函数更新Monitor的数值，isJustBined存在的意义是，防止切换bind时新参数和默认值相同，导致没有触发changed，使得控制面板那边还显示上一个参数的值
+    if (this.transform !== null) {
       for (let i of ["position", "rotation", "scale"]) {
         for (let j of ["x", "y", "z"]) {
           if (this.transform[i][j] !== this.target[i][j]) {

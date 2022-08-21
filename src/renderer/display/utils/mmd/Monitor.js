@@ -24,7 +24,7 @@ class MorphMonitor {
       changed = true;
     }
 
-    if (this.value !== null && this.model !== null && changed === false) {
+    if (this.value !== null && this.model !== null) {
       const newMorphValue =
         this.model.morphTargetInfluences[
           this.model.morphTargetDictionary[this.morpName]

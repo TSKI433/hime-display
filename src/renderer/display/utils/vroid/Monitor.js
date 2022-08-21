@@ -25,7 +25,7 @@ class MorphMonitor {
       changed = true;
     }
 
-    if (this.value !== null && this.model !== null && changed === false) {
+    if (this.value !== null && this.model !== null) {
       const newMorphValue = this.model.vrm.blendShapeProxy.getValue(
         this.morpName
       );

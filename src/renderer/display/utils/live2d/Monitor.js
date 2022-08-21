@@ -30,7 +30,7 @@ class ParameterMonitor {
       this.isJustBined = false;
       changed = true;
     }
-    if (this.value !== null && this.model !== null && changed === false) {
+    if (this.value !== null && this.model !== null) {
       const newParameterValue = Number(
         this.model.internalModel.coreModel._parameterValues[
           this.parameterIndex
@@ -70,7 +70,7 @@ class PartMonitor {
       this.isJustBined = false;
       changed = true;
     }
-    if (this.value !== null && this.model !== null && changed === false) {
+    if (this.value !== null && this.model !== null) {
       const newPartOpacity = Number(
         this.model.internalModel.coreModel._partOpacities[
           this.partIndex
