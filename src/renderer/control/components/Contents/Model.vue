@@ -18,7 +18,7 @@
           tooltip-effect="light"
           class="hime-current-row--adjust-bg-color hime-el-table--model"
         >
-          <el-table-column type="index" width="40" align="center" />
+          <el-table-column type="index" width="60" align="center" />
           <el-table-column
             label="名称"
             prop="name"

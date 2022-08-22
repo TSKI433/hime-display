@@ -10,7 +10,7 @@
         size="small"
         tooltip-effect="light"
       >
-        <el-table-column type="index" width="40" align="center" />
+        <el-table-column type="index" width="60" align="center" />
         <el-table-column label="动作名称" prop="name" align="center" />
         <el-table-column
           label="时长"

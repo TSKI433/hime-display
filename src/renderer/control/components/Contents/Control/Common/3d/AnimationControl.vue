@@ -10,7 +10,7 @@
           height="160"
           highlight-current-row
         >
-          <el-table-column type="index" width="40" align="center" />
+          <el-table-column type="index" width="60" align="center" />
           <el-table-column
             label="名称"
             prop="name"
@@ -35,7 +35,7 @@
           height="160"
           highlight-current-row
         >
-          <el-table-column type="index" width="40" align="center" />
+          <el-table-column type="index" width="60" align="center" />
           <el-table-column
             label="名称"
             prop="name"
