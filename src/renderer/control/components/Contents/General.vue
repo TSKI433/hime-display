@@ -51,16 +51,18 @@ import { watch, toRaw } from "vue";
 import { useAppStore } from "@control/store/app";
 import languageNames from "@shared/locales/languageNames";
 import { useTranslation } from "i18next-vue";
+const ipcAPI = window.nodeAPI.ipc;
 const { i18next } = useTranslation();
 const appStore = useAppStore();
 watch(appStore.config.general, (newValue) => {
   window.nodeAPI.config.write("general", toRaw(newValue));
 });
 function changeLanguage(language) {
+  ipcAPI.changeLanguage(language);
   i18next.changeLanguage(language);
 }
 function openDevTool(type) {
-  window.nodeAPI.ipc.openDevTool(type);
+  ipcAPI.openDevTool(type);
 }
 </script>
 

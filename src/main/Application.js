@@ -8,6 +8,8 @@ import { APP_CONFIG_PATH, APP_DATA_PATH } from "./options/paths";
 import { defaultConfig } from "@shared/defaults/defaultConfig";
 import { ipcMain, dialog, systemPreferences, app } from "electron";
 import is from "electron-is";
+import i18next from "@shared/locales/i18next";
+
 export class Application extends EventEmitter {
   constructor() {
     super();
@@ -16,6 +18,7 @@ export class Application extends EventEmitter {
   }
   init() {
     this.initConfigDB();
+    this.initLanguage();
     this.initWindowManager();
     this.initThemeManager();
     this.initTrayManager();
@@ -40,6 +43,9 @@ export class Application extends EventEmitter {
     this.configDB = low(new lowFileSync(APP_CONFIG_PATH));
     // 看样子lowdb的这个defaults只能浅层defaults，到第二级就不管用了
     this.configDB.defaults(defaultConfig).write();
+  }
+  initLanguage() {
+    i18next.changeLanguage(this.configDB.get(["general", "language"]).value());
   }
   initWindowManager() {
     // 启动window时也需要读取配置数据库
@@ -119,6 +125,11 @@ export class Application extends EventEmitter {
     });
     ipcMain.on("display:set-ignore-mouse-events", (event, ...args) => {
       this.windowManager.windows.display.setIgnoreMouseEvents(...args);
+    });
+    ipcMain.on("control:change-language", (event, language) => {
+      console.log("[Hime Display] change language to", language);
+      i18next.changeLanguage(language);
+      this.trayManager.buildMenu();
     });
   }
   async askForMediaAccess() {

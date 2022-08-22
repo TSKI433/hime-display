@@ -36,3 +36,6 @@ export function removeManagerListeners() {
 export function openDevTool(type) {
   ipcRenderer.send("control:open-dev-tool", type);
 }
+export function changeLanguage(language) {
+  ipcRenderer.send("control:change-language", language);
+}
