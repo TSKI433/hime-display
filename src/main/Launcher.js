@@ -20,11 +20,6 @@ export class Launcher extends EventEmitter {
     this.handleAppEvents();
   }
   handleAppEvents() {
-    this.handelAppReady();
-    this.handleAppWillQuit();
-  }
-
-  handelAppReady() {
     app.on("ready", () => {
       this.application = new Application();
       this.application.startApp();
@@ -38,14 +33,13 @@ export class Launcher extends EventEmitter {
         this.application.openWindow("controlPanel");
       }
     });
-  }
-  handleAppWillQuit() {
     app.on("will-quit", () => {
       logger.info("[Hime Display] will-quit");
       if (this.application) {
         this.application.quitApp();
       }
     });
-    // app.on("window-all-closed", () => {});
+    // 监听此事件后，将不会在所有窗口退出时自动退出
+    app.on("window-all-closed", () => {});
   }
 }

@@ -1,11 +1,12 @@
 import { EventEmitter } from "events";
 import { WindowManager } from "./ui/WindowManager";
 import { ThemeManager } from "./ui/ThemeManager";
+import { TrayManager } from "./ui/TrayManager";
 import low from "lowdb";
 import lowFileSync from "lowdb/adapters/FileSync";
 import { APP_CONFIG_PATH, APP_DATA_PATH } from "./options/paths";
 import { defaultConfig } from "@shared/defaults/defaultConfig";
-import { ipcMain, dialog, systemPreferences } from "electron";
+import { ipcMain, dialog, systemPreferences, app } from "electron";
 import is from "electron-is";
 export class Application extends EventEmitter {
   constructor() {
@@ -17,6 +18,7 @@ export class Application extends EventEmitter {
     this.initConfigDB();
     this.initWindowManager();
     this.initThemeManager();
+    this.initTrayManager();
     this.handleIpcMessages();
   }
   startApp() {
@@ -51,6 +53,19 @@ export class Application extends EventEmitter {
         "main:update-theme",
         theme
       );
+    });
+  }
+  initTrayManager() {
+    this.trayManager = new TrayManager();
+    this.trayManager.buildMenu();
+    this.trayManager.on("tray:open-control-window", () => {
+      this.openWindow("controlPanel");
+    });
+    this.trayManager.on("tray:open-display-window", () => {
+      this.openWindow(this.configDB.get(["display", "display-mode"]).value());
+    });
+    this.trayManager.on("tray:quit-app", () => {
+      app.quit();
     });
   }
   handleIpcMessages() {
