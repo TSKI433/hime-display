@@ -1,21 +1,23 @@
-export function setModelBaseTransfrom(model, displayConfig) {
+export function setModelBaseTransfrom(model, displayConfig, type) {
   const configWidth =
     (innerWidth *
-      (displayConfig["2d-initial-width-range"][1] -
-        displayConfig["2d-initial-width-range"][0])) /
+      (displayConfig[type + "-initial-width-range"][1] -
+        displayConfig[type + "-initial-width-range"][0])) /
     100;
   const configHeight =
     (innerHeight *
-      (displayConfig["2d-initial-height-range"][1] -
-        displayConfig["2d-initial-height-range"][0])) /
+      (displayConfig[type + "-initial-height-range"][1] -
+        displayConfig[type + "-initial-height-range"][0])) /
     100;
   const scaleX = configWidth / model.width;
   const scaleY = configHeight / model.height;
   model.scale.set(Math.min(scaleX, scaleY));
   // model.x = app.renderer.view.width / this.resolution - model.width;
   // model.y = app.renderer.view.height / this.resolution - model.height;
-  model.x = (innerWidth * displayConfig["2d-initial-width-range"][0]) / 100;
-  model.y = (innerHeight * displayConfig["2d-initial-height-range"][0]) / 100;
+  model.x =
+    (innerWidth * displayConfig[type + "-initial-width-range"][0]) / 100;
+  model.y =
+    (innerHeight * displayConfig[type + "-initial-height-range"][0]) / 100;
 }
 export function draggable(model) {
   // 别看就是一点一按，这指针事件的判断复杂程度超乎想象，来梳理一下事件触发顺序：

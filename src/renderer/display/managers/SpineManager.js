@@ -1,5 +1,6 @@
 import { ModelManager } from "./ModelManager";
 import { setModelBaseTransfrom, draggable } from "@display/utils/2d/utils";
+import imageLoaderAdapter from "@display/utils/spine/premultipliedImageLoader";
 // 由于live2d的特殊需求，没用模块系统载入pixi.js，pixi-spine模块的载入依赖于模块化pixi.js，因此暂时用成umd版本吧
 // import { Spine } from "pixi-spine";
 export class SpineManager extends ModelManager {
@@ -45,7 +46,15 @@ export class SpineManager extends ModelManager {
       this._clearModel();
       const modelFile = modelInfo.entranceFile;
       this.app.loader
-        .add("spineCharacter", modelFile)
+        .add(
+          "spineCharacter",
+          modelFile,
+          this.config.display["spine-premultiply-alpha"]
+            ? {
+                metadata: { imageLoader: imageLoaderAdapter },
+              }
+            : undefined
+        )
         .load((loader, resources) => {
           // 学着pixi-live2d-display开始套娃……
           this.internalModel = new PIXI.spine.Spine(
@@ -55,10 +64,10 @@ export class SpineManager extends ModelManager {
           this.internalModel.position.set(-localRect.x, -localRect.y);
           this.model = new PIXI.Container();
           this.model.addChild(this.internalModel);
-          setModelBaseTransfrom(this.model, this.config.display);
+          setModelBaseTransfrom(this.model, this.config.display, "spine");
           this.app.stage.addChild(this.model);
           this.model.interactive = true;
-          if (this.config.display["2d-draggable"]) {
+          if (this.config.display["spine-draggable"]) {
             draggable(this.model);
           }
           this.model.on("dragging", this._updateModelTransform.bind(this));

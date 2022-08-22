@@ -63,12 +63,13 @@
             />
           </config-item>
         </el-form-item>
-        <el-form-item label="2D渲染">
+        <!-- 虽然3D和2D分别有很多共有的配置，但实际使用时发现不同模型类型的最佳默认值存在较大差异，例如2D的显示范围，一般来讲spine模型更加小巧，而VRoid的默认轮廓线效果也很爆炸，因此这里都改成了独立的设置 -->
+        <el-form-item label="Live2D渲染">
           <config-item label="宽度">
             <div class="hime-el-slicder--with-label">
               <span> 0% </span>
               <el-slider
-                v-model="appStore.config.display['2d-initial-width-range']"
+                v-model="appStore.config.display['live2d-initial-width-range']"
                 class="hime-el-slider"
                 show-tooltip
                 :format-tooltip="(value) => value + '%'"
@@ -83,7 +84,7 @@
             <div class="hime-el-slicder--with-label">
               <span> 0% </span>
               <el-slider
-                v-model="appStore.config.display['2d-initial-height-range']"
+                v-model="appStore.config.display['live2d-initial-height-range']"
                 class="hime-el-slider"
                 show-tooltip
                 :format-tooltip="(value) => value + '%'"
@@ -95,15 +96,71 @@
             </div>
           </config-item>
           <config-item label="拖拽移动">
-            <el-switch v-model="appStore.config.display['2d-draggable']" />
+            <el-switch v-model="appStore.config.display['live2d-draggable']" />
           </config-item>
         </el-form-item>
-        <el-form-item label="3D渲染">
+        <el-form-item label="Spine渲染">
+          <config-item label="宽度">
+            <div class="hime-el-slicder--with-label">
+              <span> 0% </span>
+              <el-slider
+                v-model="appStore.config.display['spine-initial-width-range']"
+                class="hime-el-slider"
+                show-tooltip
+                :format-tooltip="(value) => value + '%'"
+                range
+                :min="0"
+                :max="100"
+              />
+              <span> 100% </span>
+            </div>
+          </config-item>
+          <config-item label="高度">
+            <div class="hime-el-slicder--with-label">
+              <span> 0% </span>
+              <el-slider
+                v-model="appStore.config.display['spine-initial-height-range']"
+                class="hime-el-slider"
+                show-tooltip
+                :format-tooltip="(value) => value + '%'"
+                range
+                :min="0"
+                :max="100"
+              />
+              <span> 100% </span>
+            </div>
+          </config-item>
+          <config-item label="拖拽移动">
+            <el-switch v-model="appStore.config.display['spine-draggable']" />
+          </config-item>
+          <config-item label="Alpha预乘">
+            <el-switch
+              v-model="appStore.config.display['spine-premultiply-alpha']"
+            />
+          </config-item>
+        </el-form-item>
+        <el-form-item label="MMD渲染">
           <config-item label="轮廓线效果">
-            <el-switch v-model="appStore.config.display['3d-outline-effect']" />
+            <el-switch
+              v-model="appStore.config.display['mmd-outline-effect']"
+            />
           </config-item>
           <config-item label="相机轨道控制">
-            <el-switch v-model="appStore.config.display['3d-orbit-controls']" />
+            <el-switch
+              v-model="appStore.config.display['mmd-orbit-controls']"
+            />
+          </config-item>
+        </el-form-item>
+        <el-form-item label="VRoid渲染">
+          <config-item label="轮廓线效果">
+            <el-switch
+              v-model="appStore.config.display['vroid-outline-effect']"
+            />
+          </config-item>
+          <config-item label="相机轨道控制">
+            <el-switch
+              v-model="appStore.config.display['vroid-orbit-controls']"
+            />
           </config-item>
         </el-form-item>
       </el-form>

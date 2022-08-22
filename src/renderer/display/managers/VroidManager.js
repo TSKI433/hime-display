@@ -47,8 +47,8 @@ export class VroidManager extends ModelManager3D {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     //effect
     this.effect = new OutlineEffect(this.renderer);
-    this.effect.enabled = this.config.display["3d-outline-effect"];
-    this.config.display["3d-orbit-controls"] && this._initOrbitControls();
+    this.effect.enabled = this.config.display["vroid-outline-effect"];
+    this.config.display["vroid-orbit-controls"] && this._initOrbitControls();
     this._addEventListeners();
   }
   _addLight() {
