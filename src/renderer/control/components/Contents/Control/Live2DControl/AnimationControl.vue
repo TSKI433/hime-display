@@ -9,6 +9,7 @@
     style="margin-bottom: 12px"
     tooltip-effect="light"
   >
+    <el-table-column type="index" width="40" align="center" />
     <el-table-column
       label="名称"
       show-overflow-tooltip

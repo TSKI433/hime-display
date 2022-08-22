@@ -3,25 +3,66 @@
     <hime-title-with-divider>{{ $t("menu.model") }}</hime-title-with-divider>
     <el-form label-position="top" class="hime-el-form--large-label">
       <el-form-item label="模型数据库">
+        <el-input
+          v-model="searchModelText"
+          placeholder="搜索模型名称"
+          clearable
+          class="hime-el-input--model-search"
+        />
         <el-table
-          :data="appStore.database.model"
+          :data="filterModelData"
           @current-change="changeCurrentModelInfo"
           size="small"
-          height="300"
+          height="350"
           highlight-current-row
           tooltip-effect="light"
           class="hime-current-row--adjust-bg-color hime-el-table--model"
         >
-          <el-table-column type="index" width="40" />
-          <el-table-column label="名称" prop="name" show-overflow-tooltip />
-          <el-table-column label="类型">
+          <el-table-column type="index" width="40" align="center" />
+          <el-table-column
+            label="名称"
+            prop="name"
+            width="280"
+            show-overflow-tooltip
+            sortable
+          />
+          <el-table-column
+            label="类型"
+            :filters="[
+              { text: 'Live2D', value: 'Live2D' },
+              { text: 'MMD', value: 'MMD' },
+              { text: 'VRoid', value: 'VRoid' },
+              { text: 'Spine', value: 'Spine' },
+            ]"
+            :filter-method="
+              (value, row) => {
+                return row.modelType === value;
+              }
+            "
+            align="center"
+          >
             <template #default="props">
               <el-tag effect="light">
                 {{ props.row.modelType }}
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="扩展名">
+          <el-table-column
+            label="扩展名"
+            :filters="[
+              { text: 'moc', value: 'moc' },
+              { text: 'moc3', value: 'moc3' },
+              { text: 'pmx', value: 'pmx' },
+              { text: 'vrm', value: 'vrm' },
+              { text: 'json', value: 'json' },
+            ]"
+            :filter-method="
+              (value, row) => {
+                return row.extensionName === value;
+              }
+            "
+            align="center"
+          >
             <template #default="props">
               <el-tag effect="light">
                 {{ props.row.extensionName }}
@@ -41,7 +82,7 @@
 
 <script setup>
 import HimeTitleWithDivider from "@control/components/Common/TitleWithDivider.vue";
-import { ref, toRaw, markRaw, reactive } from "vue";
+import { ref, toRaw, markRaw, reactive, computed } from "vue";
 import { useAppStore } from "@control/store/app";
 import { useControlStore } from "@control/store/control";
 const appStore = useAppStore();
@@ -69,6 +110,14 @@ function loadModelNow() {
     controlStore.modelControlInfoLoading = false;
   });
 }
+const searchModelText = ref("");
+const filterModelData = computed(() =>
+  appStore.database.model.filter(
+    (data) =>
+      !searchModelText.value ||
+      data.name.toLowerCase().includes(searchModelText.value.toLowerCase())
+  )
+);
 </script>
 
 <style lang="scss">
@@ -85,5 +134,8 @@ function loadModelNow() {
   // tr {
   //   --el-table-row-hover-bg-color: var(--el-color-primary-light-9);
   // }
+}
+.hime-el-input--model-search {
+  margin-bottom: 8px;
 }
 </style>

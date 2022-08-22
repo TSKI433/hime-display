@@ -1,35 +1,39 @@
 <template>
-  <config-item label="动作数据库" label-position="top">
-    <el-table
-      :data="motionInfo"
-      @current-change="changeCurrentMotion"
-      highlight-current-row
-      height="200"
-      size="small"
-      tooltip-effect="light"
-    >
-      <el-table-column label="动作名称" prop="name" align="center" />
-      <el-table-column
-        label="时长"
-        prop="duration"
-        width="200"
-        align="center"
-      />
-    </el-table>
-  </config-item>
-  <config-item label="循环播放（需载入前设定）">
-    <el-switch v-model="animationLoop" />
-  </config-item>
-  <config-item label="操作">
-    <el-button @click="loadMotionNow"> 载入当前动作 </el-button>
-    <el-button @click="quitMotion"> 退出动画播放 </el-button>
-  </config-item>
-  <el-divider style="margin: 12px 0" />
-  <event-animation
-    :current-motion="currentMotion"
-    :motion-table-selected="motionTableSelected"
-    modelType="Spine"
-  ></event-animation>
+  <el-scrollbar max-height="400px">
+    <config-item label="动作数据库" label-position="top">
+      <el-table
+        :border="true"
+        :data="motionInfo"
+        @current-change="changeCurrentMotion"
+        highlight-current-row
+        height="200"
+        size="small"
+        tooltip-effect="light"
+      >
+        <el-table-column type="index" width="40" align="center" />
+        <el-table-column label="动作名称" prop="name" align="center" />
+        <el-table-column
+          label="时长"
+          prop="duration"
+          width="200"
+          align="center"
+        />
+      </el-table>
+    </config-item>
+    <config-item label="循环播放（需载入前设定）">
+      <el-switch v-model="animationLoop" />
+    </config-item>
+    <config-item label="操作">
+      <el-button @click="loadMotionNow"> 载入当前动作 </el-button>
+      <el-button @click="quitMotion"> 退出动画播放 </el-button>
+    </config-item>
+    <el-divider style="margin: 12px 0" />
+    <event-animation
+      :current-motion="currentMotion"
+      :motion-table-selected="motionTableSelected"
+      modelType="Spine"
+    ></event-animation>
+  </el-scrollbar>
 </template>
 
 <script setup>

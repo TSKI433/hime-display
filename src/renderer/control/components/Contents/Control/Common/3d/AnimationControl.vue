@@ -10,9 +10,14 @@
           height="160"
           highlight-current-row
         >
-          <el-table-column type="index" width="40" />
-          <el-table-column label="名称" prop="name" show-overflow-tooltip />
-          <el-table-column label="扩展名">
+          <el-table-column type="index" width="40" align="center" />
+          <el-table-column
+            label="名称"
+            prop="name"
+            show-overflow-tooltip
+            width="300"
+          />
+          <el-table-column label="扩展名" align="center">
             <template #default="props">
               <el-tag effect="light">
                 {{ props.row.extensionName }}
@@ -30,9 +35,14 @@
           height="160"
           highlight-current-row
         >
-          <el-table-column type="index" width="40" />
-          <el-table-column label="名称" prop="name" show-overflow-tooltip />
-          <el-table-column label="扩展名">
+          <el-table-column type="index" width="40" align="center" />
+          <el-table-column
+            label="名称"
+            prop="name"
+            show-overflow-tooltip
+            width="300"
+          />
+          <el-table-column label="扩展名" align="center">
             <template #default="props">
               <el-tag effect="light">
                 {{ props.row.extensionName }}
