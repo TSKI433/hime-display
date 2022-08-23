@@ -10,7 +10,7 @@
     >
       <component :is="controlComponentNow"></component>
     </template>
-    <template v-else> 载入一个模型以进行控制 </template>
+    <template v-else> {{ $t("control.load-a-model-to-control") }} </template>
   </div>
 </template>
 

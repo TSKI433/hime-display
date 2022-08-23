@@ -126,16 +126,34 @@ export class SpineManager extends ModelManager {
       });
     });
     const modelControlInfo = {
-      description: {
-        name: modelInfo.name,
-        extensionName: modelInfo.extensionName,
-        versionNumber: this.internalModel.spineData.version,
-        animationCount: this.internalModel.spineData.animations.length,
-        boneCount: this.internalModel.spineData.bones.length,
-        slotCount: this.internalModel.spineData.slots.length,
-        ikCount: this.internalModel.spineData.ikConstraints.length,
-        skinCount: this.internalModel.spineData.skins.length,
-      },
+      description: [
+        { label: "name", value: modelInfo.name },
+        { label: "extension-name", value: modelInfo.extensionName },
+        {
+          label: "version-number",
+          value: this.internalModel.spineData.version,
+        },
+        {
+          label: "motion-count",
+          value: this.internalModel.spineData.animations.length,
+        },
+        {
+          label: "bone-count",
+          value: this.internalModel.spineData.bones.length,
+        },
+        {
+          label: "slot-count",
+          value: this.internalModel.spineData.slots.length,
+        },
+        {
+          label: "ik-count",
+          value: this.internalModel.spineData.ikConstraints.length,
+        },
+        {
+          label: "skin-count",
+          value: this.internalModel.spineData.skins.length,
+        },
+      ],
       motion: motionInfo,
     };
     return modelControlInfo;

@@ -22,7 +22,7 @@ export const defaultConfig = {
     "spine-premultiply-alpha": false,
     "mmd-outline-effect": true,
     "mmd-orbit-controls": true,
-    "vroid-outline-effect": true,
+    "vroid-outline-effect": false,
     "vroid-orbit-controls": true,
     // "model-mouse-track": true,
     // "3d-physics-simulation": true,

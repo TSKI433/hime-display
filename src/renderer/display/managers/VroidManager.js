@@ -95,14 +95,20 @@ export class VroidManager extends ModelManager3D {
   }
   _buildModelControlInfo(modelInfo) {
     const modelControlInfo = {
-      description: {
-        name: modelInfo.name,
-        extensionName: modelInfo.extensionName,
-        modelVersion: this.model.vrm.meta.version,
-        author: this.model.vrm.meta.author,
-        sexualUssageName: this.model.vrm.meta.sexualUssageName,
-        violentUssageName: this.model.vrm.meta.violentUssageName,
-      },
+      description: [
+        { label: "name", value: modelInfo.name },
+        { label: "extension-name", value: modelInfo.extensionName },
+        { label: "model-version", value: this.model.vrm.meta.version },
+        { label: "author", value: this.model.vrm.meta.author },
+        {
+          label: "sexual-ussage-name",
+          value: this.model.vrm.meta.sexualUssageName,
+        },
+        {
+          label: "violent-ussage-name",
+          value: this.model.vrm.meta.violentUssageName,
+        },
+      ],
       morph: Object.values(VRMSchema.BlendShapePresetName),
       // 必须在添加上模型后再构建信息
       transform: buildNodeInfoTreeAndList(this.scene),

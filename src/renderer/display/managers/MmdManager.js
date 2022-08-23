@@ -142,18 +142,24 @@ export class MmdManager extends ModelManager3D {
   _buildModelControlInfo(modelInfo) {
     const mmdUserData = this.model.geometry.userData.MMD;
     const modelControlInfo = {
-      description: {
-        name: modelInfo.name,
-        extensionName: modelInfo.extensionName,
-        vertexCount: this.model.geometry.attributes.normal.count,
-        triangleCount: this.model.geometry.index.count / 3,
-        boneCount: mmdUserData.bones.length,
-        ikCount: mmdUserData.iks.length,
-        rigidBodyCount: mmdUserData.rigidBodies.length,
-        constraintCount: mmdUserData.constraints.length,
-        grantCount: mmdUserData.grants.length,
-        morphCount: this.model.geometry.morphTargets.length,
-      },
+      description: [
+        { label: "name", value: modelInfo.name },
+        { label: "extension-name", value: modelInfo.extensionName },
+        {
+          label: "vertex-count",
+          value: this.model.geometry.attributes.normal.count,
+        },
+        { label: "triangle-count", value: this.model.geometry.index.count / 3 },
+        { label: "bone-count", value: mmdUserData.bones.length },
+        { label: "ik-count", value: mmdUserData.iks.length },
+        { label: "rigid-body-count", value: mmdUserData.rigidBodies.length },
+        { label: "constraint-count", value: mmdUserData.constraints.length },
+        { label: "grant-count", value: mmdUserData.grants.length },
+        {
+          label: "morph-count",
+          value: this.model.geometry.morphTargets.length,
+        },
+      ],
       morph: Object.keys(this.model.morphTargetDictionary),
       // 必须在添加上模型后再构建信息
       transform: buildNodeInfoTreeAndList(this.scene),

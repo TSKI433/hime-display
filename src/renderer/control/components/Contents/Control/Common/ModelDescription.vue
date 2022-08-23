@@ -3,9 +3,9 @@
     <el-descriptions-item
       align="center"
       width="20%"
-      :label="descriptionItem.label"
-      v-for="descriptionItem in descriptionInfo"
-      >{{ description[descriptionItem.param] }}</el-descriptions-item
+      :label="$t(`control.description.${descriptionItem.label}`)"
+      v-for="descriptionItem in description"
+      >{{ descriptionItem.value }}</el-descriptions-item
     >
   </el-descriptions>
 </template>
@@ -13,7 +13,6 @@
 <script setup>
 const props = defineProps({
   description: Object,
-  descriptionInfo: Object,
 });
 </script>
 

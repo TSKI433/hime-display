@@ -19,7 +19,6 @@
         <model-description
           v-if="controlStore.modelControlInfo?.description !== undefined"
           :description="controlStore.modelControlInfo.description"
-          :description-info="descriptionInfo"
         >
         </model-description>
         <template v-else>
@@ -57,7 +56,6 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
 import ControlLoadError from "../Common/ControlLoadError.vue";
 import ModelDescription from "../Common/ModelDescription.vue";
 import ObjectTransform from "../Common/3d/ObjectTransform3D.vue";
@@ -66,32 +64,6 @@ import ParameterControl from "../Common/3d/ParameterControl.vue";
 import MotionCapture from "../Common/MotionCapture.vue";
 import { useControlStore } from "@control/store/control";
 const controlStore = useControlStore();
-const descriptionInfo = reactive({
-  name: {
-    label: "名称",
-    param: "name",
-  },
-  "extention-name": {
-    label: "扩展名",
-    param: "extensionName",
-  },
-  "model-version": {
-    label: "模型版本",
-    param: "modelVersion",
-  },
-  "author-name": {
-    label: "作者",
-    param: "author",
-  },
-  "sexual-usage": {
-    label: "色情用途",
-    param: "sexualUssageName",
-  },
-  "violent-usage": {
-    label: "暴力用途",
-    param: "violentUssageName",
-  },
-});
 </script>
 
 <style lang="scss"></style>

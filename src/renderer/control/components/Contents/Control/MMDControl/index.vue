@@ -19,7 +19,6 @@
         <model-description
           v-if="controlStore.modelControlInfo?.description !== undefined"
           :description="controlStore.modelControlInfo.description"
-          :description-info="descriptionInfo"
         >
         </model-description>
         <template v-else>
@@ -57,7 +56,6 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
 import ControlLoadError from "../Common/ControlLoadError.vue";
 import ModelDescription from "../Common/ModelDescription.vue";
 import ObjectTransform from "../Common/3d/ObjectTransform3D.vue";
@@ -66,48 +64,6 @@ import ParameterControl from "../Common/3d/ParameterControl.vue";
 import MotionCapture from "../Common/MotionCapture.vue";
 import { useControlStore } from "@control/store/control";
 const controlStore = useControlStore();
-const descriptionInfo = reactive({
-  name: {
-    label: "名称",
-    param: "name",
-  },
-  "extention-name": {
-    label: "扩展名",
-    param: "extensionName",
-  },
-  "vertex-count": {
-    label: "顶点数",
-    param: "vertexCount",
-  },
-  "triangle-count": {
-    label: "三角形数",
-    param: "triangleCount",
-  },
-  "bone-count": {
-    label: "骨骼数",
-    param: "boneCount",
-  },
-  "ik-count": {
-    label: "IK数",
-    param: "ikCount",
-  },
-  "rigidBody-count": {
-    label: "刚体数",
-    param: "rigidBodyCount",
-  },
-  "constraint-count": {
-    label: "约束数",
-    param: "constraintCount",
-  },
-  "grant-count": {
-    label: "付与数",
-    param: "grantCount",
-  },
-  "morph-count": {
-    label: "变形数",
-    param: "morphCount",
-  },
-});
 </script>
 
 <style lang="scss"></style>

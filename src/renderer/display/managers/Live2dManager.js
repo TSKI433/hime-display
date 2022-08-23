@@ -162,20 +162,32 @@ export class Live2dManager extends ModelManager {
     const internalModel = this.model.internalModel;
     const coreModel = internalModel.coreModel;
     const modelControlInfo = {
-      description: {
-        name: modelInfo.name,
-        extensionName: modelInfo.extensionName,
-        vertexCount: coreModel._model.drawables.count,
-        groupCount: Object.keys(internalModel.settings.groups).length,
-        hitAreaCount: Object.keys(internalModel.hitAreas).length,
-        motionGroupCount: Object.keys(internalModel.settings.motions).length,
-        motionCount: Object.keys(internalModel.settings.motions).reduce(
-          (acc, cur) => acc + internalModel.settings.motions[cur].length,
-          0
-        ),
-        partCount: coreModel._model.parts.count,
-        parameterCount: coreModel._model.parameters.count,
-      },
+      description: [
+        { label: "name", value: modelInfo.name },
+        { label: "extension-name", value: modelInfo.extensionName },
+        { label: "vertex-count", value: coreModel._model.drawables.count },
+        {
+          label: "group-count",
+          value: Object.keys(internalModel.settings.groups).length,
+        },
+        {
+          label: "hit-area-count",
+          value: Object.keys(internalModel.hitAreas).length,
+        },
+        {
+          label: "motion-group-count",
+          value: Object.keys(internalModel.settings.motions).length,
+        },
+        {
+          label: "motion-count",
+          value: Object.keys(internalModel.settings.motions).reduce(
+            (acc, cur) => acc + internalModel.settings.motions[cur].length,
+            0
+          ),
+        },
+        { label: "part-count", value: coreModel._model.parts.count },
+        { label: "parameter-count", value: coreModel._model.parameters.count },
+      ],
       parameter: {
         // live2d的parameter没有固定值域
         _parameterIds: coreModel._parameterIds,
