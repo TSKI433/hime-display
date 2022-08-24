@@ -15,7 +15,8 @@ export class SpineManager extends ModelManager {
   }
   switchIn() {
     this.app = new PIXI.Application({
-      autoStart: true,
+      // 之后手动触发渲染
+      autoStart: false,
       view: this.canvas,
       // 即使canvas已经通过CSS配置占满全屏，不做这一影响设置依旧会使得画面拉伸
       resizeTo: window,
@@ -64,16 +65,17 @@ export class SpineManager extends ModelManager {
           this.internalModel.position.set(-localRect.x, -localRect.y);
           this.model = new PIXI.Container();
           this.model.addChild(this.internalModel);
-          setModelBaseTransfrom(this.model, this.config.display, "spine");
           this.app.stage.addChild(this.model);
+          setModelBaseTransfrom(this.model, this.config.display, "spine");
           this.model.interactive = true;
           if (this.config.display["spine-draggable"]) {
             draggable(this.model);
           }
           this.model.on("dragging", this._updateModelTransform.bind(this));
           this._bindEventAnimation();
-          this.app.start();
-
+          if (!this.shouldRender) {
+            this._startRender()
+          }
           resolve(this._buildModelControlInfo(modelInfo));
         });
     });
@@ -117,6 +119,10 @@ export class SpineManager extends ModelManager {
       this.internalModel.state.setEmptyAnimations(0.3);
     });
   }
+  _startRender() {
+    this.shouldRender = true;
+    this._render();
+  }
   _buildModelControlInfo(modelInfo) {
     const motionInfo = [];
     this.internalModel.spineData.animations.forEach((animation) => {
@@ -157,6 +163,20 @@ export class SpineManager extends ModelManager {
       motion: motionInfo,
     };
     return modelControlInfo;
+  }
+  _render() {
+    this.app.ticker.start();
+    this.app.ticker.add((delta) => {
+      if (!this.shouldRender) {
+        this.app.ticker.stop();
+        return;
+      }
+      if (this.stats !== null) {
+        this.stats.begin();
+        this.stats.end();
+      }
+      this.app.render();
+    });
   }
   handleMessage(message) {
     switch (message.channel) {

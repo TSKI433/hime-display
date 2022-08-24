@@ -62,6 +62,7 @@ export class Live2dManager extends ModelManager {
       autoInteract: false,
     });
     this.app.stage.addChild(this.model);
+    setModelBaseTransfrom(this.model, this.config.display, "live2d");
     // 折磨死我了，终于找到了问题所在，之前使用pixi-live2d-display都是直接用自动的interact，现在加载模型时设定为autoInteract: false就不一样了，本以为这个参数也就控制了个hit事件和鼠标跟踪，结果一看源码发现这也给模型的interactive设定为true了，进一步追溯，发现这是一个pixi.js的属性，设定为true才能正常响应事件，若为false，即使模型的_events可以看到事件，依旧是无法正常响应的。然后spine那边根本就没有对这个属性进行操作，所以自然也不能响应事件
     this.model.interactive = true;
     if (this.config.display["live2d-draggable"]) {
@@ -153,7 +154,6 @@ export class Live2dManager extends ModelManager {
     });
   }
   _startRender() {
-    setModelBaseTransfrom(this.model, this.config.display, "live2d");
     this.then = performance.now();
     this.shouldRender = true;
     requestAnimationFrame(this._render.bind(this));
