@@ -10,7 +10,7 @@ export default {
   description: {
     name: "名称",
     "extension-name": "扩展名",
-    "vetex-count": "顶点数",
+    "vertex-count": "顶点数",
     "triangle-count": "三角形数",
     "bone-count": "骨骼数",
     "ik-count": "IK数",

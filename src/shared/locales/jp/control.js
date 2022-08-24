@@ -11,7 +11,7 @@ export default {
   description: {
     name: "モデル名",
     "extension-name": "拡張子名",
-    "vetex-count": "頂点数",
+    "vertex-count": "頂点数",
     "triangle-count": "三角形数",
     "bone-count": "ボーン数",
     "ik-count": "IK数",
