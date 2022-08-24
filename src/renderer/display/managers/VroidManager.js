@@ -58,6 +58,7 @@ export class VroidManager extends ModelManager3D {
   }
   loadModel(modelInfo) {
     return new Promise((resolve, reject) => {
+      this._initInstantConfig();
       const modelFile = modelInfo.entranceFile;
       this.ModelLoader.load(modelFile, (gltf) => {
         VRM.from(gltf).then((vrm) => {
@@ -78,15 +79,17 @@ export class VroidManager extends ModelManager3D {
             this._render();
           }
           this._initMouceFocusHelper();
-          document.addEventListener("pointermove", (event) => {
-            this.mouseFocusHelper.update(event.clientX, event.clientY);
-          });
           resolve(this._buildModelControlInfo(modelInfo));
         });
       });
     });
   }
-
+  _initInstantConfig() {
+    // 由于没有存数据库，这就要求这里的初始配置和控制面板那边的默认值保持一致
+    this.instantConfig = {
+      vrmUpdate: true,
+    };
+  }
   _initMouceFocusHelper() {
     this.mouseFocusHelper = new MouseFocusHelper(
       this.model.vrm.humanoid.getBoneNode(VRMSchema.HumanoidBoneName.Head),
@@ -142,8 +145,10 @@ export class VroidManager extends ModelManager3D {
       // 解决VRoid的Y轴反转问题
       this.mouseFocusHelper?.object.quaternion.multiply(turnHeadQuaternion);
     }
-    // 此项更新一个是物理模拟，另一个是morph
-    this.model.vrm.update(this.clock.getDelta());
+    if (this.instantConfig.vrmUpdate) {
+      // 此项更新一个是物理模拟，另一个是morph
+      this.model.vrm.update(this.clock.getDelta());
+    }
   }
   handleMessage(message) {
     switch (message.channel) {
@@ -180,9 +185,19 @@ export class VroidManager extends ModelManager3D {
         this._setMorphWeight(message.data);
         break;
       }
+      case "control:change-instant-config": {
+        const { name, value } = message.data;
+        this.instantConfig[name] = value;
+        break;
+      }
     }
   }
   _setMorphWeight({ morphName, weight }) {
     this.model.vrm.blendShapeProxy.setValue(morphName, weight);
   }
+  // 不使用箭头函数会导致this的指向出错，若使用bind更改this指向，会导致返回的function和原函数不同，无法移出事件监听器
+  _onPointerMove = (event) => {
+    // 加上?，防止没载入模型时出错
+    this.mouseFocusHelper?.update(event.clientX, event.clientY);
+  };
 }

@@ -39,11 +39,11 @@
         <animation-control> </animation-control>
       </el-tab-pane>
       <el-tab-pane :label="$t(`control.parameter-control`)">
-        <parameter-control
+        <morph-control
           v-if="controlStore.modelControlInfo?.morph !== undefined"
           :morph-info="controlStore.modelControlInfo.morph"
         >
-        </parameter-control>
+        </morph-control>
         <template v-else>
           <control-load-error></control-load-error>
         </template>
@@ -60,7 +60,7 @@ import ControlLoadError from "../Common/ControlLoadError.vue";
 import ModelDescription from "../Common/ModelDescription.vue";
 import ObjectTransform from "../Common/3d/ObjectTransform3D.vue";
 import AnimationControl from "../Common/3d/AnimationControl.vue";
-import ParameterControl from "../Common/3d/ParameterControl.vue";
+import MorphControl from "../Common/3d/MorphControl.vue";
 import MotionCapture from "../Common/MotionCapture.vue";
 import { useControlStore } from "@control/store/control";
 const controlStore = useControlStore();

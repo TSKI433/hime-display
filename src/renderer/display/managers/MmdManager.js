@@ -327,8 +327,7 @@ export class MmdManager extends ModelManager3D {
       this.model.morphTargetInfluences[i] = 0;
     }
   }
-
-  // 不使用肩头函数会导致this的指向出错，若使用bind更改this指向，会导致返回的function和原函数不同，无法移出事件监听器
+  // 不使用箭头函数会导致this的指向出错，若使用bind更改this指向，会导致返回的function和原函数不同，无法移出事件监听器
   _onPointerMove = (event) => {
     // 加上?，防止没载入模型时出错
     this.mouseFocusHelper?.update(event.clientX, event.clientY);

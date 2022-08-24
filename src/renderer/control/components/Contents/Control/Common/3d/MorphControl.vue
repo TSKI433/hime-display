@@ -1,5 +1,5 @@
 <template>
-  <config-item label="Parameter" label-position="top">
+  <config-item label="变形" label-position="top">
     <config-item label="目标选择">
       <el-select
         v-model="selectedMorphName"
