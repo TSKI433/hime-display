@@ -24,16 +24,23 @@
       />
     </config-item>
   </config-item>
+  <template v-if="modelType == 'VRoid'">
+    <el-divider style="margin: 12px 0" />
+    <config-item label="VRM演算">
+      <el-switch v-model="vrmUpdate.value" />
+    </config-item>
+  </template>
 </template>
 
 <script setup>
 import ConfigItem from "@control/components/Common/ConfigItem.vue";
-import { ref, watch } from "vue";
+import { ref, watch, reactive, toRaw } from "vue";
 import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
 const props = defineProps({
   morphInfo: Object,
+  modelType: String,
 });
 // 若使用morph的index作为传递目标，可能存在难以发现的隐患
 const selectedMorphName = ref("");
@@ -65,6 +72,17 @@ ipcAPI.handleSendToModelControl((event, message) => {
       break;
     }
   }
+});
+// VRM演算控制
+const vrmUpdate = reactive({
+  name: "vrmUpdate",
+  value: true,
+});
+watch(vrmUpdate, () => {
+  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+    channel: "control:change-instant-config",
+    data: toRaw(vrmUpdate),
+  });
 });
 </script>
 

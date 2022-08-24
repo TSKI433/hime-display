@@ -36,12 +36,13 @@
         </template>
       </el-tab-pane>
       <el-tab-pane :label="$t(`control.animation-control`)">
-        <animation-control> </animation-control>
+        <animation-control model-type="VRoid"> </animation-control>
       </el-tab-pane>
       <el-tab-pane :label="$t(`control.parameter-control`)">
         <parameter-control
           v-if="controlStore.modelControlInfo?.morph !== undefined"
           :morph-info="controlStore.modelControlInfo.morph"
+          model-type="VRoid"
         >
         </parameter-control>
         <template v-else>
@@ -49,7 +50,7 @@
         </template>
       </el-tab-pane>
       <el-tab-pane :label="$t(`control.motion-capture`)">
-        <motion-capture> </motion-capture>
+        <motion-capture model-type="VRoid"> </motion-capture>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -60,7 +61,7 @@ import ControlLoadError from "../Common/ControlLoadError.vue";
 import ModelDescription from "../Common/ModelDescription.vue";
 import ObjectTransform from "../Common/3d/ObjectTransform3D.vue";
 import AnimationControl from "../Common/3d/AnimationControl.vue";
-import ParameterControl from "./ParameterControl.vue";
+import ParameterControl from "../Common/3d/ParameterControl.vue";
 import MotionCapture from "../Common/MotionCapture.vue";
 import { useControlStore } from "@control/store/control";
 const controlStore = useControlStore();

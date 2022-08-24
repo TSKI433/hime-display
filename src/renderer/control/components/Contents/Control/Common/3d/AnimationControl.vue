@@ -58,10 +58,13 @@
         :disabled="!audioTableSelected"
       ></el-input-number>
     </config-item>
-    <config-item label="物理模拟">
+    <config-item label="物理模拟" v-if="modelType == 'MMD'">
       <el-switch v-model="physicsSimulation.value" />
     </config-item>
-    <config-item label="mixamo腿部转译模式（需载入前设定）">
+    <config-item
+      label="mixamo腿部转译模式（需载入前设定）"
+      v-if="modelType == 'MMD'"
+    >
       <el-select v-model="mixamoLegTranslateMode.value">
         <el-option label="IK解算" value="ik" />
         <el-option label="旋转解算" value="rotate" />
@@ -97,13 +100,16 @@ import ConfigItem from "@control/components/Common/ConfigItem.vue";
 // 发现奇妙的现象，这里不引入ref不会直接报错，而是先蹦出两三百个vue的警告来
 import { reactive, ref, watch, toRaw } from "vue";
 const appStore = useAppStore();
+const ipcAPI = window.nodeAPI.ipc;
+const props = defineProps({
+  modelType: String,
+});
 const currentMotionInfo = reactive({ value: null });
 const currentAudioInfo = reactive({ value: null });
 const motionTableSelected = ref(false);
 const audioTableSelected = ref(false);
 const animationLoop = ref(true);
 const delayTime = ref(0);
-const ipcAPI = window.nodeAPI.ipc;
 function changeCurrentMotionInfo(currentRow) {
   motionTableSelected.value = true;
   currentMotionInfo.value = currentRow;

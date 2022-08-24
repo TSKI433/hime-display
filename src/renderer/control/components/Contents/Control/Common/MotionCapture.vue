@@ -1,5 +1,8 @@
 <template>
-  <config-item label="捕捉类型" v-if="hasHolistic">
+  <config-item
+    label="捕捉类型"
+    v-if="modelType == 'MMD' || modelType == 'VRoid'"
+  >
     <el-radio-group v-model="motionCaptureType">
       <el-radio-button label="faceMesh">面部捕捉</el-radio-button>
       <el-radio-button label="holistic">全身捕捉</el-radio-button>
@@ -18,10 +21,7 @@ import { useAppStore } from "@control/store/app";
 import ConfigItem from "@control/components/Common/ConfigItem.vue";
 import { ref } from "vue";
 const props = defineProps({
-  hasHolistic: {
-    type: Boolean,
-    default: true,
-  },
+  modelType: String,
 });
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
