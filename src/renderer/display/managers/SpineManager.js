@@ -74,7 +74,7 @@ export class SpineManager extends ModelManager {
           this.model.on("dragging", this._updateModelTransform.bind(this));
           this._bindEventAnimation();
           if (!this.shouldRender) {
-            this._startRender()
+            this._startRender();
           }
           resolve(this._buildModelControlInfo(modelInfo));
         });
@@ -115,9 +115,10 @@ export class SpineManager extends ModelManager {
     this.model.on("dragstart", () => {
       this._loadMotionByPath(this.instantConfig.dragAnimation, true);
     });
-    this.model.on("dragend", () => {
-      this.internalModel.state.setEmptyAnimations(0.3);
-    });
+    // 拖拽结束后置空动画对于一些模型会导致问题，因为模型的默认姿态很诡异……
+    // this.model.on("dragend", () => {
+    //   this.internalModel.state.setEmptyAnimations(0.3);
+    // });
   }
   _startRender() {
     this.shouldRender = true;
