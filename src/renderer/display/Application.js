@@ -29,6 +29,10 @@ export class Application {
       this.ignoreFlag = true;
       this.detectClickThrough();
     }
+    this.state = {
+      modelLoaded: false,
+      modelInfo: null,
+    };
     this.setBackgroundColor();
     this.initStats();
     this.initManagers();
@@ -74,6 +78,8 @@ export class Application {
         });
       }
       this.managers.now.loadModel(modelInfo).then((modelControlInfo) => {
+        this.state.modelLoaded = true;
+        this.state.modelInfo = modelControlInfo;
         this.nodeAPI.ipc.sendModelControlInfo(
           this.controlWindowId,
           modelControlInfo
@@ -86,6 +92,9 @@ export class Application {
         message.data
       );
       this.managers.now.handleMessage(message);
+    });
+    this.nodeAPI.ipc.handleQueryDisplayWindowState(() => {
+      this.nodeAPI.ipc.sendDisplayWindowState(this.controlWindowId, this.state);
     });
   }
   setBackgroundColor() {

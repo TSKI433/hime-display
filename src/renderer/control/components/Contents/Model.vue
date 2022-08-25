@@ -121,7 +121,13 @@ watch(appStore.displayWindowOpened, (value) => {
     value.value &&
     appStore.database.modelNow !== null
   ) {
-    loadModelNow(appStore.database.modelNow);
+    ipcAPI.queryDisplayWindowState(appStore.displayWindowId);
+    ipcAPI.handleDisplayWindowState((event, message) => {
+      console.log("[Hime Display] displayWindowState", message);
+      if (!message.modelLoaded) {
+        loadModelNow(appStore.database.modelNow);
+      }
+    });
   }
 });
 const searchModelText = ref("");

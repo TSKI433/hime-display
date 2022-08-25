@@ -39,3 +39,14 @@ export function askForMediaAccess() {
 export function setIgnoreMouseEvents(...args) {
   ipcRenderer.send("display:set-ignore-mouse-events", ...args);
 }
+
+export function handleQueryDisplayWindowState(callback) {
+  ipcRenderer.on("control:query-display-window-state", callback);
+}
+export function sendDisplayWindowState(displayWindowId, state) {
+  ipcRenderer.sendTo(
+    displayWindowId,
+    "display:send-display-window-state",
+    state
+  );
+}

@@ -39,3 +39,12 @@ export function openDevTool(type) {
 export function changeLanguage(language) {
   ipcRenderer.send("control:change-language", language);
 }
+export function queryDisplayWindowState(displayWindowId) {
+  return ipcRenderer.sendTo(
+    displayWindowId,
+    "control:query-display-window-state"
+  );
+}
+export function handleDisplayWindowState(callback) {
+  ipcRenderer.once("display:send-display-window-state", callback);
+}
