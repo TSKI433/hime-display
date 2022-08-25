@@ -1,4 +1,5 @@
 export const defalutDatabase = {
+  modelNow: null,
   sourcePathInfo: [],
   model: [],
   motion3D: [],

@@ -26,9 +26,13 @@ appStore.syncDatabase();
 appStore.syncConfig();
 ipcAPI.queryWindowIds().then((windowIds) => {
   appStore.displayWindowId = windowIds.display;
+  appStore.displayWindowOpened.value =
+    appStore.displayWindowId === -1 ? false : true;
 });
 ipcAPI.handleUpdateWindowIds((event, windowIds) => {
   appStore.displayWindowId = windowIds.display;
+  appStore.displayWindowOpened.value =
+    appStore.displayWindowId === -1 ? false : true;
   // 展示器关闭或重载时重置模型控制器的状态
   // controlStore.currentModelType = "";
   // controlStore.modelControlInfoLoading = false;

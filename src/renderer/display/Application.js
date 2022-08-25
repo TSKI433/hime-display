@@ -29,19 +29,24 @@ export class Application {
       this.ignoreFlag = true;
       this.detectClickThrough();
     }
-    this.initControlWindowId();
-    this.handleIpcMessages();
     this.setBackgroundColor();
     this.initStats();
     this.initManagers();
     this.handleWindowResize();
+    // 在发送windowsID之前处理好其他的事情才能实现启动时加载模型
+    this.initControlWindowId();
+    // 通信处理必须在windowID处理之后再开启
+    this.handleIpcMessages();
   }
   initControlWindowId() {
     this.controlWindowId = -1;
     this.nodeAPI.ipc.queryWindowIds().then((windowIds) => {
+      console.log("[Hime Display] queryWindowIds:", windowIds);
       this.controlWindowId = windowIds.control;
     });
-    this.nodeAPI.ipc.handleUpdateWindowIds((windowIds) => {
+    // 忘记加event，脑瘫行为！！！坑了我不下五次，合着之前控制器一直都不知道控制面板的id了是吧
+    this.nodeAPI.ipc.handleUpdateWindowIds((event, windowIds) => {
+      console.log("[Hime Display] handleUpdateWindowIds:", windowIds);
       this.controlWindowId = windowIds.control;
     });
   }

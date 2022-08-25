@@ -77,7 +77,8 @@ export class WindowManager extends EventEmitter {
         }
       });
     }
-    this.allUpdateWindowIds();
+    // 为实现启动展示器自动加载之前的模型，需要在这里关闭事件通知，因为展示器窗口是在启动触发下方函数时，展示器只是开始加载了，并不一定准备好了接受消息，这时告知控制面板展示器已经准备好了的话，控制面板发送的消息无法被接收到
+    // this.allUpdateWindowIds();
     return this.windows[pageType];
   }
   sendMessageToWindow(windowName, message, ...args) {

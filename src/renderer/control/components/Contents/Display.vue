@@ -31,6 +31,9 @@
           <config-item label="抗锯齿">
             <el-switch v-model="appStore.config.display['antialias']" />
           </config-item>
+          <config-item label="自动加载之前的模型">
+            <el-switch v-model="appStore.config.display['auto-load-last']" />
+          </config-item>
         </el-form-item>
         <el-form-item label="透明窗口">
           <config-item label="点击穿透">

@@ -9,6 +9,7 @@ export const defaultConfig = {
     "pixel-ratio": "retina",
     "show-fps": true,
     antialias: true,
+    "auto-load-last": true,
     "click-through": "all",
     "display-range": "singleDesktop",
     "keep-display-at-top": true,

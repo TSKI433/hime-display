@@ -11,6 +11,10 @@ export const useAppStore = defineStore("app", {
     },
     config: {},
     displayWindowId: -1,
+    // 上方的原始值无法直接进行监听，此属性用于响应式监听展示器状态
+    displayWindowOpened: {
+      value: false,
+    },
   }),
   actions: {
     syncDatabase() {

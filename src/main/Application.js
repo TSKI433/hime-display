@@ -99,11 +99,14 @@ export class Application extends EventEmitter {
       this.windowManager.windows.display.destroy();
     });
     ipcMain.handle("control:query-window-ids", () => {
+      // 因为关闭了新建窗口的this.allUpdateWindowIds();，对展示器的通知状态只能在这里进行
+      this.windowManager.updateWindowIds("display");
       return this.windowManager.windowIds;
     });
     ipcMain.handle("display:query-window-ids", () => {
       // 控制面板有必要确认展示器的模型载入状态，刷新页面后模型也会变为未载入状态
       // 这里仅向控制面板发送消息，如果展示器发送消息，展示器的windowId在query状态同时成了update，会导致奇怪的问题，id直接变undefined了
+      // 为实现启动展示器自动加载之前的模型，也必须这么设计，而且还要把主进程检测到窗口打开时的广播操作关了，因为这个时候新建的窗口可能还没有准备接收消息
       this.windowManager.updateWindowIds("control");
       return this.windowManager.windowIds;
     });

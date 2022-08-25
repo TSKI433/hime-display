@@ -71,7 +71,7 @@
           </el-table-column>
         </el-table>
         <el-button
-          @click="loadModelNow()"
+          @click="loadModelNow(currentModelInfo.value)"
           :disabled="appStore.displayWindowId === -1 || !modelTableSelected"
           >载入当前模型</el-button
         >
@@ -82,7 +82,7 @@
 
 <script setup>
 import HimeTitleWithDivider from "@control/components/Common/TitleWithDivider.vue";
-import { ref, toRaw, markRaw, reactive, computed } from "vue";
+import { ref, toRaw, markRaw, reactive, computed, watch } from "vue";
 import { useAppStore } from "@control/store/app";
 import { useControlStore } from "@control/store/control";
 const appStore = useAppStore();
@@ -94,11 +94,14 @@ function changeCurrentModelInfo(currentRow) {
   modelTableSelected.value = true;
   currentModelInfo.value = currentRow;
 }
-function loadModelNow() {
-  const rawModelInfo = toRaw(currentModelInfo.value);
+function loadModelNow(modelInfo) {
+  const rawModelInfo = toRaw(modelInfo);
   controlStore.currentModelType = rawModelInfo.modelType;
   controlStore.modelControlInfoLoading = true;
   controlStore.modelControlInfo = null;
+  // 更新数据库中的当前模型信息
+  appStore.database.modelNow = rawModelInfo;
+  window.nodeAPI.database.write("modelNow", rawModelInfo);
   ipcAPI.loadModel(appStore.displayWindowId, rawModelInfo);
   console.log(
     `[Hime Display] Load model: name:${rawModelInfo.name}, modelType:${rawModelInfo.modelType}`
@@ -110,6 +113,17 @@ function loadModelNow() {
     controlStore.modelControlInfoLoading = false;
   });
 }
+window.appStore = appStore;
+watch(appStore.displayWindowOpened, (value) => {
+  console.log("[Hime Display] displayWindowId changed", value.value);
+  if (
+    appStore.config.display["auto-load-last"] &&
+    value.value &&
+    appStore.database.modelNow !== null
+  ) {
+    loadModelNow(appStore.database.modelNow);
+  }
+});
 const searchModelText = ref("");
 const filterModelData = computed(() =>
   appStore.database.model.filter(
