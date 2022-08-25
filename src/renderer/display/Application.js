@@ -31,7 +31,8 @@ export class Application {
     }
     this.state = {
       modelLoaded: false,
-      modelInfo: null,
+      // 由于控制面板不会关闭，缓存不会清除，模型的基础信息就不必在这里发过去了
+      // modelControlInfo: null,
     };
     this.setBackgroundColor();
     this.initStats();
@@ -79,7 +80,7 @@ export class Application {
       }
       this.managers.now.loadModel(modelInfo).then((modelControlInfo) => {
         this.state.modelLoaded = true;
-        this.state.modelInfo = modelControlInfo;
+        // this.state.modelControlInfo = modelControlInfo;
         this.nodeAPI.ipc.sendModelControlInfo(
           this.controlWindowId,
           modelControlInfo

@@ -65,7 +65,9 @@ export class Application extends EventEmitter {
     this.trayManager = new TrayManager();
     this.trayManager.buildMenu();
     this.trayManager.on("tray:open-control-window", () => {
-      this.openWindow("controlPanel");
+      // this.openWindow("controlPanel");
+      // 更改机制，目前控制面板永远不会被关闭，只会隐藏
+      this.windowManager.windows.control.show();
     });
     this.trayManager.on("tray:open-display-window", () => {
       this.openWindow(this.configDB.get(["display", "display-mode"]).value());

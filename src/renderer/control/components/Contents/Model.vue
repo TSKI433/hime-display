@@ -113,20 +113,25 @@ function loadModelNow(modelInfo) {
     controlStore.modelControlInfoLoading = false;
   });
 }
-window.appStore = appStore;
 watch(appStore.displayWindowOpened, (value) => {
   console.log("[Hime Display] displayWindowId changed", value.value);
-  if (
-    appStore.config.display["auto-load-last"] &&
-    value.value &&
-    appStore.database.modelNow !== null
-  ) {
+  if (value.value) {
     ipcAPI.queryDisplayWindowState(appStore.displayWindowId);
     ipcAPI.handleDisplayWindowState((event, message) => {
       console.log("[Hime Display] displayWindowState", message);
-      if (!message.modelLoaded) {
+      if (
+        !message.modelLoaded &&
+        appStore.config.display["auto-load-last"] &&
+        appStore.database.modelNow !== null
+      ) {
         loadModelNow(appStore.database.modelNow);
       }
+      // 下方代码用于处理控制面板重新后模型信息清空的问题，但是用这种机制来处理的话，模型控制的instant config难以被同步到控制面板上，目前该用不关闭控制面板，在主进程改为隐藏的操作来解决这个问题
+      // else  if (message.modelLoaded) {
+      //   controlStore.currentModelType = appStore.database.modelNow.modelType;
+      //   controlStore.modelControlInfo = markRaw(message.modelControlInfo);
+      //   controlStore.modelControlInfoLoading = false;
+      // }
     });
   }
 });
