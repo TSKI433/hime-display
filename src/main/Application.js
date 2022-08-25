@@ -25,9 +25,8 @@ export class Application extends EventEmitter {
     this.handleIpcMessages();
   }
   startApp() {
-    if (this.configDB.get(["general", "open-control-at-launch"]).value()) {
-      this.openWindow("controlPanel");
-    }
+    // 为了实现展示器加载上一次的模型这种操作，控制面板必须要在启动应用的时候启动，只是show与hide的区别，而这个判断已经下方到windowManager里面去了
+    this.openWindow("controlPanel");
     if (this.configDB.get(["general", "open-display-at-launch"]).value()) {
       this.openWindow(this.configDB.get(["display", "display-mode"]).value());
     }
@@ -73,7 +72,10 @@ export class Application extends EventEmitter {
       this.openWindow(this.configDB.get(["display", "display-mode"]).value());
     });
     this.trayManager.on("tray:quit-app", () => {
-      app.quit();
+      // 改用exit有两个目的
+      // 1.防止一些特殊情况无法退出
+      // 2.目前的控制面板一直是一个隐藏状态，会阻止引用的退出，虽然可以手动调用一个close再退出，懒得……
+      app.exit();
     });
   }
   handleIpcMessages() {

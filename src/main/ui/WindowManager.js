@@ -70,6 +70,11 @@ export class WindowManager extends EventEmitter {
       }
     }
     if (windowName === "controlPanel") {
+      if (this.configDB.get(["general", "open-control-at-launch"]).value()) {
+        window.once("ready-to-show", () => {
+          window.show();
+        });
+      }
       //保持display窗口一直处于聚焦状态，以处理鼠标事件
       window.on("blur", () => {
         if (this.windows.display?.windowName === "displayFullScreen") {

@@ -12,7 +12,8 @@ export const windowsOptions = {
       titleBarOverlay: true,
       // visualEffectState: "active",
       // skipTaskbar: true,
-      // show: false,
+      // 默认不显示，但必须启动
+      show: false,
       webPreferences: {
         // nodeIntegration: true,
         // contextIsolation: false,
