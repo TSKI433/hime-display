@@ -4,7 +4,11 @@ import { ThemeManager } from "./ui/ThemeManager";
 import { TrayManager } from "./ui/TrayManager";
 import low from "lowdb";
 import lowFileSync from "lowdb/adapters/FileSync";
-import { APP_CONFIG_PATH, APP_DATA_PATH } from "./options/paths";
+import {
+  APP_CONFIG_PATH,
+  APP_DATA_PATH,
+  CHROMIUM_PREFERENCE_PATH,
+} from "./options/paths";
 import { defaultConfig } from "@shared/defaults/defaultConfig";
 import { ipcMain, dialog, systemPreferences, app } from "electron";
 import is from "electron-is";
@@ -17,6 +21,7 @@ export class Application extends EventEmitter {
     this.init();
   }
   init() {
+    this.setChromiumPreference();
     this.initConfigDB();
     this.initLanguage();
     this.initWindowManager();
@@ -37,6 +42,12 @@ export class Application extends EventEmitter {
   }
   openWindow(windowName) {
     return this.windowManager.openWindow(windowName);
+  }
+  setChromiumPreference() {
+    // 每一次启动应用时，将默认的开发者工具窗口设定为一个独立的窗口，防止全屏透明的展示器打开窗口内开发者工具的时候透明失效
+    low(new lowFileSync(CHROMIUM_PREFERENCE_PATH))
+      .set("electron.devtools.preferences.currentDockState", '"undocked"')
+      .write();
   }
   initConfigDB() {
     this.configDB = low(new lowFileSync(APP_CONFIG_PATH));
@@ -125,7 +136,29 @@ export class Application extends EventEmitter {
       this.configDB.read();
     });
     ipcMain.on("control:open-dev-tool", (event, type) => {
-      this.windowManager.windows[type].webContents.openDevTools();
+      if (
+        type === "display" &&
+        this.windowManager.windows.display.windowName === "displayFullScreen"
+      ) {
+        dialog
+          .showMessageBox(this.windowManager.windows.control, {
+            type: "info",
+            message: i18next.t("message.display-open-dev-title"),
+            detail: i18next.t("message.display-open-dev-detail"),
+            buttons: [
+              i18next.t("message.confirm"),
+              i18next.t("message.cancel"),
+            ],
+            defaultId: 0,
+            cancelId: 1,
+          })
+          .then((result) => {
+            result.response === 0 &&
+              this.windowManager.windows[type].webContents.openDevTools();
+          });
+      } else {
+        this.windowManager.windows[type].webContents.openDevTools();
+      }
     });
     ipcMain.handle("display:ask-for-media-access", () => {
       return this.askForMediaAccess();
