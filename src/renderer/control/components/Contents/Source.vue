@@ -177,13 +177,11 @@ function showInFolder(path) {
 function deleteSourcePath(index) {
   // 移除数据源相关的数据条目
   const sourcePath = appStore.database.sourcePathInfo[index].sourcePath;
-  // 若不用异步函数，可能会导致同步操作在删除直接执行
-  window.nodeAPI.database.removeDataFromSourcePath(sourcePath).then(() => {
-    appStore.syncDatabase();
-    // 千万别在这条语句下方同步数据库，不然直接把preload里面的旧sourcePathInfo数据弄过来了
-    appStore.database.sourcePathInfo.splice(index, 1);
-    writeSourcePathInfo();
-  });
+  window.nodeAPI.database.removeDataFromSourcePath(sourcePath);
+  appStore.syncDatabase();
+  // 千万别在这条语句下方同步数据库，不然直接把preload里面的旧sourcePathInfo数据弄过来了
+  appStore.database.sourcePathInfo.splice(index, 1);
+  writeSourcePathInfo();
 }
 function addSourePath() {
   window.nodeAPI.ipc.selectPath().then((path) => {

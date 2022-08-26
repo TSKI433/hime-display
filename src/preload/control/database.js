@@ -15,7 +15,7 @@ export function value() {
 export function write(value, data) {
   db.set(value, data).write();
 }
-export async function removeDataFromSourcePath(sourcePath) {
+export function removeDataFromSourcePath(sourcePath) {
   // 不愧是lodash，极致精简语法，remove({sourcePath})，优雅啊
   // 从本源来讲，要追溯到_.matches，然后再到_.isMatch，然后再搭配上ES6的对象属性简写，最终浓缩成这个简单的语句
   ["model", "motion3D", "audio3D"].forEach((type) => {
@@ -23,31 +23,70 @@ export async function removeDataFromSourcePath(sourcePath) {
   });
 }
 export async function loadDataFromSourcePathInfo(sourcePathInfo) {
+  // 已改变载入机制
+  // removeRemovedSourceTypeData(sourcePathInfo);
+  // await removeDeletedData(sourcePathInfo.sourcePath);
+
+  removeDataFromSourcePath(sourcePathInfo.sourcePath);
+  // 这里的await后面虽然没有任何操作，但是还是必要的，因为可以推住Promise的resolve时机，确保控制面板载入刷新以后的数据
   await loadDataFromPath(
     sourcePathInfo.sourcePath,
     sourcePathInfo.sourceTypes,
     sourcePathInfo.sourcePath
   );
-  removeRemovedSourceTypeData(sourcePathInfo);
 }
-// 若更改过一个数据源的sourceTypes，需要删除一些原来sourceType允许载入的数据
-function removeRemovedSourceTypeData(sourcePathInfo) {
-  db.get("model")
-    .remove(
-      (item) =>
-        item.sourcePath === sourcePathInfo.sourcePath &&
-        !sourcePathInfo.sourceTypes[item.modelType]
-    )
-    .write();
-  if (!sourcePathInfo.sourceTypes.motion3D) {
-    db.get("motion3D")
-      .remove({ sourcePath: sourcePathInfo.sourcePath })
-      .write();
-  }
-  if (!sourcePathInfo.sourceTypes.audio3D) {
-    db.get("audio3D").remove({ sourcePath: sourcePathInfo.sourcePath }).write();
-  }
-}
+// 造了半天我在造个寂寞，跟异步同步扯了半天有意思吗？改变思路，直接把刷新数据源的相关数据全删了重载
+// // 若更改过一个数据源的sourceTypes，需要删除一些原来sourceType允许载入的数据
+// function removeRemovedSourceTypeData(sourcePathInfo) {
+//   db.get("model")
+//     .remove(
+//       (item) =>
+//         item.sourcePath === sourcePathInfo.sourcePath &&
+//         !sourcePathInfo.sourceTypes[item.modelType]
+//     )
+//     .write();
+//   if (!sourcePathInfo.sourceTypes.motion3D) {
+//     db.get("motion3D")
+//       .remove({ sourcePath: sourcePathInfo.sourcePath })
+//       .write();
+//   }
+//   if (!sourcePathInfo.sourceTypes.audio3D) {
+//     db.get("audio3D").remove({ sourcePath: sourcePathInfo.sourcePath }).write();
+//   }
+// }
+// // 移除目录中被删除的模型数据
+// function removeDeletedData(sourcePath) {
+//   const promises = [];
+//   ["model", "motion3D", "audio3D"].forEach((type) => {
+//     db.get(type)
+//       .value()
+//       .forEach((item) => {
+//         if (item.sourcePath === sourcePath) {
+//           promises.push(
+//             new Promise((resolve) => {
+//               fs.access(
+//                 item.entranceFile.slice(7).split("/").join(path.sep),
+//                 fs.constants.F_OK,
+//                 (err) => {
+//                   console.log(item.entranceFile, err);
+//                   if (err) {
+//                     console.log(`${item.entranceFile} is deleted`);
+//                     db.get(type)
+//                       .remove({ entranceFile: item.entranceFile })
+//                       .write();
+//                   }
+//                   // 又被坑了，resolve一定要放在if之后，不然一些promise一直没有resolve，导致程序卡在这个程序的await上。
+//                   resolve();
+//                 }
+//               );
+//             })
+//           );
+//         }
+//       });
+//   });
+//   return Promise.all(promises);
+// }
+
 // 后面这些函数里面带的sourcePath都是最原始，不受递归影响的那个sourcePath，用于判断一个模型由哪个源检索到的，方便跟随删除
 async function loadDataFromPath(dataPath, sourceTypes, sourcePath) {
   //根据文件路径读取文件，返回文件列表
