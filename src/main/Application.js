@@ -83,10 +83,9 @@ export class Application extends EventEmitter {
       this.openWindow(this.configDB.get(["display", "display-mode"]).value());
     });
     this.trayManager.on("tray:quit-app", () => {
-      // 改用exit有两个目的
-      // 1.防止一些特殊情况无法退出
-      // 2.目前的控制面板一直是一个隐藏状态，会阻止引用的退出，虽然可以手动调用一个close再退出，懒得……
-      app.exit();
+      // this.windowManager.windows.control.destroy();
+      // 使用before-quit事件来处理应用无法正确退出的问题，直接上exit实在是有点暴力
+      app.quit();
     });
   }
   handleIpcMessages() {
