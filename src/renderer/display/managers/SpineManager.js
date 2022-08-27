@@ -29,6 +29,7 @@ export class SpineManager extends ModelManager {
   switchOut() {
     // this._removeEventListeners();
     // this._sendToModelControl = null;
+    this.shouldRender = false;
     this.instantConfig = null;
     // destroy以后无法直接获得这个上下文了
     const gl = this.app.renderer.context.gl;
@@ -57,6 +58,8 @@ export class SpineManager extends ModelManager {
             : undefined
         )
         .load((loader, resources) => {
+          // 不清除缓存的话，重复加载时天天报warn看着不舒服
+          PIXI.utils.clearTextureCache();
           // 学着pixi-live2d-display开始套娃……
           this.internalModel = new PIXI.spine.Spine(
             resources.spineCharacter.spineData
