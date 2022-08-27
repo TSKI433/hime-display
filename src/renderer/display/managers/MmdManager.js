@@ -102,9 +102,14 @@ export class MmdManager extends ModelManager3D {
           // 后来发现又个windows下的cancelAnimationFrame的API，但这是一个这是一个实验中的功能，所以还是不用了
           if (!this.shouldRender) {
             this.shouldRender = true;
-            setTimeout(() => {
+            // 这里说的加载问题仅限于macOS
+            if (/macintosh|mac os x/i.test(navigator.userAgent)) {
+              setTimeout(() => {
+                this._render();
+              }, 1000);
+            } else {
               this._render();
-            }, 1000);
+            }
           }
           this._initMouceFocusHelper();
           resolve(this._buildModelControlInfo(modelInfo));
