@@ -4,6 +4,7 @@ import lowFileSync from "lowdb/adapters/FileSync";
 import path from "path";
 import { APP_DATA_PATH } from "./paths";
 import { ipcRenderer } from "electron";
+import { defaultConfig } from "@shared/defaults/defaultConfig";
 const APP_CONFIG_PATH = path.join(APP_DATA_PATH, "config.json");
 const db = low(new lowFileSync(APP_CONFIG_PATH));
 // 不是我想重复写代码，这个config和database绝对用不了class的继承，preload暴露的对象直接把原型链全灭了，所以只能一个一个写函数，也不用class了
@@ -13,5 +14,9 @@ export function value() {
 export function write(value, data) {
   db.set(value, data).write();
   // display从主进程请求配置，还得通知主进程更新一下
+  ipcRenderer.send("control:update-config");
+}
+export function resetAllConfig() {
+  db.setState(defaultConfig).write();
   ipcRenderer.send("control:update-config");
 }

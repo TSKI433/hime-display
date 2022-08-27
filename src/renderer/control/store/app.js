@@ -33,7 +33,9 @@ export const useAppStore = defineStore("app", {
       this.database = window.nodeAPI.database.value();
     },
     syncConfig() {
-      this.config = window.nodeAPI.config.value();
+      const confingValue = window.nodeAPI.config.value();
+      this.config.general = confingValue.general;
+      this.config.display = confingValue.display;
     },
   },
 });

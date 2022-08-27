@@ -36,8 +36,18 @@
               :disabled="appStore.displayWindowId === -1"
               >展示器</el-button
             >
-            <el-button @click="openDevTool('control')">控制器</el-button>
+            <el-button @click="openDevTool('control')">控制面板</el-button>
           </div>
+        </el-form-item>
+        <el-form-item label="还原">
+          <el-popconfirm
+            title="确认要还原所有配置项吗？"
+            @confirm="resetAllConfig"
+          >
+            <template #reference>
+              <el-button>还原所有配置项</el-button>
+            </template>
+          </el-popconfirm>
         </el-form-item>
       </el-form>
     </el-scrollbar>
@@ -63,6 +73,12 @@ function changeLanguage(language) {
 }
 function openDevTool(type) {
   ipcAPI.openDevTool(type);
+}
+function resetAllConfig() {
+  window.nodeAPI.config.resetAllConfig();
+  appStore.syncConfig();
+  // 手动触发语言更改
+  changeLanguage(appStore.config.general.language);
 }
 </script>
 
