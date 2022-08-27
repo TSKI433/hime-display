@@ -294,6 +294,7 @@ export class MmdManager extends ModelManager3D {
       }
       case "control:quit-capture": {
         this._quitCapture();
+        this.model.pose();
         break;
       }
       case "control:bind-morph-target": {

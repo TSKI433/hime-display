@@ -38,7 +38,7 @@
         </template>
       </el-tab-pane>
       <el-tab-pane :label="$t(`control.motion-capture`)">
-        <motion-capture :has-holistic="false"></motion-capture>
+        <motion-capture model-type="Live2D"></motion-capture>
       </el-tab-pane>
     </el-tabs>
   </div>
