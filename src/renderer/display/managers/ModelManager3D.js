@@ -68,6 +68,7 @@ class ModelManager3D extends ModelManager {
     requestAnimationFrame(this._render.bind(this));
   }
   _clearModel() {
+    this._quitCapture();
     if (this.model !== null) {
       this._disposeChildren(this.model);
       this.scene.remove(this.model);
@@ -83,6 +84,10 @@ class ModelManager3D extends ModelManager {
       this.model.vrm?.dispose();
       this.model = null;
     }
+  }
+  _quitCapture() {
+    this.captureManagerNow?.quitCapture();
+    this.captureManagerNow = null;
   }
   _disposeChildren(parent) {
     parent.traverse((obj) => {

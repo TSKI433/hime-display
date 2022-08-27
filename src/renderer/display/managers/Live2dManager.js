@@ -33,6 +33,7 @@ export class Live2dManager extends ModelManager {
     this._addEventListeners();
   }
   switchOut() {
+    this._clearModel();
     // 移除事件监听放到了this.focusPosition=null之前，不然我感觉有可能focusPosition又被初始化了，不过照理说是同步代码的话应该不会出现这个问题，反正switchOut的顺序无所谓，就这么安排了
     this._removeEventListeners();
     this._sendToModelControl = null;
@@ -50,8 +51,6 @@ export class Live2dManager extends ModelManager {
     gl.clear(gl.DEPTH_BUFFER_BIT);
     gl.clear(gl.STENCIL_BUFFER_BIT);
     this.app = null;
-    this.model?.destroy();
-    this.model = null;
   }
   async loadModel(modelInfo) {
     this._initInstantConfig();
@@ -126,6 +125,7 @@ export class Live2dManager extends ModelManager {
     };
   }
   _clearModel() {
+    this._quitCapture();
     if (this.model !== null && !this.model.destroied) {
       this.model.destroy();
     }
@@ -273,8 +273,7 @@ export class Live2dManager extends ModelManager {
         break;
       }
       case "control:quit-capture": {
-        this.captureManagerNow.quitCapture();
-        this.captureManagerNow = null;
+        this._quitCapture();
         break;
       }
       case "control:change-instant-config": {
@@ -326,6 +325,10 @@ export class Live2dManager extends ModelManager {
         : false
     );
     this.model.motion(motionInfo.group, motionIndex);
+  }
+  _quitCapture() {
+    this.captureManagerNow?.quitCapture();
+    this.captureManagerNow = null;
   }
   _addEventListeners() {
     document.addEventListener("pointermove", this._onPointerMove);

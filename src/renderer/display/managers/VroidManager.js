@@ -172,8 +172,7 @@ export class VroidManager extends ModelManager3D {
         break;
       }
       case "control:quit-capture": {
-        this.captureManagerNow.quitCapture();
-        this.captureManagerNow = null;
+        this._quitCapture();
         break;
       }
       case "control:bind-morph-target": {

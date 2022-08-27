@@ -288,8 +288,7 @@ export class MmdManager extends ModelManager3D {
         break;
       }
       case "control:quit-capture": {
-        this.captureManagerNow.quitCapture();
-        this.captureManagerNow = null;
+        this._quitCapture();
         break;
       }
       case "control:bind-morph-target": {
@@ -309,7 +308,6 @@ export class MmdManager extends ModelManager3D {
       }
     }
   }
-
   _setMorphWeight({ morphName, weight }) {
     const morphIndex = this.model.morphTargetDictionary[morphName];
     if (morphIndex === undefined) {
