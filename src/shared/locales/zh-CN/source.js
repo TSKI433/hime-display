@@ -1,0 +1,15 @@
+export default {
+  "data-source": "数据源",
+  "search-type": "检索类型",
+  "source-path": "数据源路径",
+  operate: "操作",
+  "end-edit": "结束编辑",
+  "edit-search-type": "编辑",
+  "show-in-file-browser": "在文件浏览器中显示",
+  "search-again": "再次搜索",
+  "delete-source-confirm": "确认要删除该数据源吗？",
+  "delete-source": "删除数据源",
+  "add-source": "添加数据源",
+  "search-all-source": "全部重新检索",
+  "statistic-info": "统计信息",
+};

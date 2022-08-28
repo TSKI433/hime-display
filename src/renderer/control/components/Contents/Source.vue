@@ -2,7 +2,7 @@
   <div class="hime-content">
     <hime-title-with-divider>{{ $t("menu.source") }}</hime-title-with-divider>
     <el-form label-position="top" class="hime-el-form--large-label">
-      <el-form-item label="数据源">
+      <el-form-item :label="$t('source.data-source')">
         <!-- row-key用于辨识row，解决expand输入内容后自动折叠，以及一旦展开就变成全部展开的问题 -->
         <el-table
           :data="appStore.database.sourcePathInfo"
@@ -23,7 +23,7 @@
                   class="hime-el-form--expanded"
                   :inline="true"
                 >
-                  <el-form-item label="检索数据类型">
+                  <el-form-item :label="$t('source.search-type')">
                     <!-- 官方文档里面没有说el-checkbox-button有change事件，但是经过实际测试是有的，然后就拿来用了 -->
                     <el-checkbox-button
                       v-for="sourceType in sourceTypes"
@@ -38,7 +38,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="路径"
+            :label="$t('source.source-path')"
             prop="sourcePath"
             show-overflow-tooltip
           />
@@ -52,7 +52,11 @@
             </el-scrollbar>
           </template>
         </el-table-column> -->
-          <el-table-column label="操作" width="210" align="center">
+          <el-table-column
+            :label="$t('source.operate')"
+            width="210"
+            align="center"
+          >
             <template #default="props">
               <el-tooltip :show-after="600" effect="light">
                 <template #default>
@@ -64,7 +68,11 @@
                   ></svg-icon-el-button>
                 </template>
                 <template #content>
-                  {{ props.expanded ? "结束编辑" : "编辑路径信息" }}
+                  {{
+                    props.expanded
+                      ? $t("source.end-edit-search-type")
+                      : $t("source.edit-search-type")
+                  }}
                 </template>
               </el-tooltip>
               <el-tooltip :show-after="600" effect="light">
@@ -75,7 +83,9 @@
                     @click="showInFolder(props.row.sourcePath)"
                   ></svg-icon-el-button>
                 </template>
-                <template #content> 在文件浏览器中显示 </template>
+                <template #content>
+                  {{ $t("source.show-in-file-browser") }}</template
+                >
               </el-tooltip>
               <el-tooltip :show-after="600" effect="light">
                 <template #default>
@@ -85,10 +95,10 @@
                     @click="loadFromSourcePath(props.row)"
                   ></svg-icon-el-button>
                 </template>
-                <template #content> 重新检索 </template>
+                <template #content> {{ $t("source.search-again") }} </template>
               </el-tooltip>
               <el-popconfirm
-                title="确认要删除此路径吗？"
+                :title="$t('source.delete-source-confirm')"
                 @confirm="deleteSourcePath(props.$index)"
               >
                 <template #reference>
@@ -101,7 +111,9 @@
                           name="delete"
                         ></svg-icon-el-button>
                       </template>
-                      <template #content> 删除该数据源 </template>
+                      <template #content>
+                        {{ $t("source.delete-source") }}
+                      </template>
                     </el-tooltip>
                   </div>
                 </template>
@@ -109,10 +121,14 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-button @click="addSourePath">添加来源</el-button>
-        <el-button @click="loadFromSourcePathAll">全部重新检索</el-button>
+        <el-button @click="addSourePath">{{
+          $t("source.add-source")
+        }}</el-button>
+        <el-button @click="loadFromSourcePathAll">{{
+          $t("source.search-all-source")
+        }}</el-button>
       </el-form-item>
-      <el-form-item label="统计信息">
+      <el-form-item :label="$t('source.statistic-info')">
         <el-table :data="totalInfo" size="small" :border="true">
           <el-table-column
             v-for="(totalCount, totalName) in totalInfo[0]"

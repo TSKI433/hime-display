@@ -1,0 +1,15 @@
+export default {
+  "data-source": "Data source",
+  "search-type": "Search type",
+  "source-path": "Source path",
+  operate: "Operate",
+  "end-edit": "End edit",
+  "edit-search-type": "Edit",
+  "show-in-file-browser": "Show in file browser",
+  "search-again": "Search again",
+  "delete-source-confirm": "Are you sure to delete this data source?",
+  "delete-source": "Delete data source",
+  "add-source": "Add data source",
+  "search-all-source": "Search all",
+  "statistic-info": "Statistic info",
+};

@@ -4,6 +4,7 @@ import tray from "./tray";
 import message from "./message";
 import general from "./general";
 import model from "./model";
+import source from "./source";
 export default {
   menu,
   control,
@@ -11,4 +12,5 @@ export default {
   message,
   general,
   model,
+  source,
 };
