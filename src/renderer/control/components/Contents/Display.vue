@@ -4,61 +4,107 @@
     <hime-title-with-divider>{{ $t("menu.display") }}</hime-title-with-divider>
     <el-scrollbar height="100%">
       <el-form label-width="170px" class="hime-el-form--config">
-        <el-form-item label="展示器窗口">
-          <config-item label="窗口类型">
-            <el-radio-group v-model="appStore.config.display['display-mode']">
-              <!-- 我感觉这里的element plus给我整懵了，填在label里面的东西其实却是value？ -->
-              <el-radio-button label="displayFullScreen">
-                全屏透明
+        <el-form-item :label="$t('display.window')">
+          <config-item :label="$t('display.window-type')">
+            <!-- 由于日语片假名实在太长了，不得不妥协一下换个组件…… -->
+            <!-- <el-radio-group v-model="appStore.config.display['display-mode']">
+                <el-radio-button label="displayFullScreen">
+                {{ $t("display.fullscreen") }}
               </el-radio-button>
               <el-radio-button label="displayWindowed">
-                有框窗口
+                {{ $t("display.windowed") }}
               </el-radio-button>
-            </el-radio-group>
+            </el-radio-group> -->
+            <el-select v-model="appStore.config.display['display-mode']">
+              <!-- 我感觉这里的element plus给我整懵了，填在label里面的东西其实却是value？ -->
+              <el-option
+                :label="$t('display.fullscreen')"
+                value="displayFullScreen"
+              />
+              <el-option
+                :label="$t('display.windowed')"
+                value="displayWindowed"
+              />
+            </el-select>
           </config-item>
         </el-form-item>
-        <el-form-item label="模型显示">
-          <config-item label="显示像素比">
-            <el-radio-group v-model="appStore.config.display['pixel-ratio']">
-              <el-radio-button label="normal"> 普通 </el-radio-button>
-              <el-radio-button label="retina"> 视网膜 </el-radio-button>
-              <el-radio-button label="system"> 系统配置 </el-radio-button>
-            </el-radio-group>
+        <el-form-item :label="$t('display.show')">
+          <config-item :label="$t('display.pixel-ratio')">
+            <!-- <el-radio-group v-model="appStore.config.display['pixel-ratio']">
+              <el-radio-button label="normal"> Normal </el-radio-button>
+              <el-radio-button label="retina"> Retina </el-radio-button>
+              <el-radio-button label="system"> Auto </el-radio-button>
+            </el-radio-group> -->
+            <el-select v-model="appStore.config.display['pixel-ratio']">
+              <el-option label="Normal" value="normal" />
+              <el-option label="Retina" value="retina" />
+              <el-option label="System" value="system" />
+            </el-select>
           </config-item>
-          <config-item label="显示帧率">
+          <config-item :label="$t('display.show-fps')">
             <el-switch v-model="appStore.config.display['show-fps']" />
           </config-item>
-          <config-item label="抗锯齿">
+          <config-item :label="$t('display.antialias')">
             <el-switch v-model="appStore.config.display['antialias']" />
           </config-item>
-          <config-item label="自动加载之前的模型">
+          <config-item :label="$t('display.auto-load-last')">
             <el-switch v-model="appStore.config.display['auto-load-last']" />
           </config-item>
         </el-form-item>
-        <el-form-item label="透明窗口">
-          <config-item label="点击穿透">
-            <el-radio-group v-model="appStore.config.display['click-through']">
-              <el-radio-button label="all"> 所有区域 </el-radio-button>
-              <el-radio-button label="transparent"> 透明区域 </el-radio-button>
-            </el-radio-group>
-          </config-item>
-          <config-item label="显示范围(macOS)">
-            <el-radio-group v-model="appStore.config.display['display-range']">
-              <el-radio-button label="singleDesktop"> 单桌面 </el-radio-button>
-              <el-radio-button label="allDesktops"> 所有桌面 </el-radio-button>
-              <el-radio-button label="allWorkspaces">
-                所有工作区
+        <el-form-item :label="$t('display.transparent-display')">
+          <config-item :label="$t('display.click-through')">
+            <!-- <el-radio-group v-model="appStore.config.display['click-through']">
+              <el-radio-button label="all">
+                {{ $t("display.all-area") }}
               </el-radio-button>
-            </el-radio-group>
+              <el-radio-button label="transparent">
+                {{ $t("display.transparent-area") }}
+              </el-radio-button>
+            </el-radio-group> -->
+            <el-select v-model="appStore.config.display['click-through']">
+              <el-option :label="$t('display.all-area')" value="all" />
+              <el-option
+                :label="$t('display.transparent-area')"
+                value="transparent"
+              />
+            </el-select>
           </config-item>
-          <config-item label="覆盖于其他窗口上方">
+          <config-item :label="$t('display.show-area') + '(macOS)'">
+            <!-- <el-radio-group v-model="appStore.config.display['display-range']">
+              <el-radio-button label="singleDesktop">
+                {{ $t("display.single-desktop") }}
+              </el-radio-button>
+              <el-radio-button label="allDesktops">
+                {{ $t("display.all-desktops") }}
+              </el-radio-button>
+              <el-radio-button label="allWorkspaces">
+                {{ $t("display.all-workspaces") }}
+              </el-radio-button>
+            </el-radio-group> -->
+            <el-select v-model="appStore.config.display['display-range']">
+              <!-- 我感觉这里的element plus给我整懵了，填在label里面的东西其实却是value？ -->
+              <el-option
+                :label="$t('display.single-desktop')"
+                value="singleDesktop"
+              />
+              <el-option
+                :label="$t('display.all-desktops')"
+                value="allDesktops"
+              />
+              <el-option
+                :label="$t('display.all-workspaces')"
+                value="allWorkspaces"
+              />
+            </el-select>
+          </config-item>
+          <config-item :label="$t('display.always-on-top')">
             <el-switch
               v-model="appStore.config.display['keep-display-at-top']"
             />
           </config-item>
         </el-form-item>
-        <el-form-item label="有框窗口">
-          <config-item label="背景颜色">
+        <el-form-item :label="$t('display.windowed-display')">
+          <config-item :label="$t('display.background-color')">
             <el-color-picker
               v-model="appStore.config.display.background"
               show-alpha
@@ -67,8 +113,8 @@
           </config-item>
         </el-form-item>
         <!-- 虽然3D和2D分别有很多共有的配置，但实际使用时发现不同模型类型的最佳默认值存在较大差异，例如2D的显示范围，一般来讲spine模型更加小巧，而VRoid的默认轮廓线效果也很爆炸，因此这里都改成了独立的设置 -->
-        <el-form-item label="Live2D渲染">
-          <config-item label="宽度">
+        <el-form-item :label="$t('display.live2d-render')">
+          <config-item :label="$t('display.width-range')">
             <div class="hime-el-slicder--with-label">
               <span> 0% </span>
               <el-slider
@@ -83,7 +129,7 @@
               <span> 100% </span>
             </div>
           </config-item>
-          <config-item label="高度">
+          <config-item :label="$t('display.height-range')">
             <div class="hime-el-slicder--with-label">
               <span> 0% </span>
               <el-slider
@@ -98,12 +144,12 @@
               <span> 100% </span>
             </div>
           </config-item>
-          <config-item label="拖拽移动">
+          <config-item :label="$t('display.drag-to-move')">
             <el-switch v-model="appStore.config.display['live2d-draggable']" />
           </config-item>
         </el-form-item>
-        <el-form-item label="Spine渲染">
-          <config-item label="宽度">
+        <el-form-item :label="$t('display.spine-render')">
+          <config-item :label="$t('display.width-range')">
             <div class="hime-el-slicder--with-label">
               <span> 0% </span>
               <el-slider
@@ -118,7 +164,7 @@
               <span> 100% </span>
             </div>
           </config-item>
-          <config-item label="高度">
+          <config-item :label="$t('display.height-range')">
             <div class="hime-el-slicder--with-label">
               <span> 0% </span>
               <el-slider
@@ -133,34 +179,34 @@
               <span> 100% </span>
             </div>
           </config-item>
-          <config-item label="拖拽移动">
+          <config-item :label="$t('display.drag-to-move')">
             <el-switch v-model="appStore.config.display['spine-draggable']" />
           </config-item>
-          <config-item label="Alpha预乘">
+          <config-item :label="$t('display.premultiply-alpha')">
             <el-switch
               v-model="appStore.config.display['spine-premultiply-alpha']"
             />
           </config-item>
         </el-form-item>
-        <el-form-item label="MMD渲染">
-          <config-item label="轮廓线效果">
+        <el-form-item :label="$t('display.mmd-render')">
+          <config-item :label="$t('display.outline-effect')">
             <el-switch
               v-model="appStore.config.display['mmd-outline-effect']"
             />
           </config-item>
-          <config-item label="相机轨道控制">
+          <config-item :label="$t('display.camera-orbit-control')">
             <el-switch
               v-model="appStore.config.display['mmd-orbit-controls']"
             />
           </config-item>
         </el-form-item>
-        <el-form-item label="VRoid渲染">
-          <config-item label="轮廓线效果">
+        <el-form-item :label="$t('display.vroid-render')">
+          <config-item :label="$t('display.outline-effect')">
             <el-switch
               v-model="appStore.config.display['vroid-outline-effect']"
             />
           </config-item>
-          <config-item label="相机轨道控制">
+          <config-item :label="$t('display.camera-orbit-control')">
             <el-switch
               v-model="appStore.config.display['vroid-orbit-controls']"
             />
@@ -171,24 +217,30 @@
     <el-divider class="hime-el-divider" />
     <div class="display-option">
       <div class="display-option__state">
-        <span>展示器状态</span>
+        <span>{{ $t("display.display-window-state") }}</span>
         <el-tag
           effect="light"
           :type="appStore.displayWindowId === -1 ? 'warning' : ''"
         >
-          {{ appStore.displayWindowId !== -1 ? "已启动" : "未启动" }}
+          {{
+            appStore.displayWindowId !== -1
+              ? $t("display.launched")
+              : $t("display.not-launched")
+          }}
         </el-tag>
       </div>
       <div class="display-option__control">
         <el-button @click="launchDisplayWindow" plain>{{
-          appStore.displayWindowId !== -1 ? "重载" : "启动"
+          appStore.displayWindowId !== -1
+            ? $t("display.reload")
+            : $t("display.launch")
         }}</el-button>
         <el-button
           @click="closeDisplayWindow"
           type="danger"
           :disabled="appStore.displayWindowId === -1"
           plain
-          >关闭</el-button
+          >{{ $t("display.close") }}</el-button
         >
       </div>
     </div>
