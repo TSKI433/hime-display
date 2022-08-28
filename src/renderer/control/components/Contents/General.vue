@@ -3,19 +3,19 @@
     <hime-title-with-divider>{{ $t("menu.general") }}</hime-title-with-divider>
     <el-scrollbar height="100%">
       <el-form label-width="170px" class="hime-el-form--config">
-        <el-form-item label="启动应用">
-          <config-item label="打开控制面板">
+        <el-form-item :label="$t('general.when-launch')">
+          <config-item :label="$t('general.open-control-panel')">
             <el-switch
               v-model="appStore.config.general['open-control-at-launch']"
             />
           </config-item>
-          <config-item label="打开展示器">
+          <config-item :label="$t('general.open-display-window')">
             <el-switch
               v-model="appStore.config.general['open-display-at-launch']"
             />
           </config-item>
         </el-form-item>
-        <el-form-item label="语言">
+        <el-form-item :label="$t('general.language')">
           <el-select
             v-model="appStore.config.general.language"
             @change="changeLanguage"
@@ -28,24 +28,26 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="开发者工具">
+        <el-form-item :label="$t('general.developer-tools')">
           <!-- 配置项的样式被调整过了，这里懒得拉样式，整个div框起来算了 -->
           <div>
+            <el-button @click="openDevTool('control')">
+              {{ $t("general.control-panel") }}
+            </el-button>
             <el-button
               @click="openDevTool('display')"
               :disabled="appStore.displayWindowId === -1"
-              >展示器</el-button
+              >{{ $t("general.display-window") }}</el-button
             >
-            <el-button @click="openDevTool('control')">控制面板</el-button>
           </div>
         </el-form-item>
-        <el-form-item label="还原">
+        <el-form-item :label="$t('general.restore')">
           <el-popconfirm
-            title="确认要还原所有配置项吗？"
+            :title="$t('general.restore-all-config-confirm')"
             @confirm="resetAllConfig"
           >
             <template #reference>
-              <el-button>还原所有配置项</el-button>
+              <el-button>{{ $t("general.restore-all-config") }}</el-button>
             </template>
           </el-popconfirm>
         </el-form-item>
