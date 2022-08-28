@@ -2,10 +2,10 @@
   <div class="hime-content">
     <hime-title-with-divider>{{ $t("menu.model") }}</hime-title-with-divider>
     <el-form label-position="top" class="hime-el-form--large-label">
-      <el-form-item label="模型数据库">
+      <el-form-item :label="$t('model.model-db')">
         <el-input
           v-model="searchModelText"
-          placeholder="搜索模型名称"
+          :placeholder="$t('model.search-model')"
           clearable
           class="hime-el-input--model-search"
         />
@@ -20,14 +20,14 @@
         >
           <el-table-column type="index" width="60" align="center" />
           <el-table-column
-            label="名称"
+            :label="$t('model.name')"
             prop="name"
             width="280"
             show-overflow-tooltip
             sortable
           />
           <el-table-column
-            label="类型"
+            :label="$t('model.type')"
             :filters="[
               { text: 'Live2D', value: 'Live2D' },
               { text: 'MMD', value: 'MMD' },
@@ -48,7 +48,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="扩展名"
+            :label="$t('model.extension')"
             :filters="[
               { text: 'moc', value: 'moc' },
               { text: 'moc3', value: 'moc3' },
@@ -73,7 +73,7 @@
         <el-button
           @click="loadModelNow(currentModelInfo.value)"
           :disabled="appStore.displayWindowId === -1 || !modelTableSelected"
-          >载入当前模型</el-button
+          >{{ $t("model.load-selected-model") }}</el-button
         >
       </el-form-item>
     </el-form>
