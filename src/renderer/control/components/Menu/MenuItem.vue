@@ -26,7 +26,7 @@ const props = defineProps({
   svgIconName: String,
 });
 const itemNameFontSize = computed(() => {
-  if (["デイスプレー", "コントロール"].includes(props.itemName)) {
+  if (["ディスプレイ", "コントロール"].includes(props.itemName)) {
     return "0.6rem";
   }
   return "0.85rem";

@@ -29,7 +29,7 @@ export default {
   "outline-effect": "輪廓线エフェクト",
   "camera-orbit-control": "カメラ軌道控制",
   "vroid-render": "VRoidレンダー",
-  "display-window-state": "ディスプレイー状態",
+  "display-window-state": "ディスプレイ状態",
   launched: "起動済み",
   "not-launched": "未起動",
   reload: "リロード",
