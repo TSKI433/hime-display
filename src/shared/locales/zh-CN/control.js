@@ -72,5 +72,12 @@ export default {
     morph: "变形",
     "vrm-calculate": "VRM解算",
   },
-  capture: {},
+  capture: {
+    "capture-type": "捕捉类型",
+    "face-capture": "面部捕捉",
+    "holistic-capture": "全身捕捉",
+    "capture-control": "捕捉控制",
+    "start-capture": "启动捕捉",
+    "quit-capture": "退出捕捉",
+  },
 };

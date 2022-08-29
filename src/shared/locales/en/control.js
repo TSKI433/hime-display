@@ -72,5 +72,12 @@ export default {
     morph: "Morph",
     "vrm-calculate": "VRM Calculate",
   },
-  capture: {},
+  capture: {
+    "capture-type": "Capture Type",
+    "face-capture": "Face Capture",
+    "holistic-capture": "Holistic Capture",
+    "capture-control": "Capture Control",
+    "start-capture": "Start Capture",
+    "quit-capture": "Quit Capture",
+  },
 };

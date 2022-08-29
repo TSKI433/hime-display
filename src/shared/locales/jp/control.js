@@ -73,5 +73,12 @@ export default {
     morph: "モーフ",
     "vrm-calculate": "VRM計算",
   },
-  capture: {},
+  capture: {
+    "capture-type": "キャプチャタイプ",
+    "face-capture": "顔キャプチャ",
+    "holistic-capture": "ホリジカルキャプチャ",
+    "capture-control": "キャプチャコントロール",
+    "start-capture": "キャプチャ開始",
+    "quit-capture": "キャプチャ終了",
+  },
 };
