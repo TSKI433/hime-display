@@ -1,6 +1,6 @@
 <template>
   <config-item label="Parameter" label-position="top">
-    <config-item label="参数选择">
+    <config-item :label="$t('control.parameter.target-select')">
       <el-select
         v-model="selectedParameterId"
         @change="bindParameterId"
@@ -13,7 +13,10 @@
         />
       </el-select>
     </config-item>
-    <config-item label="参数调整" style="width: 100%">
+    <config-item
+      :label="$t('control.parameter.parameter-control')"
+      style="width: 100%"
+    >
       <el-slider
         v-model="parameterValue"
         :min="parameterInfo._parameterMinimumValues[selectedParameterIndex]"
@@ -25,13 +28,19 @@
     </config-item>
   </config-item>
   <el-divider style="margin: 12px 0" />
-  <config-item label="Part可见度" label-position="top">
-    <config-item label="部分选择">
+  <config-item
+    :label="$t('control.parameter.part-opacity')"
+    label-position="top"
+  >
+    <config-item :label="$t('control.parameter.target-select')">
       <el-select v-model="selectedPartId" @change="bindPartId" filterable>
         <el-option v-for="partId in partInfo" :label="partId" :value="partId" />
       </el-select>
     </config-item>
-    <config-item label="可见度调整" style="width: 100%">
+    <config-item
+      :label="$t('control.parameter.parameter-control')"
+      style="width: 100%"
+    >
       <el-slider
         v-model="partOpacity"
         :min="0"
@@ -44,13 +53,13 @@
     </config-item>
   </config-item>
   <el-divider style="margin: 12px 0" />
-  <config-item label="鼠标跟踪">
+  <config-item :label="$t('control.parameter.mouse-focus')">
     <el-switch v-model="trackMouse.value" />
   </config-item>
-  <config-item label="自动呼吸">
+  <config-item :label="$t('control.parameter.auto-breath')">
     <el-switch v-model="autoBreath.value" />
   </config-item>
-  <config-item label="自动眨眼">
+  <config-item :label="$t('control.parameter.auto-eye-blink')">
     <el-switch v-model="autoEyeBlink.value" />
   </config-item>
 </template>

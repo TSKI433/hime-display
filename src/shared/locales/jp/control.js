@@ -63,6 +63,15 @@ export default {
     "drag-motion-now": "ドラグモーション",
   },
   transfrom: {},
-  parameter: {},
+  parameter: {
+    "target-select": "ターゲット選択",
+    "parameter-control": "パラメータコントロール",
+    "part-opacity": "パーツ不透明度",
+    "mouse-focus": "マウスフォーカス",
+    "auto-breath": "自動的に呼吸",
+    "auto-eye-blink": "自動まばたき",
+    morph: "モーフ",
+    "vrm-calculate": "VRM計算",
+  },
   capture: {},
 };

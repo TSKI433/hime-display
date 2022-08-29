@@ -62,6 +62,15 @@ export default {
     "drag-motion-now": "当前拖动动画",
   },
   transfrom: {},
-  parameter: {},
+  parameter: {
+    "target-select": "目标选择",
+    "parameter-control": "参数控制",
+    "part-opacity": "Part可见度",
+    "mouse-focus": "鼠标跟踪",
+    "auto-breath": "自动呼吸",
+    "auto-eye-blink": "自动眨眼",
+    morph: "变形",
+    "vrm-calculate": "VRM解算",
+  },
   capture: {},
 };

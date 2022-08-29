@@ -62,6 +62,15 @@ export default {
     "drag-motion-now": "Drag Motion Now",
   },
   transfrom: {},
-  parameter: {},
+  parameter: {
+    "target-select": "Target Select",
+    "parameter-control": "Parameter Control",
+    "part-opacity": "Part Opacity",
+    "mouse-focus": "Mouse Focus",
+    "auto-breath": "Auto Breath",
+    "auto-eye-blink": "Auto Eye Blink",
+    morph: "Morph",
+    "vrm-calculate": "VRM Calculate",
+  },
   capture: {},
 };

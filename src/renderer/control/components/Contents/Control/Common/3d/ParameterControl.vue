@@ -1,6 +1,6 @@
 <template>
-  <config-item label="变形" label-position="top">
-    <config-item label="目标选择">
+  <config-item :label="$t('control.parameter.morph')" label-position="top">
+    <config-item :label="$t('control.parameter.target-select')">
       <el-select
         v-model="selectedMorphName"
         @change="bindMorphTarget"
@@ -13,7 +13,10 @@
         />
       </el-select>
     </config-item>
-    <config-item label="参数调整" style="width: 100%">
+    <config-item
+      :label="$t('control.parameter.parameter-control')"
+      style="width: 100%"
+    >
       <el-slider
         v-model="morphWeight"
         :min="0"
@@ -26,7 +29,7 @@
   </config-item>
   <template v-if="modelType == 'VRoid'">
     <el-divider style="margin: 12px 0" />
-    <config-item label="VRM演算">
+    <config-item :label="$t('control.parameter.vrm-calculate')">
       <el-switch v-model="vrmUpdate.value" />
     </config-item>
   </template>
