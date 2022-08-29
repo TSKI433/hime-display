@@ -1,7 +1,10 @@
 <template>
   <el-scrollbar max-height="400px">
     <el-collapse class="hime-control-collapse">
-      <el-collapse-item title="动作数据库" name="motionDatabase">
+      <el-collapse-item
+        :title="$t('control.animation.motion-db')"
+        name="motionDatabase"
+      >
         <el-table
           :border="true"
           :data="appStore.database.motion3D"
@@ -12,12 +15,15 @@
         >
           <el-table-column type="index" width="60" align="center" />
           <el-table-column
-            label="名称"
+            :label="$t('control.animation.motion-name')"
             prop="name"
             show-overflow-tooltip
             width="300"
           />
-          <el-table-column label="扩展名" align="center">
+          <el-table-column
+            :label="$t('control.animation.extension-name')"
+            align="center"
+          >
             <template #default="props">
               <el-tag effect="light">
                 {{ props.row.extensionName }}
@@ -26,7 +32,10 @@
           </el-table-column>
         </el-table>
       </el-collapse-item>
-      <el-collapse-item title="音频数据库" name="audioDatabase">
+      <el-collapse-item
+        :title="$t('control.animation.audio-db')"
+        name="audioDatabase"
+      >
         <el-table
           :data="appStore.database.audio3D"
           :border="true"
@@ -37,12 +46,15 @@
         >
           <el-table-column type="index" width="60" align="center" />
           <el-table-column
-            label="名称"
+            :label="$t('control.animation.audio-name')"
             prop="name"
             show-overflow-tooltip
             width="300"
           />
-          <el-table-column label="扩展名" align="center">
+          <el-table-column
+            :label="$t('control.animation.extension-name')"
+            align="center"
+          >
             <template #default="props">
               <el-tag effect="light">
                 {{ props.row.extensionName }}
@@ -52,44 +64,52 @@
         </el-table>
       </el-collapse-item>
     </el-collapse>
-    <config-item label="音频延时">
+    <config-item :label="$t('control.animation.audio-delay')">
       <el-input-number
         v-model="delayTime"
         :disabled="!audioTableSelected"
       ></el-input-number>
     </config-item>
-    <config-item label="物理模拟" v-if="modelType == 'MMD'">
+    <config-item
+      :label="$t('control.animation.physics-simulation')"
+      v-if="modelType == 'MMD'"
+    >
       <el-switch v-model="physicsSimulation.value" />
     </config-item>
     <config-item
-      label="mixamo腿部转译模式（需载入前设定）"
+      :label="$t('control.animation.mixamo-convert-mode')"
       v-if="modelType == 'MMD'"
     >
       <el-select v-model="mixamoLegTranslateMode.value">
-        <el-option label="IK解算" value="ik" />
-        <el-option label="旋转解算" value="rotate" />
+        <el-option :label="$t('control.animation.ik-calculate')" value="ik" />
+        <el-option
+          :label="$t('control.animation.rotate-calculate')"
+          value="rotate"
+        />
       </el-select>
     </config-item>
-    <config-item label="循环播放（需载入前设定）">
+    <config-item :label="$t('control.animation.loop-play')">
       <el-switch v-model="animationLoop" />
     </config-item>
-    <config-item label="加载">
-      <el-button @click="playMotion" :disabled="!motionTableSelected"
-        >载入选中动画</el-button
-      >
+    <config-item :label="$t('control.animation.load')">
+      <el-button @click="playMotion" :disabled="!motionTableSelected">{{
+        $t("control.animation.load-motion")
+      }}</el-button>
       <el-button
         @click="playMotionWithAudio"
         :disabled="!motionTableSelected || !audioTableSelected"
-        >载入选中动画及音频</el-button
+        >{{ $t("control.animation.load-motion-and-audio") }}</el-button
       >
     </config-item>
-    <config-item label="控制">
+    <config-item :label="$t('control.animation.control')">
       <el-button @click="setMotionState" :disabled="!motionLoaded">{{
-        motionPlaying ? "暂停" : "播放"
+        motionPlaying
+          ? $t("control.animation.pause")
+          : $t("control.animation.play")
       }}</el-button>
-      <el-button @click="quitAnimationPlay" :disabled="!motionLoaded"
-        >退出动画播放</el-button
-      >
+      <el-button @click="quitAnimationPlay" :disabled="!motionLoaded">{{
+        $t("control.animation.quit-motion")
+      }}</el-button>
     </config-item>
   </el-scrollbar>
 </template>

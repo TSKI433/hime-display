@@ -1,6 +1,9 @@
 <template>
   <el-scrollbar max-height="400px">
-    <config-item label="动作数据库" label-position="top">
+    <config-item
+      :label="$t('control.animation.motion-db')"
+      label-position="top"
+    >
       <el-table
         :border="true"
         :data="motionInfo"
@@ -11,21 +14,29 @@
         tooltip-effect="light"
       >
         <el-table-column type="index" width="60" align="center" />
-        <el-table-column label="动作名称" prop="name" align="center" />
         <el-table-column
-          label="时长"
+          :label="$t('control.animation.motion-name')"
+          prop="name"
+          align="center"
+        />
+        <el-table-column
+          :label="$t('control.animation.motion-duration')"
           prop="duration"
           width="200"
           align="center"
         />
       </el-table>
     </config-item>
-    <config-item label="循环播放（需载入前设定）">
+    <config-item :label="$t('control.animation.loop-play')">
       <el-switch v-model="animationLoop" />
     </config-item>
-    <config-item label="操作">
-      <el-button @click="loadMotionNow"> 载入当前动作 </el-button>
-      <el-button @click="quitMotion"> 退出动画播放 </el-button>
+    <config-item :label="$t('control.animation.operate')">
+      <el-button @click="loadMotionNow">
+        {{ $t("control.animation.load-motion") }}
+      </el-button>
+      <el-button @click="quitMotion">
+        {{ $t("control.animation.quit-motion") }}
+      </el-button>
     </config-item>
     <el-divider style="margin: 12px 0" />
     <event-animation

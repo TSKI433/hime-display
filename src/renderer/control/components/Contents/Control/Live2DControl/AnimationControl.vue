@@ -11,17 +11,24 @@
   >
     <el-table-column type="index" width="60" align="center" />
     <el-table-column
-      label="名称"
+      :label="$t('control.animation.motion-name')"
       show-overflow-tooltip
       prop="name"
       align="center"
     >
     </el-table-column>
-    <el-table-column label="动作组" prop="group" width="200" align="center">
+    <el-table-column
+      :label="$t('control.animation.motion-group')"
+      prop="group"
+      width="200"
+      align="center"
+    >
     </el-table-column>
   </el-table>
-  <config-item label="操作">
-    <el-button @click="loadMotionNow"> 载入当前动作 </el-button>
+  <config-item :label="$t('control.animation.operate')">
+    <el-button @click="loadMotionNow">
+      {{ $t("control.animation.load-motion") }}
+    </el-button>
   </config-item>
   <el-divider style="margin: 12px 0" />
   <event-animation

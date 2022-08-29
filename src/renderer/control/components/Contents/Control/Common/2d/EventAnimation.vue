@@ -1,22 +1,26 @@
 <template>
-  <config-item label="事件动画">
+  <config-item :label="$t('control.animation.event-motion')">
     <el-select v-model="eventSelected" style="width: 80px; margin-right: 12px">
       <el-option value="click" />
       <el-option value="drag" />
     </el-select>
-    <el-button @click="setEventAnimation('none')"> 无动画 </el-button>
-    <el-button @click="setEventAnimation('random')"> 随机动画 </el-button>
+    <el-button @click="setEventAnimation('none')">
+      {{ $t("control.animation.no-motion") }}
+    </el-button>
+    <el-button @click="setEventAnimation('random')">
+      {{ $t("control.animation.random-motion") }}
+    </el-button>
     <el-button
       @click="setEventAnimation('database')"
       :disabled="!motionTableSelected"
     >
-      列表选中动画
+      {{ $t("control.animation.selected-motion") }}
     </el-button>
   </config-item>
-  <config-item label="当前点击动画">
+  <config-item :label="$t('control.animation.click-motion-now')">
     {{ clickAnimation.label }}
   </config-item>
-  <config-item label="当前拖拽动画">
+  <config-item :label="$t('control.animation.drag-motion-now')">
     {{ dragAnimation.label }}
   </config-item>
 </template>
@@ -24,9 +28,9 @@
 <script setup>
 import ConfigItem from "@control/components/Common/ConfigItem.vue";
 import { useAppStore } from "@control/store/app";
+import { reactive, toRaw, ref } from "vue";
 const appStore = useAppStore();
 const ipcAPI = window.nodeAPI.ipc;
-import { reactive, toRaw, ref } from "vue";
 const props = defineProps({
   currentMotion: Object,
   motionTableSelected: Boolean,
