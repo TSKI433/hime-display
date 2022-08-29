@@ -1,5 +1,5 @@
 <template>
-  <config-item label="x坐标">
+  <config-item label="x">
     <el-input-number
       :precision="2"
       :step="10"
@@ -8,7 +8,7 @@
     >
     </el-input-number>
   </config-item>
-  <config-item label="y坐标">
+  <config-item label="y">
     <el-input-number
       :precision="2"
       :step="10"
@@ -17,7 +17,7 @@
     >
     </el-input-number>
   </config-item>
-  <config-item label="缩放">
+  <config-item :label="$t('control.transform.scale')">
     <el-input-number
       :precision="2"
       :step="0.01"
@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import { reactive, watch, toRaw } from "vue";
+import { reactive, toRaw } from "vue";
 import ConfigItem from "@control/components/Common/ConfigItem.vue";
 import { useAppStore } from "@control/store/app";
 const appStore = useAppStore();

@@ -62,7 +62,13 @@ export default {
     "click-motion-now": "クリックモーション",
     "drag-motion-now": "ドラグモーション",
   },
-  transfrom: {},
+  transform: {
+    "tree-select": "ツリー選択",
+    "auto-fill-select": "自動充填選択",
+    position: "ポジション",
+    rotation: "ローテーション",
+    scale: "スケール",
+  },
   parameter: {
     "target-select": "ターゲット選択",
     "parameter-control": "パラメータコントロール",

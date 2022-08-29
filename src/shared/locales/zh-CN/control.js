@@ -61,7 +61,13 @@ export default {
     "click-motion-now": "当前点击动画",
     "drag-motion-now": "当前拖动动画",
   },
-  transfrom: {},
+  transform: {
+    "tree-select": "树状选择",
+    "auto-fill-select": "自动填充选择",
+    position: "位置",
+    rotation: "旋转",
+    scale: "缩放",
+  },
   parameter: {
     "target-select": "目标选择",
     "parameter-control": "参数控制",

@@ -61,7 +61,13 @@ export default {
     "click-motion-now": "Click Motion Now",
     "drag-motion-now": "Drag Motion Now",
   },
-  transfrom: {},
+  transform: {
+    "tree-select": "Tree Select",
+    "auto-fill-select": "Auto Fill Select",
+    position: "Position",
+    rotation: "Rotation",
+    scale: "Scale",
+  },
   parameter: {
     "target-select": "Target Select",
     "parameter-control": "Parameter Control",

@@ -1,5 +1,5 @@
 <template>
-  <config-item label="树状选择">
+  <config-item :label="$t('control.transform.tree-select')">
     <el-tree-select
       :data="[transformInfo.tree]"
       check-strictly
@@ -7,7 +7,7 @@
     />
   </config-item>
   <!-- 我去，这几天这么巧的吗，又碰到一个Element Plus刚刚修复了的bug：https://github.com/element-plus/element-plus/issues/8542 -->
-  <config-item label="预测列表选择">
+  <config-item :label="$t('control.transform.auto-fill-select')">
     <el-select v-model="nodeIdNow" filterable>
       <el-option
         v-for="transformItem in transformInfo.list"

@@ -2,7 +2,7 @@
   <!-- 遇到一个坑，如果template下级有多个元素的话，下方的input事件就会无法正确向上传递 -->
   <div class="hime-transform--3d">
     <config-item
-      label="位置"
+      :label="$t('control.transform.position')"
       label-position="top"
       class="hime-transform--3d__item"
     >
@@ -17,7 +17,7 @@
       </config-item>
     </config-item>
     <config-item
-      label="欧拉旋转"
+      :label="$t('control.transform.rotation')"
       label-position="top"
       class="hime-transform--3d__item"
     >
@@ -31,7 +31,7 @@
       </config-item>
     </config-item>
     <config-item
-      label="缩放"
+      :label="$t('control.transform.scale')"
       label-position="top"
       class="hime-transform--3d__item"
     >
