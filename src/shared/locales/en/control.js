@@ -7,6 +7,7 @@ export default {
   "motion-capture": "Motion Capture",
   "parameter-control": "Parameter Control",
   "load-a-model-to-control": "Load a model to control",
+  "control-load-error": "Error occurred",
   description: {
     name: "Name",
     "extension-name": "Extension Name",

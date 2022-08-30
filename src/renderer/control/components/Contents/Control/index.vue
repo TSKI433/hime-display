@@ -10,7 +10,11 @@
     >
       <component :is="controlComponentNow"></component>
     </template>
-    <template v-else> {{ $t("control.load-a-model-to-control") }} </template>
+    <template v-else>
+      <div class="hime-model-control--blank">
+        {{ $t("control.load-a-model-to-control") }}
+      </div>
+    </template>
   </div>
 </template>
 
@@ -44,5 +48,14 @@ watch(
 <style lang="scss">
 .hime-model-control {
   flex: 1;
+}
+.hime-model-control--blank {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: 2rem;
+  color: var(--el-text-color-placeholder);
+  height: 100%;
 }
 </style>

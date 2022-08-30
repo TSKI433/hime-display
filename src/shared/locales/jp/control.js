@@ -7,7 +7,8 @@ export default {
   "camera-parameter": "カメラパラメータ",
   "motion-capture": "モーションキャプチャ",
   "parameter-control": "パラメータコントロール",
-  "load-a-model-to-control": "モデルを読み込む",
+  "load-a-model-to-control": "モデルを読み込んでコントロールする",
+  "control-load-error": "エラーが発生しました",
   description: {
     name: "モデル名",
     "extension-name": "拡張子名",

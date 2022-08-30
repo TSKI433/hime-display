@@ -1,4 +1,4 @@
-<template>数据载入错误</template>
+<template>{{ $t("control.control-load-error") }}</template>
 
 <script setup></script>
 
