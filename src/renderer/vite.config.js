@@ -23,7 +23,7 @@ export default defineConfig({
     }),
     createSvgIconsPlugin({
       // 指定需要缓存的图标文件夹
-      iconDirs: [resolve(__dirname, "control/icons")],
+      iconDirs: [resolve(__dirname, "control/assets/icons")],
       // 指定symbolId格式
       symbolId: "icon-[dir]-[name]",
     }),

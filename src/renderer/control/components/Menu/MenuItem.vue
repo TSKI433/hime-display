@@ -1,12 +1,12 @@
 <template>
   <div
     class="menu-item"
-    :class="{ active: appStore.ui.activeMenuItem === svgIconName }"
-    @click="appStore.ui.activeMenuItem = svgIconName"
+    :class="{ active: appStore.ui.activeMenuItem === menuItem }"
+    @click="appStore.ui.activeMenuItem = menuItem"
   >
-    <svg-icon :name="svgIconName"></svg-icon>
+    <svg-icon :name="'sf-' + menuItem"></svg-icon>
     <div :style="{ 'font-size': itemNameFontSize }">
-      {{ itemName }}
+      {{ $t("menu." + menuItem) }}
     </div>
   </div>
 </template>
@@ -14,6 +14,8 @@
 <script setup>
 import SvgIcon from "@control/components/Common/SvgIcon.vue";
 import { useAppStore } from "@control/store/app";
+import { useTranslation } from "i18next-vue";
+const { i18next } = useTranslation();
 // 日语的菜单有部分片假名过长导致折行，本想采用计算是否换行以对字体进行缩小，但是这东西意外的难以获取，所以暂时改为直接判断文本内容的方式吧
 // import { ref, onMounted } from "vue";
 // const itemNameRef = ref();
@@ -22,11 +24,14 @@ import { useAppStore } from "@control/store/app";
 // });
 import { computed } from "vue";
 const props = defineProps({
-  itemName: String,
-  svgIconName: String,
+  menuItem: String,
 });
 const itemNameFontSize = computed(() => {
-  if (["ディスプレイ", "コントロール"].includes(props.itemName)) {
+  if (
+    ["ディスプレイ", "コントロール"].includes(
+      i18next.t("menu." + props.menuItem)
+    )
+  ) {
     return "0.6rem";
   }
   return "0.85rem";
@@ -44,14 +49,14 @@ const appStore = useAppStore();
   border-radius: 10px;
   padding: 8px 0;
   div {
-    color: $menu-color;
+    color: var(--el-text-color-regular);
   }
   svg {
     width: 24px;
     height: 24px;
     margin-bottom: 3px;
     use {
-      fill: $menu-color;
+      fill: var(--el-text-color-regular);
     }
   }
 }

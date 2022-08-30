@@ -3,8 +3,7 @@
     <div class="menu">
       <hime-menu-item
         v-for="menuItem in menuItems"
-        :item-name="$t('menu.' + menuItem)"
-        :svg-icon-name="menuItem"
+        :menu-item="menuItem"
       ></hime-menu-item>
     </div>
   </el-aside>

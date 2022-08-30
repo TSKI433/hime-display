@@ -24,7 +24,6 @@
 //   // do not use same name, it will override.
 //   $colors: $--colors,
 // );
-$menu-color:#686868;
 $menu-background-color-active:#9993;
 @forward 'element-plus/theme-chalk/src/common/var.scss' with (
   $colors: (

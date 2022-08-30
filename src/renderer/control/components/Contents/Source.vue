@@ -63,7 +63,7 @@
                   <!-- 发现props里有个文档里没说的expanded属性，正好可以拿来用 -->
                   <svg-icon-el-button
                     size="small"
-                    :name="props.expanded ? 'close' : 'edit'"
+                    :name="'sf-' + (props.expanded ? 'close' : 'edit')"
                     @click="expandRow(props.row)"
                   ></svg-icon-el-button>
                 </template>
@@ -79,7 +79,7 @@
                 <template #default>
                   <svg-icon-el-button
                     size="small"
-                    name="source"
+                    name="sf-source"
                     @click="showInFolder(props.row.sourcePath)"
                   ></svg-icon-el-button>
                 </template>
@@ -91,7 +91,7 @@
                 <template #default>
                   <svg-icon-el-button
                     size="small"
-                    name="refresh"
+                    name="sf-refresh"
                     @click="loadFromSourcePath(props.row)"
                   ></svg-icon-el-button>
                 </template>
@@ -108,7 +108,7 @@
                       <template #default>
                         <svg-icon-el-button
                           size="small"
-                          name="delete"
+                          name="sf-delete"
                         ></svg-icon-el-button>
                       </template>
                       <template #content>
