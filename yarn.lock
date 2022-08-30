@@ -271,10 +271,10 @@
   resolved "https://registry.nlark.com/@types/verror/download/@types/verror-1.10.4.tgz#805c0612b3a0c124cf99f517364142946b74ba3b"
   integrity sha1-gFwGErOgwSTPmfUXNkFClGt0ujs=
 
-"@types/web-bluetooth@^0.0.14":
-  version "0.0.14"
-  resolved "https://registry.npmmirror.com/@types/web-bluetooth/-/web-bluetooth-0.0.14.tgz#94e175b53623384bff1f354cdb3197a8d63cdbe5"
-  integrity sha512-5d2RhCard1nQUC3aHcq/gHzWYO6K0WJmAbjO7mQJgCQKtZpgXxv1rOM6O/dBDhDYYVutk1sciOgNSe+5YyfM8A==
+"@types/web-bluetooth@^0.0.15":
+  version "0.0.15"
+  resolved "https://registry.npmmirror.com/@types/web-bluetooth/-/web-bluetooth-0.0.15.tgz#d60330046a6ed8a13b4a53df3813c44942ebdf72"
+  integrity sha512-w7hEHXnPMEZ+4nGKl/KDRVpxkwYxYExuHOYXyzIzCDzEZ9ZCGMAewulr9IqJu2LR4N37fcnb1XVeuZ09qgOxhA==
 
 "@types/yargs-parser@*":
   version "20.2.0"
@@ -388,25 +388,25 @@
   resolved "https://registry.npmmirror.com/@vue/shared/-/shared-3.2.37.tgz#8e6adc3f2759af52f0e85863dfb0b711ecc5c702"
   integrity sha512-4rSJemR2NQIo9Klm1vabqWjD8rs/ZaJSzMxkMNeJS6lHiUjjUeYFbooN19NgFjztubEKh3WlZUeOLVdbbUWHsw==
 
-"@vueuse/core@^8.7.5":
-  version "8.9.0"
-  resolved "https://registry.npmmirror.com/@vueuse/core/-/core-8.9.0.tgz#48123dadf9fd808619a46cad3056a91414f2adeb"
-  integrity sha512-eKWehF6gsiLYxnYM/1xgDu16bKED7AWvkk56JIFNQes8OKgktr3Jc1wUy8UWIulrnwCXICUu9YUo+Wkq4r2JNw==
+"@vueuse/core@^9.1.0":
+  version "9.1.1"
+  resolved "https://registry.npmmirror.com/@vueuse/core/-/core-9.1.1.tgz#a5c09c33ccee58cfd53bc3ec2d5a0d304155529e"
+  integrity sha512-QfuaNWRDMQcCUwXylCyYhPC3ScS9Tiiz4J0chdwr3vOemBwRToSywq8MP+ZegKYFnbETzRY8G/5zC+ca30wrRQ==
   dependencies:
-    "@types/web-bluetooth" "^0.0.14"
-    "@vueuse/metadata" "8.9.0"
-    "@vueuse/shared" "8.9.0"
+    "@types/web-bluetooth" "^0.0.15"
+    "@vueuse/metadata" "9.1.1"
+    "@vueuse/shared" "9.1.1"
     vue-demi "*"
 
-"@vueuse/metadata@8.9.0":
-  version "8.9.0"
-  resolved "https://registry.npmmirror.com/@vueuse/metadata/-/metadata-8.9.0.tgz#09a3b9768ffdba6816db7d86463c4f404bbe6240"
-  integrity sha512-pjkIbQgJPRUrxK5/iXVKQFGC+OhJ+Vd6fhBsdwgj+NNJEHUotRliYymwdvhnEke/o+kkulT0xMvoK19nyPoiMw==
+"@vueuse/metadata@9.1.1":
+  version "9.1.1"
+  resolved "https://registry.npmmirror.com/@vueuse/metadata/-/metadata-9.1.1.tgz#b3fe4b97e62096f7566cd8eb107c503998b2c9a6"
+  integrity sha512-XZ2KtSW+85LLHB/IdGILPAtbIVHasPsAW7aqz3BRMzJdAQWRiM/FGa1OKBwLbXtUw/AmjKYFlZJo7eOFIBXRog==
 
-"@vueuse/shared@8.9.0":
-  version "8.9.0"
-  resolved "https://registry.npmmirror.com/@vueuse/shared/-/shared-8.9.0.tgz#8827b36fe82a434a5789c9da866c51c37ac70d44"
-  integrity sha512-Pmu3Fopk/JJjN8b90uQuFrVCc/RPcSA/0zDFRTyn3YIhoB5ESna/1Sac5WZxK+n82g/ERXHHQTetGI9yxEdPfA==
+"@vueuse/shared@9.1.1":
+  version "9.1.1"
+  resolved "https://registry.npmmirror.com/@vueuse/shared/-/shared-9.1.1.tgz#811f47629e281a19013ae6dcdf11ed3e1e91e023"
+  integrity sha512-c+IfcOYmHiHqoEa3ED1Tbpue5GHmoUmTp8PtO4YbczthtY155Rt6DmWhjxMLXBF1Bcidagxljmp/7xtAzEHXLw==
   dependencies:
     vue-demi "*"
 
@@ -1485,10 +1485,10 @@ elegant-spinner@^1.0.1:
   resolved "https://registry.npm.taobao.org/elegant-spinner/download/elegant-spinner-1.0.1.tgz#db043521c95d7e303fd8f345bedc3349cfb0729e"
   integrity sha1-2wQ1IcldfjA/2PNFvtwzSc+wcp4=
 
-element-plus@2.2.8:
-  version "2.2.8"
-  resolved "https://registry.npmmirror.com/element-plus/-/element-plus-2.2.8.tgz#6bba6285c20d8bea42247977d8f605611fc2da93"
-  integrity sha512-+cubFh1rgeGcc2LeBm7hv/1BKFJre/LIIdRntm9OLaIhysCxigjEwcxk9gbVT4KsbcjmoqZUr4/mwhIhQV6mvw==
+element-plus@2.2.15:
+  version "2.2.15"
+  resolved "https://registry.npmmirror.com/element-plus/-/element-plus-2.2.15.tgz#862bb6ecbd15b2d82d79dcf56bbbc30010771132"
+  integrity sha512-SMIx8xKB1YawT9JocyFhbs3Av2rXFfxrCVTLMYS0DK0xnW+fKvwjZngLfwF6MyRzXIuzNW17XFtu0iP3tlJHbA==
   dependencies:
     "@ctrl/tinycolor" "^3.4.1"
     "@element-plus/icons-vue" "^2.0.6"
@@ -1496,7 +1496,7 @@ element-plus@2.2.8:
     "@popperjs/core" "npm:@sxzz/popperjs-es@^2.11.7"
     "@types/lodash" "^4.14.182"
     "@types/lodash-es" "^4.17.6"
-    "@vueuse/core" "^8.7.5"
+    "@vueuse/core" "^9.1.0"
     async-validator "^4.2.5"
     dayjs "^1.11.3"
     escape-html "^1.0.3"
@@ -1504,7 +1504,7 @@ element-plus@2.2.8:
     lodash-es "^4.17.21"
     lodash-unified "^1.0.2"
     memoize-one "^6.0.0"
-    normalize-wheel-es "^1.1.2"
+    normalize-wheel-es "^1.2.0"
 
 emoji-regex@^7.0.1:
   version "7.0.3"
@@ -3159,10 +3159,10 @@ normalize-url@^4.1.0:
   resolved "https://registry.nlark.com/normalize-url/download/normalize-url-4.5.1.tgz#0dd90cf1288ee1d1313b87081c9a5932ee48518a"
   integrity sha1-DdkM8SiO4dExO4cIHJpZMu5IUYo=
 
-normalize-wheel-es@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.npmmirror.com/normalize-wheel-es/-/normalize-wheel-es-1.1.2.tgz#285e43676a62d687bf145e33452ea6be435162d0"
-  integrity sha512-scX83plWJXYH1J4+BhAuIHadROzxX0UBF3+HuZNY2Ks8BciE7tSTQ+5JhTsvzjaO0/EJdm4JBGrfObKxFf3Png==
+normalize-wheel-es@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.npmmirror.com/normalize-wheel-es/-/normalize-wheel-es-1.2.0.tgz#0fa2593d619f7245a541652619105ab076acf09e"
+  integrity sha512-Wj7+EJQ8mSuXr2iWfnujrimU35R2W4FAErEyTmJoJ7ucwTn2hOUSsRehMb5RSYkxXGTM7Y9QpvPmp++w5ftoJw==
 
 npm-conf@^1.1.3:
   version "1.1.3"
