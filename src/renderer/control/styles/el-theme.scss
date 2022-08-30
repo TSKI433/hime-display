@@ -1,7 +1,7 @@
 // 颜色主题配置预留
 // $--colors: (
 //   "primary": (
-//     "base": green,
+//     "base": purple,
 //   ),
 //   "success": (
 //     "base": #21ba45,
@@ -24,3 +24,36 @@
 //   // do not use same name, it will override.
 //   $colors: $--colors,
 // );
+$menu-color:#686868;
+$menu-background-color-active:#9993;
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+  $colors: (
+    'primary': (
+      'base': #20d7cb,
+    ),
+  ),
+);
+// 这都什么坑啊，给我坑死了，之前一直无法正确的配置深色模式的主题色，研究了好久
+// 本来就对scss和element-plus，以及vite对scss的解析机制不是很熟悉，然后人就直接傻了
+// 之前跟着element-plus文档尝试使用@forward更改element-plus/theme-chalk/src/dark/var.scss主题色一直在报错
+// [vite] Internal server error: This variable is available from multiple global modules.
+// 大概能猜到是变量冲突了，但是根本就不知道该怎么做
+
+// 目前大概理解了element-plus深色模式的文件安排：
+// element-plus/theme-chalk/dark/css-vars.css：使用scss生成的样式表，显然无法使用scss变量进行配置
+// element-plus/theme-chalk/src/dark/var.scss：用于生成深色模式使用的scss变量
+// element-plus/theme-chalk/src/dark/css-vars.scss：真正生成深色模式css样式表的文件
+
+// 而且在main.js里面使用import导入scss的话，好像此文件的配置无法对其产生影响，vite里面是怎么做的就不得而知了
+@use "element-plus/theme-chalk/src/dark/css-vars.scss" as *;
+
+// 错误操作如下：
+// @use "./dark.scss" as *;
+// @forward 'element-plus/theme-chalk/src/dark/var.scss' with (
+//   $colors: (
+//     'primary': (
+//       'base': purple,
+//     ),
+//   ),
+// );
+// @use "element-plus/theme-chalk/dark/css-vars.css" as *;

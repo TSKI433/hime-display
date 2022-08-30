@@ -15,11 +15,10 @@ export default defineConfig({
     }),
     Components({
       resolvers: [
-        ElementPlusResolver(),
+        ElementPlusResolver({
+          importStyle: "sass",
+        }),
         // 颜色主题配置预留
-        //   {
-        //   importStyle: "sass",
-        // }
       ],
     }),
     createSvgIconsPlugin({
@@ -54,8 +53,8 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         // 颜色主题配置预留
-        // additionalData: `@use "@control/styles/el-theme.scss" as *;`
-        additionalData: `@use "@control/styles/Variables.scss" as *;`,
+        additionalData: `@use "@control/styles/el-theme.scss" as *;`,
+        // additionalData: `@use "@control/styles/Variables.scss" as *;`,
       },
     },
   },
