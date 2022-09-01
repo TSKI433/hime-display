@@ -6,13 +6,12 @@ const builder = require("electron-builder");
 const options = {
   targets: builder.Platform.WINDOWS.createTarget(),
   config: {
-    productName: "electron-vite",
-    appId: "com.example.yourapp",
+    productName: "Hime Display",
     directories: {
       output: "build",
     },
     files: ["dist/renderer/**/*", "dist/main/**/*"],
-    asar: false,
+    // asar: false,
     dmg: {
       contents: [
         {
@@ -29,7 +28,7 @@ const options = {
       ],
     },
     mac: {
-      icon: "public/icons/icon.icns",
+      icon: "public/icons/icon.png",
       extendInfo: {
         // 现在的macOS应用想要访问摄像机等权限必须在此声明，i18n我是没本事做到这儿来了，因此就用英文了
         NSCameraUsageDescription:
@@ -37,8 +36,15 @@ const options = {
         "com.apple.security.device.camera": true,
       },
     },
+    nsis: {
+      oneClick: false,
+      allowElevation: true,
+      allowToChangeInstallationDirectory: true,
+      createDesktopShortcut: true,
+      createStartMenuShortcut: false,
+    },
     win: {
-      icon: "public/icons/icon.ico",
+      icon: "public/icons/icon.png",
       target: [
         {
           target: "nsis",
@@ -46,9 +52,9 @@ const options = {
         },
       ],
     },
-    linux: {
-      icon: "public/icons",
-    },
+    // linux: {
+    //   icon: "public/icons",
+    // },
   },
 };
 
