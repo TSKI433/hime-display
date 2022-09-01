@@ -33,6 +33,8 @@ export default {
     author: "作者",
     "sexual-ussage-name": "エロい使い",
     "violent-ussage-name": "暴力使い",
+    "spine-license":
+      "spine-runtimes Licenseによると、spineモデルをロードする前に、授权を取得するのを確認してください",
   },
   animation: {
     "motion-db": "モーションデータベース",

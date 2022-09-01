@@ -32,6 +32,8 @@ export default {
     author: "作者",
     "sexual-ussage-name": "色情用途",
     "violent-ussage-name": "暴力用途",
+    "spine-license":
+      "根据spine-runtimes License，用户在加载spine模型前请确保已经取得授权",
   },
   animation: {
     "motion-db": "动作数据库",

@@ -32,6 +32,8 @@ export default {
     author: "Author",
     "sexual-ussage-name": "Sexual Usage Name",
     "violent-ussage-name": "Violent Usage Name",
+    "spine-license":
+      "accoding to spine-runtimes License, you should get the authorization before loading the spine model",
   },
   animation: {
     "motion-db": "Motion Database",

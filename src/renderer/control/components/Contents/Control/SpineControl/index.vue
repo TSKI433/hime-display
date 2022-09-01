@@ -2,11 +2,23 @@
   <div class="hime-model-control">
     <el-tabs type="border-card">
       <el-tab-pane :label="$t(`control.model-description`)">
-        <model-description
+        <template
           v-if="controlStore.modelControlInfo?.description !== undefined"
-          :description="controlStore.modelControlInfo.description"
         >
-        </model-description>
+          <model-description
+            :description="controlStore.modelControlInfo.description"
+          >
+          </model-description>
+          <div
+            style="
+              color: var(--el-text-color-secondary);
+              margin: 1rem auto 0;
+              width: 95%;
+            "
+          >
+            {{ $t(`control.description.spine-license`) }}
+          </div>
+        </template>
         <template v-else>
           <control-load-error></control-load-error>
         </template>
