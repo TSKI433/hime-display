@@ -136,6 +136,16 @@ export class MmdManager extends ModelManager3D {
         manager.animationManager?.helper.enable("physics", physicsSimulation);
       },
       mixamoLegTranslateMode: "ik",
+      _trackMouse: true,
+      get trackMouse() {
+        return this._trackMouse;
+      },
+      set trackMouse(value) {
+        this._trackMouse = value;
+        if (!value) {
+          manager.mouseFocusHelper.object.rotation.set(0, 0, 0);
+        }
+      },
     };
   }
   _initMouceFocusHelper() {
@@ -198,7 +208,11 @@ export class MmdManager extends ModelManager3D {
       this.animationManager.update();
     }
     // 播放动画的时候模型还盯着鼠标看，转身都不带扭头的那效果……我实在是看不下去了
-    if (this.animationManager === null && this.captureManagerNow === null) {
+    if (
+      this.instantConfig?.trackMouse &&
+      this.animationManager === null &&
+      this.captureManagerNow === null
+    ) {
       this.mouseFocusHelper?.focus();
     }
   }

@@ -27,8 +27,11 @@
       />
     </config-item>
   </config-item>
+  <el-divider style="margin: 12px 0" />
+  <config-item :label="$t('control.parameter.mouse-focus')">
+    <el-switch v-model="trackMouse.value" />
+  </config-item>
   <template v-if="modelType == 'VRoid'">
-    <el-divider style="margin: 12px 0" />
     <config-item :label="$t('control.parameter.vrm-calculate')">
       <el-switch v-model="vrmUpdate.value" />
     </config-item>
@@ -76,6 +79,19 @@ ipcAPI.handleSendToModelControl((event, message) => {
     }
   }
 });
+
+// 鼠标跟踪
+const trackMouse = reactive({
+  name: "trackMouse",
+  value: true,
+});
+watch(trackMouse, () => {
+  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+    channel: "control:change-instant-config",
+    data: toRaw(trackMouse),
+  });
+});
+
 // VRM演算控制
 const vrmUpdate = reactive({
   name: "vrmUpdate",

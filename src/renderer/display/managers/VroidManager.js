@@ -85,9 +85,20 @@ export class VroidManager extends ModelManager3D {
     });
   }
   _initInstantConfig() {
+    const manager = this;
     // 由于没有存数据库，这就要求这里的初始配置和控制面板那边的默认值保持一致
     this.instantConfig = {
       vrmUpdate: true,
+      _trackMouse: true,
+      get trackMouse() {
+        return this._trackMouse;
+      },
+      set trackMouse(value) {
+        this._trackMouse = value;
+        if (!value) {
+          manager.mouseFocusHelper.object.rotation.set(0, 0, 0);
+        }
+      },
     };
   }
   _initMouceFocusHelper() {
@@ -140,7 +151,11 @@ export class VroidManager extends ModelManager3D {
       }
     }
     // 播放动画的时候模型还盯着鼠标看，转身都不带扭头的那效果……我实在是看不下去了
-    if (this.animationManager === null && this.captureManagerNow === null) {
+    if (
+      this.instantConfig?.trackMouse &&
+      this.animationManager === null &&
+      this.captureManagerNow === null
+    ) {
       this.mouseFocusHelper?.focus();
       // 解决VRoid的Y轴反转问题
       this.mouseFocusHelper?.object.quaternion.multiply(turnHeadQuaternion);
