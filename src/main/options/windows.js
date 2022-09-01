@@ -10,6 +10,7 @@ export const windowsOptions = {
       vibrancy: "menu",
       autoHideMenuBar: true,
       titleBarOverlay: true,
+      resizable: false,
       // visualEffectState: "active",
       // skipTaskbar: true,
       // 默认不显示，但必须启动

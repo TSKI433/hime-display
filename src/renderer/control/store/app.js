@@ -3,7 +3,7 @@ export const useAppStore = defineStore("app", {
   state: () => ({
     // initialized: false,
     ui: {
-      activeMenuItem: "model",
+      activeMenuItem: "general",
     },
     database: {
       // 防止下方的splice爆炸
