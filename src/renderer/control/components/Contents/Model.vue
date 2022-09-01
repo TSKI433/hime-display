@@ -42,7 +42,14 @@
             align="center"
           >
             <template #default="props">
-              <el-tag effect="light">
+              <el-tag
+                effect="light"
+                :color="props.row.themeColor + '22'"
+                :style="{
+                  color: props.row.themeColor,
+                  'border-color': props.row.themeColor + '44',
+                }"
+              >
                 {{ props.row.modelType }}
               </el-tag>
             </template>
@@ -64,7 +71,7 @@
             align="center"
           >
             <template #default="props">
-              <el-tag effect="light">
+              <el-tag effect="light" type="info">
                 {{ props.row.extensionName }}
               </el-tag>
             </template>

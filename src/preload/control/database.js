@@ -127,6 +127,8 @@ async function detectDatabaseItem(fileDir, sourceTypes, sourcePath) {
       const fileJson = JSON.parse(fileData.toString());
       if (sourceTypes["Live2D"]) {
         processLive2dJson(fileDir, fileJson, sourcePath);
+      }
+      if (sourceTypes["Spine"]) {
         processSpineJson(fileDir, fileJson, sourcePath);
       }
       break;
@@ -182,6 +184,7 @@ function processLive2dJson(fileDir, fileJson, sourcePath) {
       modelType: "Live2D",
       extensionName: "moc",
       entranceFile: resolveEntrancePath(fileDir),
+      themeColor: "#ff6e2d",
       sourcePath,
       // has_motion: "motions" in fileJson ? true : false;
     });
@@ -191,6 +194,7 @@ function processLive2dJson(fileDir, fileJson, sourcePath) {
       modelType: "Live2D",
       extensionName: "moc3",
       entranceFile: resolveEntrancePath(fileDir),
+      themeColor: "#ff6e2d",
       sourcePath,
       // has_motion:"Motions" in fileJson.FileReferences ? true : false
     });
@@ -202,6 +206,7 @@ function processPmx(fileDir, sourcePath) {
     modelType: "MMD",
     extensionName: "pmx",
     entranceFile: resolveEntrancePath(fileDir),
+    themeColor: "#39c5bb",
     sourcePath,
   });
 }
@@ -211,6 +216,7 @@ function processVrm(fileDir, sourcePath) {
     modelType: "VRoid",
     extensionName: "vrm",
     entranceFile: resolveEntrancePath(fileDir),
+    themeColor: "#ffec00",
     sourcePath,
   });
 }
@@ -221,6 +227,7 @@ function processSkel(fileDir, sourcePath) {
     modelType: "Spine",
     extensionName: "skel",
     entranceFile: resolveEntrancePath(fileDir),
+    themeColor: "#3fa9f5",
     sourcePath,
   });
 }
@@ -231,6 +238,7 @@ function processSpineJson(fileDir, fileJson, sourcePath) {
       modelType: "Spine",
       extensionName: "json",
       entranceFile: resolveEntrancePath(fileDir),
+      themeColor: "#3fa9f5",
       sourcePath,
     });
   }
