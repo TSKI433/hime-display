@@ -13,16 +13,21 @@ const options = {
     files: ["dist/renderer/**/*", "dist/main/**/*"],
     // asar: false,
     dmg: {
+      background: "public/background/background.tiff",
+      window: {
+        width: 540,
+        height: 380,
+      },
       contents: [
         {
           x: 410,
-          y: 150,
+          y: 230,
           type: "link",
           path: "/Applications",
         },
         {
           x: 130,
-          y: 150,
+          y: 230,
           type: "file",
         },
       ],

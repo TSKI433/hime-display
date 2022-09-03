@@ -7,7 +7,7 @@
           <img :src="iconImage" alt="" />
         </div>
         <div class="hime-about__info">
-          <div class="hime-about__info__item">Hime Display</div>
+          <div class="title">Hime Display</div>
           <div class="hime-about__info__item">Version 1.0.0</div>
           <div class="hime-about__info__item">
             Developed by
