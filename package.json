@@ -1,5 +1,5 @@
 {
-  "name": "electron-vite-quick-start",
+  "name": "hime-display",
   "version": "0.0.0",
   "description": "A Electron application create by Vite",
   "main": "./dist/main/main.cjs.js",

@@ -3,11 +3,18 @@ import { trayMenuTemplate } from "../menus/tray";
 import { Tray, Menu } from "electron";
 import path from "path";
 import { EventEmitter } from "events";
+import is from "electron-is";
 export class TrayManager extends EventEmitter {
   constructor() {
     super();
     this.template = trayMenuTemplate;
-    this.tray = new Tray(path.resolve(__dirname, "./assets/iconTemplate.png"));
+    if (is.macOS()) {
+      this.tray = new Tray(
+        path.resolve(__dirname, "./assets/trayTemplate.png")
+      );
+    } else {
+      this.tray = new Tray(path.resolve(__dirname, "./assets/trayWindows.png"));
+    }
   }
   translateTemplate() {
     for (const item of this.template) {
