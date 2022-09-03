@@ -67,6 +67,10 @@ body {
   height: 100%;
   margin: 0;
 }
+// 禁止图片拖拽
+img {
+  -webkit-user-drag: none;
+}
 #app {
   height: 100%;
   .el-container {

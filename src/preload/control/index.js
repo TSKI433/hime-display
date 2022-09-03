@@ -9,7 +9,11 @@ contextBridge.exposeInMainWorld("nodeAPI", {
   config,
   ipc,
   showInFolder,
+  openLink,
 });
 function showInFolder(path) {
   shell.showItemInFolder(path);
+}
+function openLink(link) {
+  shell.openExternal(link);
 }
