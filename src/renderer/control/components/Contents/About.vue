@@ -6,16 +6,16 @@
         <div class="icon" @click="toggleClass">
           <img :src="iconImage" alt="" />
         </div>
-        <div class="info">
-          <div class="title">Hime Display</div>
-          <div class="version">Version 1.0.0</div>
-          <div class="developer">
+        <div class="hime-about__info">
+          <div class="hime-about__info__item">Hime Display</div>
+          <div class="hime-about__info__item">Version 1.0.0</div>
+          <div class="hime-about__info__item">
             Developed by
             <a href="https://github.com/TSKI433" @click.prevent="openLink"
               >TSKI433</a
             >
           </div>
-          <div class="illustrator">
+          <div class="hime-about__info__item">
             Illustrated by
             <a
               href="https://www.pixiv.net/users/72669923"
@@ -23,7 +23,7 @@
               >MakoSaikou</a
             >
           </div>
-          <div class="special-thanks">
+          <div class="hime-about__info__item">
             Special Thanks:
             <a href="https://github.com/greenjerry" @click.prevent="openLink"
               >greenjerry</a
@@ -33,7 +33,7 @@
               >pure01fx</a
             >
           </div>
-          <div class="special-thanks">
+          <div class="hime-about__info__item">
             Links:
             <a
               href="https://github.com/TSKI433/hime-display"
@@ -98,7 +98,7 @@ function openLink(event) {
       .icon {
         animation: rotate 1s cubic-bezier(0.53, 0.15, 0.57, 0.96);
       }
-      .info {
+      .hime-about__info {
         opacity: 0;
       }
     }
@@ -107,7 +107,7 @@ function openLink(event) {
     margin-right: 0;
     margin-left: 0;
     .hime-about__logo {
-      .info {
+      .hime-about__info {
         opacity: 1;
       }
     }
@@ -123,7 +123,7 @@ function openLink(event) {
         height: 180px;
       }
     }
-    .info {
+    .hime-about__info {
       transition: cubic-bezier(0.8, 0.31, 0.08, 0.82) 1.2s;
       opacity: 0;
       white-space: nowrap;
@@ -140,11 +140,7 @@ function openLink(event) {
           color: var(--el-text-color-primary);
         }
       }
-      .version,
-      .developer,
-      .illustrator,
-      .copyright,
-      .special-thanks {
+      .hime-about__info__item {
         margin-top: 4px;
         font-size: var(--el-font-size-large);
         color: var(--el-text-color-secondary);
@@ -156,11 +152,11 @@ function openLink(event) {
     }
   }
 }
-.link-icon {
-  height: 1em;
-  width: 1em;
-  use {
-    fill: var(--el-text-color-secondary);
-  }
-}
+// .link-icon {
+//   height: 1em;
+//   width: 1em;
+//   use {
+//     fill: var(--el-text-color-secondary);
+//   }
+// }
 </style>
