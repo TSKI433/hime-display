@@ -5,7 +5,7 @@ import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 import {
   convertAnimation as mixamoConvertAnimation,
   convertAnimationWithIK as mixamoConvertAnimationWithIK,
-} from "@display/utils/animation/Mixamo2MMDAnimationConverter.js";
+} from "@display/utils/animation/Mixamo2MMDAnimationConverterNew.js";
 import { getBaseCenterHeight } from "@display/utils/animation/utils.js";
 export class AnimationManager {
   // 直接从上级获取MMDLoader，省得重新搞个实例
@@ -72,7 +72,11 @@ export class AnimationManager {
             getBaseCenterHeight(model, "mmd");
           if (this.mixamoLegTranslateMode === "rotate") {
             this._initAnimation(
-              mixamoConvertAnimation(fbx.animations[0], scale),
+              mixamoConvertAnimation(
+                fbx.animations[0],
+                scale,
+                fbx.children.find((bone) => bone.name === "mixamorigHips")
+              ),
               // 关闭IK解算
               false
             );

@@ -87,19 +87,42 @@ function buildNodeStack(rootNode, mode = "dfs") {
  */
 // 为旋转动画轨道添加预旋转
 // 主要用于处理手臂默认姿态相差45度的问题
-function trackRotateQuaternion(quaternionList, eulerAngle) {
+function trackRotateQuaternion(quaternionList, eulerAngle, invert = false) {
   _q1.setFromEuler(eulerAngle);
   _q1.normalize();
   const convertedList = [];
   for (let i = 0, l = quaternionList.length / 4; i < l; i++) {
     _q2.fromArray(quaternionList, 4 * i);
-    _q2.multiply(_q1);
+    if (invert) {
+      _q2.multiply(_q1.clone().invert());
+    } else {
+      _q2.multiply(_q1);
+    }
     for (const value of _q2.toArray()) {
       convertedList.push(value);
     }
   }
   return convertedList;
 }
+function trackPreRotateQuaternion(quaternionList, eulerAngle, invert = false) {
+  _q1.setFromEuler(eulerAngle);
+  _q1.normalize();
+  const convertedList = [];
+  for (let i = 0, l = quaternionList.length / 4; i < l; i++) {
+    _q2.fromArray(quaternionList, 4 * i);
+    if (invert) {
+      _q2.premultiply(_q1.clone().invert());
+    } else {
+      _q2.premultiply(_q1);
+    }
+
+    for (const value of _q2.toArray()) {
+      convertedList.push(value);
+    }
+  }
+  return convertedList;
+}
+
 // 为旋转动画轨道旋转四元数转轴
 // 主要用于处理手臂相差45度后，手臂子级旋转错误的问题
 /**
@@ -175,6 +198,7 @@ export {
   createClearPositionTrack,
   buildNodeStack,
   trackRotateQuaternion,
+  trackPreRotateQuaternion,
   trackRotateQuaternionAxis,
   trackRevertXZ,
   getRelativeMatrix,
