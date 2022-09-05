@@ -1,11 +1,11 @@
 {
   "name": "hime-display",
-  "version": "0.0.0",
-  "description": "A Electron application create by Vite",
+  "version": "1.0.0",
+  "description": "An open source, cross-platform, and universal desktop model displayer.",
   "main": "./dist/main/main.cjs.js",
-  "repository": "https://github.com/yingpengsha/electron-vite-quick-start.git",
-  "author": "Pengsha Ying <810998652@qq.com>",
-  "license": "MIT",
+  "repository": "https://github.com/TSKI433/hime-display.git",
+  "author": "TSKI433",
+  "license": "GPL",
   "private": true,
   "workspaces": {
     "packages": [
