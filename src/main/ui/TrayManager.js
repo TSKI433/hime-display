@@ -4,6 +4,7 @@ import { Tray, Menu } from "electron";
 import path from "path";
 import { EventEmitter } from "events";
 import is from "electron-is";
+// 我其实已经注意到macOS上显示的菜单为英语了，之所以没有对其进行处理，是因为这个应用用不到那个菜单，但是如果把菜单弄成null的话，默认注册的快捷键会失效，复制粘贴什么都用不了，所以直接懒得干了
 export class TrayManager extends EventEmitter {
   constructor() {
     super();

@@ -10,7 +10,7 @@ export const defaultConfig = {
     "show-fps": true,
     antialias: true,
     "auto-load-last": true,
-    "click-through": "all",
+    "click-through": "transparent",
     "display-range": "singleDesktop",
     "keep-display-at-top": true,
     background: "#000000",
