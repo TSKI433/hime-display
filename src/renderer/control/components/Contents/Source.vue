@@ -95,7 +95,7 @@
                     @click="loadFromSourcePath(props.row)"
                   ></svg-icon-el-button>
                 </template>
-                <template #content> {{ $t("source.search-again") }} </template>
+                <template #content> {{ $t("source.refresh") }} </template>
               </el-tooltip>
               <el-popconfirm
                 :title="$t('source.delete-source-confirm')"

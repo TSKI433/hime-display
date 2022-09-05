@@ -6,7 +6,7 @@ export default {
   "end-edit": "End Edit",
   "edit-search-type": "Edit",
   "show-in-file-browser": "Show in File Browser",
-  "search-again": "Search Again",
+  refresh: "Refresh",
   "delete-source-confirm": "Are you sure to delete this data source?",
   "delete-source": "Delete Data Source",
   "add-source": "Add Data Source",

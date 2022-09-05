@@ -6,7 +6,7 @@ export default {
   "end-edit": "編集を終了",
   "edit-search-type": "編集",
   "show-in-file-browser": "ファイルブラウザで表示",
-  "search-again": "再度検索",
+  refresh: "更新",
   "delete-source-confirm": "このデータソースを削除しますか？",
   "delete-source": "データソースを削除",
   "add-source": "データソースを追加",
