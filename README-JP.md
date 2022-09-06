@@ -1,14 +1,28 @@
 # Hime Display
 
 <p align="center">
-<img width="150" src="./public/icons/icon.png">
+<img width="200px" src="./images/icon.png">
 </p>
+
+> illustrated by [MakoSaikou](https://www.pixiv.net/users/72669923)
 
 [English](./README.md) | [简体中文](./README-CN.md) | 日本語
 
-[Download と Documention（中国語のみ）](https://hime.xdrv.cn/)
+[Download](https://hime.xdrv.cn/download/) | [Documention（中国語のみ）](https://hime.xdrv.cn/)
 
 このアプリケーションは、オープンソースで、クロスプラットフォームのユニバーサルなデスクトップモデルディスプレイヤーを狙っています。
+
+## プレビュー
+
+### コントロールパネル
+
+<p align="center">
+<img width="450" src="./images/control-panel-jp.png">
+</p>
+
+### ディスプレイウインドウ
+
+何も見えない？そう、ディスプレイは実際には透明なウィンドウです。
 
 ## 特徴
 
@@ -85,6 +99,8 @@ yarn run build
 
 このプロジェクトのファイル構造は、同じく Electron によって開発されたダウンロードツール [Motrix](https://motrix.app/) を参照しています。ありがとうございます。
 
-[HuiDesktop](https://github.com/HuiDesktop/HuiDesktop) の作成者による Spine のテクニカルサポートに感謝します。
+アプリケーションをテストし、多くの提案を提供してくれた [笺染菲素](https://space.bilibili.com/33572615) に感謝します。
+
+[HuiDesktop](https://github.com/HuiDesktop/HuiDesktop) の作成者 [pure01fx](https://github.com/pure01fx) による Spine のテクニカルサポートに感謝します。
 
 [greenjerry](https://github.com/greenjerry) には、物質的、精神的、そしてソフトウェア、およびハードウェアで私をサポートしていただき、本当にありがとうございます。

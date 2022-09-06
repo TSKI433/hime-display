@@ -1,14 +1,28 @@
 # Hime Display
 
 <p align="center">
-<img width="150" src="./public/icons/icon.png">
+<img width="200px" src="./images/icon.png">
 </p>
+
+> illustrated by [MakoSaikou](https://www.pixiv.net/users/72669923)
 
 English | [简体中文](./README-CN.md) | [日本語](./README-JP.md)
 
-[Download && Documents (Chinese only)](https://hime.xdrv.cn/)
+[Download](https://hime.xdrv.cn/download/) | [Documentation](https://hime.xdrv.cn/)
 
 Hime Display aims to create an open-source, cross-platform, universal desktop model presenter.
+
+## Preview
+
+### Control Panel
+
+<p align="center">
+<img width="450" src="./images/control-panel-en.png">
+</p>
+
+### Display Window
+
+Can't see anything? that's right, the display window is just a transparent window.
 
 ## Features
 
@@ -85,6 +99,8 @@ This is my first attempt to develop a full application, maybe there are some def
 
 The file structure of this application refers to a download tool [Motrix](https://motrix.app/) which is also developed by Electron.
 
-Thanks to the author of [HuiDesktop](https://github.com/HuiDesktop/HuiDesktop) for some technical support on Spine.
+Thanks to [笺染菲素](https://space.bilibili.com/33572615) for testing the application and providing many suggestions.
+
+Thanks to [pure01fx](https://github.com/pure01fx), the author of [HuiDesktop](https://github.com/HuiDesktop/HuiDesktop) for some technical support on Spine.
 
 Thanks to [greenjerry](https://github.com/greenjerry) for supporting me in material, spiritual, software and hardware.

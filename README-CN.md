@@ -1,14 +1,28 @@
 # Hime Display
 
 <p align="center">
-<img width="150" src="./public/icons/icon.png">
+<img width="200px" src="./images/icon.png">
 </p>
+
+> illustrated by [MakoSaikou](https://www.pixiv.net/users/72669923)
 
 [English](./README.md) | 简体中文 | [日本語](./README-JP.md)
 
-[应用下载与相关文档](https://hime.xdrv.cn/)
+[下载](https://hime.xdrv.cn/download/) | [文档](https://hime.xdrv.cn/)
 
 此应用旨在打造一个开源、跨平台的通用桌面模型展示器。
+
+## 预览
+
+### 控制面板
+
+<p align="center">
+<img width="450" src="./images/control-panel-cn.png">
+</p>
+
+### 展示器
+
+什么没看见？那就对了，展示器其实就是一个透明窗口。
 
 ## 特性
 
@@ -99,6 +113,8 @@ chromedriver_cdnurl "https://cdn.npm.taobao.org/dist/chromedriver"
 
 本项目的文件结构参考了同样使用 Electron 开发的下载工具[Motrix](https://motrix.app/)，在此表示感谢。
 
-感谢 [HuiDesktop](https://github.com/HuiDesktop/HuiDesktop) 的作者提供的 Spine 方面的一些技术支持。
+感谢 [笺染菲素](https://space.bilibili.com/33572615) 测试应用并提供了不少建议。
+
+感谢 [HuiDesktop](https://github.com/HuiDesktop/HuiDesktop) 的作者 [pure01fx](https://github.com/pure01fx) 提供的 Spine 方面的一些技术支持。
 
 感谢 [greenjerry](https://github.com/greenjerry) 对我在物质，精神层面，以及软件和硬件上的大力支持。
