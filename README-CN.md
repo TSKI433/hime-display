@@ -3,6 +3,7 @@
 <p align="center">
 <img width="150" src="./public/icons/icon.png">
 </p>
+
 [English](./README.md) | 简体中文 | [日本語](./README-JP.md)
 
 [应用下载与相关文档](https://hime.xdrv.cn/)
