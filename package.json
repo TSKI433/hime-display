@@ -1,11 +1,11 @@
 {
   "name": "hime-display",
   "version": "1.0.0",
-  "description": "An open source, cross-platform, and universal desktop model displayer.",
+  "description": "An universal desktop model displayer for Live2D, Spine, MMD and VRoid.",
   "main": "./dist/main/main.cjs.js",
   "repository": "https://github.com/TSKI433/hime-display.git",
   "author": "TSKI433",
-  "license": "GPL",
+  "license": "GPL-3.0",
   "private": true,
   "workspaces": {
     "packages": [
