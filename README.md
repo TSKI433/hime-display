@@ -8,7 +8,7 @@
 
 English | [简体中文](./README-CN.md) | [日本語](./README-JP.md)
 
-[Download](https://hime.xdrv.cn/download/) | [Documentation](https://hime.xdrv.cn/)
+[Download](https://hime.xdrv.cn/download/) | [Docs(Chinese Only)](https://hime.xdrv.cn/)
 
 Hime Display aims to create an open-source, cross-platform, universal desktop model presenter.
 
