@@ -120,6 +120,8 @@ function loadModelNow(modelInfo) {
     controlStore.modelControlInfoLoading = false;
   });
 }
+// 如果这个页面没有加载过，这里的watch就不会生效，导致无法在打开应用时自动加载上次的模型
+// 默认打开页面一直是这个Model页面，换了一个页面才发现这个问题，后来想了一下，还是就把默认的启动页面设定为model吧
 watch(appStore.displayWindowOpened, (value) => {
   console.log("[Hime Display] displayWindowId changed", value.value);
   if (value.value) {

@@ -31,7 +31,7 @@ export class Launcher extends EventEmitter {
       if (this.application) {
         logger.info("[Hime Display] activate");
         // this.application.openWindow("controlPanel");
-        this.application.windowManager.control.show();
+        this.application.windowManager.windows.control.show();
       }
     });
     // 为了实现缓存不被清理的效果，展示器的close事件的默认行为已经被阻止，若不对app执行exit，应用会因为展示器未关闭而不退出，这里在应用希望退出时强制关闭展示器来解决这个问题
