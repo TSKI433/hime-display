@@ -12,7 +12,7 @@ export const defaultConfig = {
     "auto-load-last": true,
     "click-through": "transparent",
     "display-range": "singleDesktop",
-    "keep-display-at-top": true,
+    "keep-display-at-top": false,
     background: "#000000",
     "live2d-initial-width-range": [65, 100],
     "live2d-initial-height-range": [20, 100],
