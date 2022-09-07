@@ -2,6 +2,7 @@ import { EventEmitter } from "events";
 import { windowsOptions } from "../options/windows";
 import { BrowserWindow } from "electron";
 import { logger } from "../core/Logger";
+import is from "electron-is";
 export class WindowManager extends EventEmitter {
   constructor(configDB) {
     super();
@@ -48,7 +49,12 @@ export class WindowManager extends EventEmitter {
       if (this.configDB.get(["display", "keep-display-at-top"]).value()) {
         // 之前这个级别太高了，搞不好会出大问题……
         // window.setAlwaysOnTop(true, "screen-saver", 1);
-        window.setAlwaysOnTop(true);
+        // 对于macOS而言，默认的层级已经足够了，但Windows在该层级下无法置顶
+        if (is.macOS()) {
+          window.setAlwaysOnTop(true);
+        } else {
+          window.setAlwaysOnTop(true, "screen-saver");
+        }
       }
 
       switch (this.configDB.get(["display", "display-range"]).value()) {
