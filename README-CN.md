@@ -8,7 +8,7 @@
 
 [English](./README.md) | 简体中文 | [日本語](./README-JP.md)
 
-[下载](https://hime.xdrv.cn/download/) | [文档](https://hime.xdrv.cn/)
+[下载](https://hime.xdrv.cn/download/) | [文档](https://hime.xdrv.cn/) | [介绍视频](https://www.bilibili.com/video/BV1Me411u7pF)
 
 此应用旨在打造一个开源、跨平台的通用桌面模型展示器。
 

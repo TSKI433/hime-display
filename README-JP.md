@@ -8,7 +8,7 @@
 
 [English](./README.md) | [简体中文](./README-CN.md) | 日本語
 
-[ダウンロード](https://hime.xdrv.cn/download/) | [ドキュメント（中国語のみ）](https://hime.xdrv.cn/)
+[ダウンロード](https://hime.xdrv.cn/download/) | [ドキュメント（中国語のみ）](https://hime.xdrv.cn/) | [紹介動画](https://www.bilibili.com/video/BV1Me411u7pF)
 
 このアプリケーションは、オープンソースで、クロスプラットフォームのユニバーサルなデスクトップモデルディスプレイヤーを狙っています。
 
