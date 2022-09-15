@@ -3,7 +3,7 @@ export default {
   "open-control-panel": "打开控制面板",
   "open-display-window": "打开展示器",
   language: "语言",
-  "developer-tools": "开发着工具",
+  "developer-tools": "开发者工具",
   "display-window": "展示器",
   "control-panel": "控制面板",
   restore: "还原",
