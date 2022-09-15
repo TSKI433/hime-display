@@ -80,6 +80,7 @@ export default {
     "auto-eye-blink": "Auto Eye Blink",
     morph: "Morph",
     "vrm-calculate": "VRM Calculate",
+    skin: "Skin",
   },
   capture: {
     "capture-type": "Capture Type",

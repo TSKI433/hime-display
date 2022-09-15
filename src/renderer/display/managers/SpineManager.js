@@ -64,6 +64,15 @@ export class SpineManager extends ModelManager {
           this.internalModel = new PIXI.spine.Spine(
             resources.spineCharacter.spineData
           );
+          // 官方的setSkinByName函数有点问题，自己重新写了一个强制切换皮肤的函数
+          this.internalModel.skeleton.setSkinByNameForce =
+            function setSkinByNameForce(name) {
+              for (let i = 0; i < this.slots.length; i++) {
+                this.slots[i].attachment = null;
+              }
+              this.skin = undefined;
+              this.setSkinByName(name);
+            };
           const localRect = this.internalModel.getLocalBounds();
           this.internalModel.position.set(-localRect.x, -localRect.y);
           this.model = new PIXI.Container();
@@ -168,6 +177,7 @@ export class SpineManager extends ModelManager {
         },
       ],
       motion: motionInfo,
+      skin: this.internalModel.spineData.skins.map((skin) => skin.name),
     };
     return modelControlInfo;
   }
@@ -215,6 +225,10 @@ export class SpineManager extends ModelManager {
       }
       case "control:query-model-transform": {
         this._updateModelTransform();
+        break;
+      }
+      case "control:set-skin": {
+        this.internalModel.skeleton.setSkinByNameForce(message.data.skin);
         break;
       }
     }

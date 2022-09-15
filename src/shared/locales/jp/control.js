@@ -81,6 +81,7 @@ export default {
     "auto-eye-blink": "自動まばたき",
     morph: "モーフ",
     "vrm-calculate": "VRM計算",
+    skin: "スキン",
   },
   capture: {
     "capture-type": "キャプチャタイプ",

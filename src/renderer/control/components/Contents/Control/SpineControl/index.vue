@@ -36,6 +36,12 @@
           <control-load-error></control-load-error>
         </template>
       </el-tab-pane>
+      <el-tab-pane :label="$t(`control.parameter-control`)">
+        <parameter-control
+          v-if="controlStore.modelControlInfo?.skin !== undefined"
+          :skin-info="controlStore.modelControlInfo.skin"
+        ></parameter-control>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -45,6 +51,7 @@ import ControlLoadError from "../Common/ControlLoadError.vue";
 import ModelDescription from "../Common/ModelDescription.vue";
 import Transform from "../Common/2d/Transform2D.vue";
 import AnimationControl from "./AnimationControl.vue";
+import ParameterControl from "./ParameterControl.vue";
 import { useControlStore } from "@control/store/control";
 const controlStore = useControlStore();
 </script>

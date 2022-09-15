@@ -80,6 +80,7 @@ export default {
     "auto-eye-blink": "自动眨眼",
     morph: "变形",
     "vrm-calculate": "VRM解算",
+    skin: "皮肤",
   },
   capture: {
     "capture-type": "捕捉类型",
