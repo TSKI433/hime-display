@@ -104,7 +104,8 @@ async function loadDataFromPath(dataPath, sourceTypes, sourcePath) {
     const isDir = stats.isDirectory(); //是文件夹
     if (isFile) {
       //是文件
-      detectDatabaseItem(dir, sourceTypes, sourcePath);
+      // 这里也需要加到promise里面，不然会出现还没有检索完成，整个promise就已经resolve了，导致后面的数据没有载入
+      promises.push(detectDatabaseItem(dir, sourceTypes, sourcePath));
     }
     if (isDir) {
       //递归，如果是文件夹，就继续遍历该文件夹下面的文件
@@ -124,12 +125,17 @@ async function detectDatabaseItem(fileDir, sourceTypes, sourcePath) {
     case ".json": {
       // 回调函数往上无法嵌套，转换成Promise
       const fileData = await util.promisify(fs.readFile)(fileDir);
-      const fileJson = JSON.parse(fileData.toString());
-      if (sourceTypes["Live2D"]) {
-        processLive2dJson(fileDir, fileJson, sourcePath);
-      }
-      if (sourceTypes["Spine"]) {
-        processSpineJson(fileDir, fileJson, sourcePath);
+      let fileJson;
+      try {
+        fileJson = JSON.parse(fileData.toString());
+        if (sourceTypes["Live2D"]) {
+          processLive2dJson(fileDir, fileJson, sourcePath);
+        }
+        if (sourceTypes["Spine"]) {
+          processSpineJson(fileDir, fileJson, sourcePath);
+        }
+      } catch (e) {
+        console.warn(`File ${fileDir} is not a valid json file`);
       }
       break;
     }
