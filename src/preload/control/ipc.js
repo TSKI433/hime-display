@@ -48,3 +48,6 @@ export function queryDisplayWindowState(displayWindowId) {
 export function handleDisplayWindowState(callback) {
   ipcRenderer.once("display:send-display-window-state", callback);
 }
+export function handleDisplayWindowError(callback) {
+  ipcRenderer.on("display:error", callback);
+}

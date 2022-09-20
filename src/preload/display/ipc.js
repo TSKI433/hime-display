@@ -50,3 +50,6 @@ export function sendDisplayWindowState(displayWindowId, state) {
     state
   );
 }
+export function throwError(displayWindowId, message) {
+  ipcRenderer.sendTo(displayWindowId, "display:error", message);
+}
