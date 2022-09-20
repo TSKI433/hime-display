@@ -7,7 +7,8 @@ export default {
   "motion-capture": "Motion Capture",
   "parameter-control": "Parameter Control",
   "load-a-model-to-control": "Load a model to control",
-  "control-load-error": "Error occurred",
+  "control-load-error":
+    "Error occurred，the model file may not contain the information of this control item，open the developer tools of display window to view the details",
   description: {
     name: "Name",
     "extension-name": "Extension Name",

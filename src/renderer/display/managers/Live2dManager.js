@@ -175,7 +175,11 @@ export class Live2dManager extends ModelManager {
         { label: "vertex-count", value: coreModel._model.drawables.count },
         {
           label: "group-count",
-          value: Object.keys(internalModel.settings.groups).length,
+          value: internalModel.settings.groups
+            ? Object.keys(internalModel.settings.groups).length
+            : console.warn(
+                `Model ${modelInfo.name} has not group count info.`
+              ) && null,
         },
         {
           label: "hit-area-count",
@@ -183,14 +187,22 @@ export class Live2dManager extends ModelManager {
         },
         {
           label: "motion-group-count",
-          value: Object.keys(internalModel.settings.motions).length,
+          value: internalModel.settings.motions
+            ? Object.keys(internalModel.settings.motions).length
+            : console.warn(
+                `Model ${modelInfo.name} has not motion group count info.`
+              ) && null,
         },
         {
           label: "motion-count",
-          value: Object.keys(internalModel.settings.motions).reduce(
-            (acc, cur) => acc + internalModel.settings.motions[cur].length,
-            0
-          ),
+          value: internalModel.settings.motions
+            ? Object.keys(internalModel.settings.motions).reduce(
+                (acc, cur) => acc + internalModel.settings.motions[cur].length,
+                0
+              )
+            : console.warn(
+                `Model ${modelInfo.name} has not motion count info.`
+              ) && null,
         },
         { label: "part-count", value: coreModel._model.parts.count },
         { label: "parameter-count", value: coreModel._model.parameters.count },
@@ -202,6 +214,7 @@ export class Live2dManager extends ModelManager {
         _parameterMaximumValues: coreModel._parameterMaximumValues,
       },
       part: coreModel._partIds,
+      // 如果没有motion，得到的是undefined，正好触发控制器的提示信息
       motion: internalModel.settings.motions,
     };
     return modelControlInfo;

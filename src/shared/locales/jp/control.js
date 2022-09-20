@@ -8,7 +8,8 @@ export default {
   "motion-capture": "モーションキャプチャ",
   "parameter-control": "パラメータコントロール",
   "load-a-model-to-control": "モデルを読み込んでコントロールする",
-  "control-load-error": "エラーが発生しました",
+  "control-load-error":
+    "エラーが発生しました、このモデルファイルにはこのコントロール項目の情報が存在しない可能性があります、詳細はディスプレイウィンドウの開発者ツールを確認してください",
   description: {
     name: "モデル名",
     "extension-name": "拡張子名",

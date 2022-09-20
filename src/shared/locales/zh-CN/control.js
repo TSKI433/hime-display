@@ -7,7 +7,8 @@ export default {
   "motion-capture": "动作捕捉",
   "parameter-control": "参数控制",
   "load-a-model-to-control": "加载一个模型以控制",
-  "control-load-error": "加载错误",
+  "control-load-error":
+    "加载错误，模型文件中可能不存在该控制项的信息，打开展示器开发者工具以查看详细信息",
   description: {
     name: "名称",
     "extension-name": "扩展名",
