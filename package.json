@@ -1,6 +1,6 @@
 {
   "name": "hime-display",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A universal desktop model displayer for Live2D, Spine, MMD and VRoid.",
   "main": "./dist/main/main.cjs.js",
   "repository": {
