@@ -90,7 +90,7 @@ yarn
 # start
 yarn start
 # build (The specific build version can be configured in the `build.config.js` file in the root directory)
-yarn run build
+yarn build
 ```
 
 ## Special Thanks

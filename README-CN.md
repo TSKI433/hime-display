@@ -90,7 +90,7 @@ yarn
 # 启动
 yarn start
 # 构建（具体build版本可以在根目录下的build.config.js文件中配置）
-yarn run build
+yarn build
 ```
 
 ### 若安装 electron 出现问题

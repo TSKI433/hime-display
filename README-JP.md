@@ -90,7 +90,7 @@ yarn
 # 起動
 yarn start
 # ビルド（具体的なビルドタイプは、ルートディレクトリのbuild.config.jsファイルで配置できます）
-yarn run build
+yarn build
 ```
 
 ## スペシャルサンクス
