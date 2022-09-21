@@ -18,6 +18,8 @@ import { useTranslation } from "i18next-vue";
 import zhCn from "element-plus/dist/locale/zh-cn.mjs";
 import en from "element-plus/dist/locale/en.mjs";
 import ja from "element-plus/dist/locale/ja.mjs";
+// 发现element-plus的bug，使用自动引入ElMessage的方式会导致非深色模式下主题色被覆盖，因此这里手动引入了一遍
+import { ElMessage } from "element-plus";
 import { computed } from "vue";
 const { i18next } = useTranslation();
 const appStore = useAppStore();
