@@ -43,15 +43,7 @@ ipcAPI.handleUpdateWindowIds((event, windowIds) => {
   // 原来pinia有个方法叫reset……
   controlStore.$reset();
 });
-// 报错信息使用节流函数封装，防止因渲染错误疯狂弹窗
-const handleDisplayWindowError = throttle((event, message) => {
-  ElMessage({
-    showClose: true,
-    message: `Display Error: ${message}`,
-    type: "error",
-  });
-}, 3000);
-ipcAPI.handleDisplayWindowError(handleDisplayWindowError);
+
 i18next.changeLanguage(appStore.config.general.language);
 const locale = computed(() =>
   appStore.config.general.language === "en"
@@ -62,6 +54,29 @@ const locale = computed(() =>
     ? ja
     : null
 );
+
+// 报错信息使用节流函数封装，防止因渲染错误疯狂弹窗
+const handleDisplayWindowError = throttle((event, message) => {
+  ElMessage({
+    showClose: true,
+    message: `Display Error: ${message}`,
+    type: "error",
+  });
+}, 3000);
+ipcAPI.handleDisplayWindowError(handleDisplayWindowError);
+const handleControlWindowError = throttle((message) => {
+  ElMessage({
+    showClose: true,
+    message: `Control Error: ${message}`,
+    type: "error",
+  });
+}, 3000);
+window.onerror = function (message) {
+  handleControlWindowError(message);
+};
+window.addEventListener("unhandledrejection", function (event) {
+  handleControlWindowError(event.reason.message);
+});
 </script>
 
 <style lang="scss">
