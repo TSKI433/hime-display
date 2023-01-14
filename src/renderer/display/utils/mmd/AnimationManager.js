@@ -57,10 +57,10 @@ export class AnimationManager {
         });
       } else if (extname === "fbx") {
         this.FBXLoader.load(motionFilePath, (fbx) => {
-          if (
-            fbx.animations.length === 0 ||
-            fbx.animations[0].name !== "mixamo.com"
-          ) {
+          const mixamoAnimation = fbx.animations.find(
+            (animation) => animation.name === "mixamo.com"
+          );
+          if (fbx.animations.length === 0 || !mixamoAnimation) {
             reject();
             throw new Error(
               "AnimationManager: Loaded fbx file is not exported from www.mixamo.com"
@@ -73,7 +73,7 @@ export class AnimationManager {
           if (this.mixamoLegTranslateMode === "rotate") {
             this._initAnimation(
               mixamoConvertAnimation(
-                fbx.animations[0],
+                mixamoAnimation,
                 scale,
                 fbx.children.find((bone) => bone.name === "mixamorigHips")
               ),
@@ -83,7 +83,7 @@ export class AnimationManager {
           } else if (this.mixamoLegTranslateMode == "ik") {
             this._initAnimation(
               mixamoConvertAnimationWithIK(
-                fbx.animations[0],
+                mixamoAnimation,
                 scale,
                 fbx.children.find((bone) => bone.name === "mixamorigHips")
               )
