@@ -40,6 +40,9 @@
               >{{ $t("general.display-window") }}</el-button
             >
           </div>
+          <config-item label="报错弹窗提示">
+            <el-switch v-model="appStore.config.general['error-report']" />
+          </config-item>
         </el-form-item>
         <el-form-item :label="$t('general.restore')">
           <el-popconfirm

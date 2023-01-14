@@ -20,7 +20,7 @@ import en from "element-plus/dist/locale/en.mjs";
 import ja from "element-plus/dist/locale/ja.mjs";
 // 发现element-plus的bug，使用自动引入ElMessage的方式会导致非深色模式下主题色被覆盖，因此这里手动引入了一遍
 import { ElMessage } from "element-plus";
-import { computed } from "vue";
+import { computed, watch } from "vue";
 const { i18next } = useTranslation();
 const appStore = useAppStore();
 const controlStore = useControlStore();
@@ -71,12 +71,35 @@ const handleControlWindowError = throttle((message) => {
     type: "error",
   });
 }, 3000);
-window.onerror = function (message) {
-  handleControlWindowError(message);
-};
-window.addEventListener("unhandledrejection", function (event) {
+
+// if (appStore.config.general["error-report"]) {
+//   window.onerror = function (message) {
+//     handleControlWindowError(message);
+//   };
+//   window.addEventListener("unhandledrejection", rejectErrorHandler);
+// }
+const rejectErrorHandler = function (event) {
   handleControlWindowError(event.reason.message);
-});
+};
+watch(
+  () => appStore.config.general["error-report"],
+  () => {
+    // console.log("watch", appStore.config.general["error-report"]);
+    if (appStore.config.general["error-report"]) {
+      window.onerror = function (message) {
+        handleControlWindowError(message);
+      };
+      const rejectErrorHandler = function (event) {
+        handleControlWindowError(event.reason.message);
+      };
+      window.addEventListener("unhandledrejection", rejectErrorHandler);
+    } else {
+      window.onerror = null;
+      window.removeEventListener("unhandledrejection", rejectErrorHandler);
+    }
+  }
+);
+window.appStore = appStore;
 </script>
 
 <style lang="scss">

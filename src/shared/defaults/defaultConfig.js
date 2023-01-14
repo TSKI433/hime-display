@@ -2,6 +2,7 @@ export const defaultConfig = {
   general: {
     "open-control-at-launch": true,
     "open-display-at-launch": true,
+    "error-report": false,
     language: "en",
   },
   display: {
