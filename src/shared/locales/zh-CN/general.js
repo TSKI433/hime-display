@@ -4,6 +4,7 @@ export default {
   "open-display-window": "打开展示器",
   language: "语言",
   "developer-tools": "开发者工具",
+  "alert-error-info": "报错信息提示",
   "display-window": "展示器",
   "control-panel": "控制面板",
   restore: "还原",

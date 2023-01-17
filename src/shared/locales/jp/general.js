@@ -4,6 +4,7 @@ export default {
   "open-display-window": "ディスプレイウィンドウを開く",
   language: "言語",
   "developer-tools": "開発者ツール",
+  "alert-error-info": "エラー情報を表示",
   "display-window": "ディスプレイウィンドウ",
   "control-panel": "コントロールパネル",
   restore: "復元",

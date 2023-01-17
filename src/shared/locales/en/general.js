@@ -4,6 +4,7 @@ export default {
   "open-display-window": "Open Display Window",
   language: "Language",
   "developer-tools": "Developer Tools",
+  "alert-error-info": "Alert Error Info",
   "display-window": "Display Window",
   "control-panel": "Control Panel",
   restore: "Restore",
