@@ -75,16 +75,13 @@ export class Application {
         this.managers.now = this.managers[modelInfo.modelType];
         this.managers.now.switchIn();
         this.managers.now.onSendToModelControl((message) => {
-          this.nodeAPI.ipc.sendToModelControl(this.controlWindowId, message);
+          this.nodeAPI.ipc.sendToModelControl(message);
         });
       }
       this.managers.now.loadModel(modelInfo).then((modelControlInfo) => {
         this.state.modelLoaded = true;
         // this.state.modelControlInfo = modelControlInfo;
-        this.nodeAPI.ipc.sendModelControlInfo(
-          this.controlWindowId,
-          modelControlInfo
-        );
+        this.nodeAPI.ipc.sendModelControlInfo(modelControlInfo);
       });
     });
     this.nodeAPI.ipc.handleSendToModelManager((event, message) => {
@@ -95,7 +92,7 @@ export class Application {
       this.managers.now.handleMessage(message);
     });
     this.nodeAPI.ipc.handleQueryDisplayWindowState(() => {
-      this.nodeAPI.ipc.sendDisplayWindowState(this.controlWindowId, this.state);
+      this.nodeAPI.ipc.sendDisplayWindowState(this.state);
     });
   }
   setBackgroundColor() {
