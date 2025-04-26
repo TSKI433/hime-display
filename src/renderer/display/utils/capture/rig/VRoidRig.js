@@ -4,18 +4,18 @@ function rigFace(riggedFace, lerpRatio = 0.5) {
   const lerpedEye = {
     l: lerp(
       riggedFace.eye.l,
-      1 - this.model.vrm.blendShapeProxy.getValue("blink"),
+      1 - this.model.vrm.expressionManager.getValue("blink"),
       lerpRatio
     ),
     r: lerp(
       riggedFace.eye.r,
-      1 - this.model.vrm.blendShapeProxy.getValue("blink"),
+      1 - this.model.vrm.expressionManager.getValue("blink"),
       lerpRatio
     ),
   };
   // 我认为这里不需要用headY做一道判断，就直接将其赋值为0了
   const stabilizedEye = Face.stabilizeBlink(lerpedEye, 0);
-  this.model.vrm.blendShapeProxy.setValue(
+  this.model.vrm.expressionManager.setValue(
     "blink",
     1 - (stabilizedEye.l + stabilizedEye.r) / 2
   );
@@ -27,9 +27,9 @@ function rigFace(riggedFace, lerpRatio = 0.5) {
   this.rigHead(riggedFace.head, lerpRatio);
 }
 function lerpMorphTargetByName(name, value, lerpRatio) {
-  this.model.vrm.blendShapeProxy.setValue(
+  this.model.vrm.expressionManager.setValue(
     name,
-    lerp(value, this.model.vrm.blendShapeProxy.getValue(name), lerpRatio)
+    lerp(value, this.model.vrm.expressionManager.getValue(name), lerpRatio)
   );
 }
 function getBoneNode(boneName) {

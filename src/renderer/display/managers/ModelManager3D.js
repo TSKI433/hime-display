@@ -1,6 +1,7 @@
 // 统筹两个3D模型公用的功能
 import { ModelManager } from "./ModelManager";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { VRMUtils } from "@pixiv/three-vrm";
 class ModelManager3D extends ModelManager {
   _initOrbitControls() {
     this.orbitControls = new OrbitControls(
@@ -81,7 +82,9 @@ class ModelManager3D extends ModelManager {
         material.dispose();
       });
       // 针对VRM的清理
-      this.model.vrm?.dispose();
+      if (this.model.vrm !== undefined) {
+        VRMUtils.deepDispose(this.model.vrm.scene);
+      }
       this.model = null;
     }
   }

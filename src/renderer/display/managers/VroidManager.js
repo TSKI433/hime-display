@@ -9,9 +9,9 @@ import { MorphMonitor } from "@display/utils/vroid/Monitor";
 import { VRoidFaceMeshCaptureManager as FaceMeshCaptureManager } from "@display/utils/capture/VRoidFaceMeshCaptureManager";
 import { VRoidHolisticCaptureManager as HolisticCaptureManager } from "@display/utils/capture/VRoidHolisticCaptureManager";
 import {
-  VRM,
   VRMHumanBoneName,
   VRMExpressionPresetName,
+  VRMLoaderPlugin,
 } from "@pixiv/three-vrm";
 
 // 用于转头……VRM使用的坐标系和THREE是反的，不转的话模型永远是后脑勺对着你
@@ -26,6 +26,7 @@ export class VroidManager extends ModelManager3D {
   switchIn() {
     this.clock = new THREE.Clock();
     this.ModelLoader = new GLTFLoader();
+    this.ModelLoader.register((parser) => new VRMLoaderPlugin(parser));
     this.transformMonitor = new TransformMonitor();
     this.morphMonitor = new MorphMonitor();
     // scene
@@ -65,26 +66,25 @@ export class VroidManager extends ModelManager3D {
       this._initInstantConfig();
       const modelFile = modelInfo.entranceFile;
       this.ModelLoader.load(modelFile, (gltf) => {
-        VRM.from(gltf).then((vrm) => {
-          console.log("[Hime Display] VRM Loaded");
-          this._clearModel();
-          this.model = vrm.scene;
-          // 为了保证3D控制的通用性，将顶部的vrm对象挂载到了内部的模型上
-          this.model.vrm = vrm;
-          // 手动添加一个模型复位函数
-          this.model.pose = function () {
-            this.vrm.humanoid.resetPose();
-          };
-          // 模型绕Y轴旋转180度
-          this.model.rotateY(Math.PI);
-          this.scene.add(this.model);
-          if (!this.shouldRender) {
-            this.shouldRender = true;
-            this._render();
-          }
-          this._initMouceFocusHelper();
-          resolve(this._buildModelControlInfo(modelInfo));
-        });
+        const vrm = gltf.userData.vrm;
+        console.log("[Hime Display] VRM Loaded");
+        this._clearModel();
+        this.model = vrm.scene;
+        // 为了保证3D控制的通用性，将顶部的vrm对象挂载到了内部的模型上
+        this.model.vrm = vrm;
+        // 手动添加一个模型复位函数
+        this.model.pose = function () {
+          this.vrm.humanoid.resetPose();
+        };
+        // 模型绕Y轴旋转180度
+        this.model.rotateY(Math.PI);
+        this.scene.add(this.model);
+        if (!this.shouldRender) {
+          this.shouldRender = true;
+          this._render();
+        }
+        this._initMouceFocusHelper();
+        resolve(this._buildModelControlInfo(modelInfo));
       });
     });
   }
@@ -212,7 +212,7 @@ export class VroidManager extends ModelManager3D {
     }
   }
   _setMorphWeight({ morphName, weight }) {
-    this.model.vrm.blendShapeProxy.setValue(morphName, weight);
+    this.model.vrm.expressionManager.setValue(morphName, weight);
   }
   // 不使用箭头函数会导致this的指向出错，若使用bind更改this指向，会导致返回的function和原函数不同，无法移出事件监听器
   _onPointerMove = (event) => {
