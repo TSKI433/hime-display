@@ -8,7 +8,11 @@ import { TransformMonitor } from "@display/utils/3d/Monitor";
 import { MorphMonitor } from "@display/utils/vroid/Monitor";
 import { VRoidFaceMeshCaptureManager as FaceMeshCaptureManager } from "@display/utils/capture/VRoidFaceMeshCaptureManager";
 import { VRoidHolisticCaptureManager as HolisticCaptureManager } from "@display/utils/capture/VRoidHolisticCaptureManager";
-import { VRM, VRMSchema } from "@pixiv/three-vrm";
+import {
+  VRM,
+  VRMHumanBoneName,
+  VRMExpressionPresetName,
+} from "@pixiv/three-vrm";
 
 // 用于转头……VRM使用的坐标系和THREE是反的，不转的话模型永远是后脑勺对着你
 const turnHeadQuaternion = new THREE.Quaternion().setFromEuler(
@@ -103,7 +107,7 @@ export class VroidManager extends ModelManager3D {
   }
   _initMouceFocusHelper() {
     this.mouseFocusHelper = new MouseFocusHelper(
-      this.model.vrm.humanoid.getBoneNode(VRMSchema.HumanoidBoneName.Head),
+      this.model.vrm.humanoid.getBoneNode(VRMHumanBoneName.Head),
       this.camera
     );
   }
@@ -123,7 +127,7 @@ export class VroidManager extends ModelManager3D {
           value: this.model.vrm.meta.violentUssageName,
         },
       ],
-      morph: Object.values(VRMSchema.BlendShapePresetName),
+      morph: Object.values(VRMExpressionPresetName),
       // 必须在添加上模型后再构建信息
       transform: buildNodeInfoTreeAndList(this.scene),
     };

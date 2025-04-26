@@ -1,4 +1,4 @@
-import { VRMSchema } from "@pixiv/three-vrm";
+import { VRMExpressionPresetName } from "@pixiv/three-vrm";
 class MorphMonitor {
   constructor() {
     this.value = 0;
@@ -8,9 +8,7 @@ class MorphMonitor {
   bind(target, model = null) {
     this.model = model;
     this.morpName = target;
-    if (
-      !Object.values(VRMSchema.BlendShapePresetName).includes(this.morpName)
-    ) {
+    if (!Object.values(VRMExpressionPresetName).includes(this.morpName)) {
       throw new Error(
         `MorphMonitor: morph target ${this.morpName} not found in the model`
       );
