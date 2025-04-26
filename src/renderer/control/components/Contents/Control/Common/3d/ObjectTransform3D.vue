@@ -43,7 +43,7 @@ const nodeIdNow = ref("");
 // 此处发现，vue的watch对于ref返回原始值，对于reactive返回代理值
 watch(nodeIdNow, (newId, oldId) => {
   if (newId === oldId) return;
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:bind-node-transform",
     data: { nodeId: newId },
   });
@@ -53,7 +53,7 @@ watch(nodeIdNow, (newId, oldId) => {
 //      ipcAPI.setNodeTransform(nodeIdNow.value,toRaw(newTransform))
 // });
 function setNodeTransform() {
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:set-node-transform",
     data: {
       nodeId: nodeIdNow.value,

@@ -40,7 +40,7 @@ const transform = reactive({
   scale: 1,
 });
 function setModelTransform() {
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:set-model-transform",
     data: toRaw(transform),
   });
@@ -55,7 +55,7 @@ ipcAPI.handleSendToModelControl((event, message) => {
     }
   }
 });
-ipcAPI.sendToModelManager(appStore.displayWindowId, {
+ipcAPI.sendToModelManager({
   channel: "control:query-model-transform",
   data: null,
 });

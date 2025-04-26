@@ -17,7 +17,7 @@ const props = defineProps({
 });
 const selectedSkin = ref("default");
 function setSkin() {
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:set-skin",
     data: {
       skin: selectedSkin.value,

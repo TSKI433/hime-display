@@ -66,7 +66,7 @@ function setEventAnimation(animation) {
     instantConfig.value = currentMotion.value.name;
     instantConfig.label = currentMotion.value.name;
   }
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:change-instant-config",
     data: toRaw(instantConfig),
   });

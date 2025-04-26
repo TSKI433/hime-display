@@ -14,9 +14,9 @@ export function value() {
 export function write(value, data) {
   db.set(value, data).write();
   // display从主进程请求配置，还得通知主进程更新一下
-  ipcRenderer.send("control:update-config");
+  ipcRenderer.send("control2main:update-config");
 }
 export function resetAllConfig() {
   db.setState(defaultConfig).write();
-  ipcRenderer.send("control:update-config");
+  ipcRenderer.send("control2main:update-config");
 }

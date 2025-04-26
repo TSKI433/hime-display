@@ -109,7 +109,7 @@ function loadModelNow(modelInfo) {
   // 更新数据库中的当前模型信息
   appStore.database.modelNow = rawModelInfo;
   window.nodeAPI.database.write("modelNow", rawModelInfo);
-  ipcAPI.loadModel(appStore.displayWindowId, rawModelInfo);
+  ipcAPI.loadModel(rawModelInfo);
   console.log(
     `[Hime Display] Load model: name:${rawModelInfo.name}, modelType:${rawModelInfo.modelType}`
   );
@@ -125,7 +125,7 @@ function loadModelNow(modelInfo) {
 watch(appStore.displayWindowOpened, (value) => {
   console.log("[Hime Display] displayWindowId changed", value.value);
   if (value.value) {
-    ipcAPI.queryDisplayWindowState(appStore.displayWindowId);
+    ipcAPI.queryDisplayWindowState();
     ipcAPI.handleDisplayWindowState((event, message) => {
       console.log("[Hime Display] displayWindowState", message);
       if (

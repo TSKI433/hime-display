@@ -81,7 +81,7 @@ const selectedParameterIndex = computed(() => {
 });
 function bindParameterId() {
   if (selectedParameterId.value === "") return;
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:bind-parameter",
     data: {
       parameterId: selectedParameterId.value,
@@ -89,7 +89,7 @@ function bindParameterId() {
   });
 }
 function setParameterValue() {
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:set-parameter",
     data: {
       parameterId: selectedParameterId.value,
@@ -103,7 +103,7 @@ const selectedPartId = ref("");
 const partOpacity = ref(0);
 function bindPartId() {
   if (selectedPartId.value === "") return;
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:bind-part",
     data: {
       partId: selectedPartId.value,
@@ -111,7 +111,7 @@ function bindPartId() {
   });
 }
 function setPartOpacity() {
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:set-part",
     data: {
       partId: selectedPartId.value,
@@ -137,7 +137,7 @@ const trackMouse = reactive({
   value: true,
 });
 watch(trackMouse, () => {
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:change-instant-config",
     data: toRaw(trackMouse),
   });
@@ -147,7 +147,7 @@ const autoBreath = reactive({
   value: true,
 });
 watch(autoBreath, () => {
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:change-instant-config",
     data: toRaw(autoBreath),
   });
@@ -157,7 +157,7 @@ const autoEyeBlink = reactive({
   value: true,
 });
 watch(autoEyeBlink, () => {
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:change-instant-config",
     data: toRaw(autoEyeBlink),
   });

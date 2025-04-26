@@ -140,7 +140,7 @@ function changeCurrentAudioInfo(currentRow) {
 }
 function playMotion() {
   if (currentMotionInfo.value !== null) {
-    ipcAPI.sendToModelManager(appStore.displayWindowId, {
+    ipcAPI.sendToModelManager({
       channel: "control:play-motion",
       data: {
         motionFilePath: currentMotionInfo.value.entranceFile,
@@ -151,7 +151,7 @@ function playMotion() {
 }
 function playMotionWithAudio() {
   if (currentMotionInfo.value !== null && currentAudioInfo.value !== null) {
-    ipcAPI.sendToModelManager(appStore.displayWindowId, {
+    ipcAPI.sendToModelManager({
       channel: "control:play-motion-with-audio",
       data: {
         motionFilePath: currentMotionInfo.value.entranceFile,
@@ -167,7 +167,7 @@ const motionLoaded = ref(false);
 const motionPlaying = ref(false);
 function setMotionState() {
   if (motionLoaded.value) {
-    ipcAPI.sendToModelManager(appStore.displayWindowId, {
+    ipcAPI.sendToModelManager({
       channel: "control:set-motion-state",
       data: {
         state: motionPlaying.value ? "pause" : "play",
@@ -177,7 +177,7 @@ function setMotionState() {
   }
 }
 function quitAnimationPlay() {
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:quit-motion",
     data: null,
   });
@@ -191,7 +191,7 @@ const physicsSimulation = reactive({
 watch(physicsSimulation, () => {
   // 发现个有意思的问题，使用watch监视reactive，回调函数返回的新旧两个参数其实都指向那个reactive对象，所以下方的判断永远不成立
   // if (newVal.value !== oldVal.value) {
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:change-instant-config",
     data: toRaw(physicsSimulation),
   });
@@ -201,7 +201,7 @@ const mixamoLegTranslateMode = reactive({
   value: "ik",
 });
 watch(mixamoLegTranslateMode, () => {
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:change-instant-config",
     data: toRaw(mixamoLegTranslateMode),
   });

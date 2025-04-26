@@ -34,7 +34,7 @@ const ipcAPI = window.nodeAPI.ipc;
 const capturing = ref(false);
 const motionCaptureType = ref("faceMesh");
 function launchCapture() {
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:launch-capture",
     data: {
       type: motionCaptureType.value,
@@ -43,7 +43,7 @@ function launchCapture() {
   capturing.value = true;
 }
 function quitCapture() {
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:quit-capture",
     data: null,
   });

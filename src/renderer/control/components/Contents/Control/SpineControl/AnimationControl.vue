@@ -65,7 +65,7 @@ function changeCurrentMotion(currentRow) {
   currentMotion.value = currentRow;
 }
 function loadMotionNow() {
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:play-motion",
     data: {
       motion: toRaw(currentMotion.value),
@@ -74,7 +74,7 @@ function loadMotionNow() {
   });
 }
 function quitMotion() {
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:quit-motion",
     data: null,
   });

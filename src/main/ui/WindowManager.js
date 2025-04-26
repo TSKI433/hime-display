@@ -113,7 +113,7 @@ export class WindowManager extends EventEmitter {
   updateWindowIds(windowName) {
     this.sendMessageToWindow(
       windowName,
-      "main:update-window-ids",
+      "main2control&display:update-window-ids",
       this.windowIds
     );
   }

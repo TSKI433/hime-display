@@ -53,7 +53,7 @@ const selectedMorphName = ref("");
 const morphWeight = ref(0);
 function bindMorphTarget() {
   if (selectedMorphName.value === "") return;
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:bind-morph-target",
     data: {
       morphName: selectedMorphName.value,
@@ -61,7 +61,7 @@ function bindMorphTarget() {
   });
 }
 function setMorphWeight() {
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:set-morph-weight",
     data: {
       morphName: selectedMorphName.value,
@@ -86,7 +86,7 @@ const trackMouse = reactive({
   value: true,
 });
 watch(trackMouse, () => {
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:change-instant-config",
     data: toRaw(trackMouse),
   });
@@ -98,7 +98,7 @@ const vrmUpdate = reactive({
   value: true,
 });
 watch(vrmUpdate, () => {
-  ipcAPI.sendToModelManager(appStore.displayWindowId, {
+  ipcAPI.sendToModelManager({
     channel: "control:change-instant-config",
     data: toRaw(vrmUpdate),
   });
