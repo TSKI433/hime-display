@@ -57,7 +57,7 @@ const contentComponentNow = computed(() => {
 
 .hime-el-form--config {
   .el-form-item {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     .el-form-item__label {
       font-size: var(--el-font-size-medium);
       font-weight: bold;

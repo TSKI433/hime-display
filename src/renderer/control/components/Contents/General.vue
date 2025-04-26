@@ -16,21 +16,23 @@
           </config-item>
         </el-form-item>
         <el-form-item :label="$t('general.language')">
-          <el-select
-            v-model="appStore.config.general.language"
-            @change="changeLanguage"
-          >
-            <el-option
-              v-for="(value, label) in languageNames"
-              :key="label"
-              :label="label"
-              :value="value"
-            />
-          </el-select>
+          <config-item>
+            <el-select
+              v-model="appStore.config.general.language"
+              @change="changeLanguage"
+            >
+              <el-option
+                v-for="(value, label) in languageNames"
+                :key="label"
+                :label="label"
+                :value="value"
+              />
+            </el-select>
+          </config-item>
         </el-form-item>
         <el-form-item :label="$t('general.developer-tools')">
           <!-- 配置项的样式被调整过了，这里懒得拉样式，整个div框起来算了 -->
-          <div>
+          <config-item>
             <el-button @click="openDevTool('control')">
               {{ $t("general.control-panel") }}
             </el-button>
@@ -39,7 +41,7 @@
               :disabled="appStore.displayWindowId === -1"
               >{{ $t("general.display-window") }}</el-button
             >
-          </div>
+          </config-item>
           <config-item :label="$t('general.alert-error-info')">
             <el-switch v-model="appStore.config.general['error-report']" />
           </config-item>
