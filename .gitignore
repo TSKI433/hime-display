@@ -20,3 +20,6 @@ build
 gomibako
 /info
 .yarnrc
+
+auto-imports.d.ts
+components.d.ts
