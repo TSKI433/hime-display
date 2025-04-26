@@ -20,6 +20,7 @@ export const windowsOptions = {
         // contextIsolation: false,
         // webSecurity: false,
         devTools: true,
+        sandbox: false,
         preload: resolve(__dirname, "./control-preload.cjs.js"),
       },
     },
