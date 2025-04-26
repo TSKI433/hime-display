@@ -9,6 +9,7 @@ export default defineConfig({
       entry: resolve(__dirname, "./index.js"),
       name: "main",
       formats: ["cjs"],
+      fileName: (format) => `main.${format}.js`,
     },
     rollupOptions: {
       plugins: [
