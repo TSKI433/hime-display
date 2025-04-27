@@ -20,7 +20,21 @@ const poseRigList = [
 const leftHandRigList = [
   { boneName: "leftHand", rigName: "LeftWrist" },
   { boneName: "leftThumbProximal", rigName: "LeftThumbProximal" },
-  { boneName: "leftThumbIntermediate", rigName: "LeftThumbIntermediate" },
+  /* 抽象，VRM1.0怎么开始跟骨架结构较劲起来了，vrm.humanoid.normalizedHumanBones中，leftThumbIntermediate消失了，多了个leftThumbMetacarpal
+   Metacarpal：最靠近手腕的，掌骨
+   Proximal：第一节指骨
+   Intermediate：第二节指骨
+   Distal：第三节指骨，即指尖
+   我也不是很了解，但貌似拇指的确没有第二节的Intermediate
+   那从这个道理上来讲可能需要这么对应：
+   | 从手腕数起 | 拇指rigName  | VRM1.0拇指boneName |
+   | :--------: | :----------: | :----------------: |
+   |   第一节   |   Proximal   |     Metacarpal     |
+   |   第二节   | Intermediate |      Proximal      |
+   |   第三节   |    Distal    |       Distal       |
+   没学过人体，上方纯瞎猜，但现在反正全身捕捉效果很炸裂，姑且先将leftThumbIntermediate更名为leftThumbMetacarpal，右手同理
+   */
+  { boneName: "leftThumbMetacarpal", rigName: "LeftThumbIntermediate" },
   { boneName: "leftThumbDistal", rigName: "LeftThumbDistal" },
   { boneName: "leftIndexProximal", rigName: "LeftIndexProximal" },
   { boneName: "leftIndexIntermediate", rigName: "LeftIndexIntermediate" },
@@ -38,7 +52,7 @@ const leftHandRigList = [
 const rightHandRigList = [
   { boneName: "rightHand", rigName: "RightWrist" },
   { boneName: "rightThumbProximal", rigName: "RightThumbProximal" },
-  { boneName: "rightThumbIntermediate", rigName: "RightThumbIntermediate" },
+  { boneName: "rightThumbMetacarpal", rigName: "RightThumbIntermediate" },
   { boneName: "rightThumbDistal", rigName: "RightThumbDistal" },
   { boneName: "rightIndexProximal", rigName: "RightIndexProximal" },
   { boneName: "rightIndexIntermediate", rigName: "RightIndexIntermediate" },

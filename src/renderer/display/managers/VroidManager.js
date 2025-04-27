@@ -57,7 +57,7 @@ export class VroidManager extends ModelManager3D {
     this._addEventListeners();
   }
   _addLight() {
-    const directionalLight = new THREE.DirectionalLight(0xffffff);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, Math.PI);
     directionalLight.position.set(1.0, 1.0, 1.0).normalize();
     this.scene.add(directionalLight);
   }
@@ -72,9 +72,12 @@ export class VroidManager extends ModelManager3D {
         this.model = vrm.scene;
         // 为了保证3D控制的通用性，将顶部的vrm对象挂载到了内部的模型上
         this.model.vrm = vrm;
+        // VRM1.0新机制，默认使用代理骨骼(Normalized Human Bones)控制模型，这里是开关
+        // https://github.com/pixiv/three-vrm/blob/dev/guides/migration-guide-1.0.md#normalized-human-bones
+        // this.model.vrm.humanoid.autoUpdateHumanBones = false;
         // 手动添加一个模型复位函数
         this.model.pose = function () {
-          this.vrm.humanoid.resetPose();
+          this.vrm.humanoid.resetNormalizedPose();
         };
         // 模型绕Y轴旋转180度
         this.model.rotateY(Math.PI);
@@ -107,7 +110,8 @@ export class VroidManager extends ModelManager3D {
   }
   _initMouceFocusHelper() {
     this.mouseFocusHelper = new MouseFocusHelper(
-      this.model.vrm.humanoid.getBoneNode(VRMHumanBoneName.Head),
+      this.model.vrm.humanoid.getNormalizedBoneNode(VRMHumanBoneName.Head),
+      // this.model.vrm.humanoid.getBoneNode(VRMHumanBoneName.Head),
       this.camera
     );
   }
