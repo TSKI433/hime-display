@@ -51,10 +51,20 @@ export class MmdManager extends ModelManager3D {
     this._addEventListeners();
   }
   _addLight() {
-    const ambient = new THREE.AmbientLight(0x666666);
+    // 旧版exmaple的光照
+    // const ambient = new THREE.AmbientLight(0x666666);
+    // this.scene.add(ambient);
+    // const directionalLight = new THREE.DirectionalLight(0x887766);
+    // directionalLight.position.z = 100;
+    // this.scene.add(directionalLight);
+
+    // Three.js的r155版貌似对光照系统进行了大改，这里将r169的mmd example光照复制了过来，和之前有区别，不过看着效果还行，要较劲也是之后再来吧
+    // https://discourse.threejs.org/t/updates-to-lighting-in-three-js-r155/53733
+    const ambient = new THREE.AmbientLight(0xaaaaaa, 3);
     this.scene.add(ambient);
-    const directionalLight = new THREE.DirectionalLight(0x887766);
-    directionalLight.position.z = 100;
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+    directionalLight.position.set(-1, 1, 1).normalize();
     this.scene.add(directionalLight);
   }
   loadModel(modelInfo) {
