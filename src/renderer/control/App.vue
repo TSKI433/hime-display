@@ -150,4 +150,7 @@ img {
 .el-divider--horizontal.hime-el-divider {
   margin: 12px 0;
 }
+.el-table {
+  --el-bg-color: transparent;
+}
 </style>
