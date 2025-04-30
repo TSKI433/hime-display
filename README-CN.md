@@ -93,20 +93,6 @@ yarn start
 yarn build
 ```
 
-### 若安装 electron 出现问题
-
-在国内可能会遇到无法安装 electron 的情况，本来用 cnpm 的话直接完美解决问题，但是由于这个项目使用了 yarn 的 workspace，使用 cnpm 也可能会出现一些问题。如果遇到使用 yarn 命令无法安装 electron 的情况，可以在项目的根目录新建`.yarnrc`文件配置代理源，内容如下：
-
-```
-registry "https://registry.npm.taobao.org"
-sass_binary_site "https://npm.taobao.org/mirrors/node-sass/"
-phantomjs_cdnurl "http://cnpmjs.org/downloads"
-electron_mirror "https://npm.taobao.org/mirrors/electron/"
-sqlite3_binary_host_mirror "https://foxgis.oss-cn-shanghai.aliyuncs.com/"
-profiler_binary_host_mirror "https://npm.taobao.org/mirrors/node-inspector/"
-chromedriver_cdnurl "https://cdn.npm.taobao.org/dist/chromedriver"
-```
-
 ## Special Thanks
 
 这是我的初次尝试开发一个完整的应用，各方面经验都十分欠缺。
