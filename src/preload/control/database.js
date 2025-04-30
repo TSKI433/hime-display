@@ -6,6 +6,7 @@ import util from "util";
 import path from "path";
 import { defalutDatabase } from "@shared/defaults/defalutDatabase";
 import { APP_DATA_PATH } from "./paths";
+import { detectSpineVersionFromBinary } from "./utils";
 const APP_DATABASE_PATH = path.join(APP_DATA_PATH, "database.json");
 const db = low(new lowFileSync(APP_DATABASE_PATH));
 db.defaults(defalutDatabase).write();
@@ -153,7 +154,8 @@ async function detectDatabaseItem(fileDir, sourceTypes, sourcePath) {
     }
     case ".skel": {
       if (sourceTypes["Spine"]) {
-        processSkel(fileDir, sourcePath);
+        const fileData = await util.promisify(fs.readFile)(fileDir);
+        processSkel(fileDir, sourcePath, fileData);
       }
       break;
     }
@@ -227,7 +229,8 @@ function processVrm(fileDir, sourcePath) {
   });
 }
 // todo: spine模型比较特殊，即使是加载模型，版本也不向下兼容……因此之后有必要进一步对模型版本进行判断
-function processSkel(fileDir, sourcePath) {
+function processSkel(fileDir, sourcePath, fileData) {
+  const version = detectSpineVersionFromBinary(fileData);
   writeModelInfo({
     name: splitDirName(fileDir),
     modelType: "Spine",
@@ -235,6 +238,7 @@ function processSkel(fileDir, sourcePath) {
     entranceFile: resolveEntrancePath(fileDir),
     themeColor: "#3fa9f5",
     sourcePath,
+    version,
   });
 }
 function processSpineJson(fileDir, fileJson, sourcePath) {
@@ -246,6 +250,7 @@ function processSpineJson(fileDir, fileJson, sourcePath) {
       entranceFile: resolveEntrancePath(fileDir),
       themeColor: "#3fa9f5",
       sourcePath,
+      version: fileJson.skeleton.spine,
     });
   }
 }

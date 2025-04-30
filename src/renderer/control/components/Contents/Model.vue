@@ -26,6 +26,11 @@
             show-overflow-tooltip
             sortable
           />
+          <el-table-column :label="'版本'" prop="name">
+            <template #default="props">
+              {{ props.row.version ?? "" }}
+            </template>
+          </el-table-column>
           <el-table-column
             :label="$t('model.type')"
             :filters="[
