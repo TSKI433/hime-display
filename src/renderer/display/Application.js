@@ -2,6 +2,7 @@ import { Live2dManager } from "@display/managers/Live2dManager";
 import { MmdManager } from "@display/managers/MmdManager";
 import { VroidManager } from "@display/managers/VroidManager";
 import { SpineManager } from "@display/managers/SpineManager";
+import { SpineManager42 } from "@display/managers/SpineManager42";
 export class Application {
   constructor() {
     this.init();
@@ -12,7 +13,7 @@ export class Application {
     const configData = await this.nodeAPI.ipc.queryConfig();
     this.config = configData.config;
     this.windowName = configData.windowName;
-    this.canvas = document.getElementById("display-canvas");
+    this.resetCanvas();
     const pixelRatioConfig = this.config.display["pixel-ratio"];
     this.resolution =
       pixelRatioConfig === "system"
@@ -63,16 +64,44 @@ export class Application {
     this.managers.MMD = new MmdManager(this);
     this.managers.VRoid = new VroidManager(this);
     this.managers.Spine = new SpineManager(this);
+    this.managers.Spine42 = new SpineManager42(this);
   }
   handleIpcMessages() {
     this.nodeAPI.ipc.handleLoadModel((event, modelInfo) => {
       console.log(
         `[Hime Display] Load model: name:${modelInfo.name}, modelType:${modelInfo.modelType}`
       );
+      let managerType;
+      if (modelInfo.modelType === "Spine") {
+        const version = modelInfo.version;
+        if (version === undefined) {
+          modelType = "Spine";
+        } else {
+          const versionNumber = version.split(".").slice(0, 2).join(".");
+          switch (versionNumber) {
+            case "3.7":
+            case "3.8":
+            case "4.0":
+            case "4.1":
+              managerType = "Spine";
+              break;
+            case "4.2":
+              managerType = "Spine42";
+              break;
+            default:
+              throw new Error(
+                `不支持的Spine版本: ${versionNumber}，请使用3.8或4.2版本的模型`
+              );
+          }
+        }
+      } else {
+        managerType = modelInfo.modelType;
+      }
       // 通过managers.now切换的一大优势就是，事件监听无需手动切换
-      if (this.managers.now?.modelType !== modelInfo.modelType) {
+      if (this.managers.now?.modelType !== managerType) {
         this.managers.now?.switchOut();
-        this.managers.now = this.managers[modelInfo.modelType];
+        this.resetCanvas();
+        this.managers.now = this.managers[managerType];
         this.managers.now.switchIn();
         this.managers.now.onSendToModelControl((message) => {
           this.nodeAPI.ipc.sendToModelControl(message);
@@ -110,12 +139,20 @@ export class Application {
   }
   handleWindowResize() {
     window.addEventListener("resize", () => {
-      if (this.managers.now !== null) {
+      if (this.managers.now !== null && this.managers.now.onWindowResize) {
         this.managers.now.onWindowResize();
       }
     });
   }
-  detectClickThrough() {
+  resetCanvas() {
+    // 加载spine4.2采用了pixi v8，不知道在destry进行了什么阴间操作，会导致gl上下文报废
+    // 此时重新用pixi初始化app的话会报错Invalid value of `0` passed to `checkMaxIfStatementsInShader`
+    // three也无法成功初始化
+    // 懒得深究原理，直接每次切出时销毁canvas，重新创建一个新的canvas
+    this.canvas?.remove();
+    this.canvas = document.createElement("canvas");
+    this.canvas.id = "display-canvas";
+    document.body.insertBefore(this.canvas, document.body.firstChild);
     // Windows7获取不到webgl2的上下文，因此获取webgl，如果获取了一种type的上下文，再获取其他上下文会报错，但是获取webgl2失败并不影响
     // 无论是pixi.js还是three.js都会有现获取webgl2的上下文，找不到再切换到webgl，因此我这里的操作即使在启动渲染进程之前操作也不会有问题
     // 但要是在渲染启动之前获取过webgl的上下文，那webgl2就没戏了
@@ -125,6 +162,8 @@ export class Application {
     this.context =
       this.canvas.getContext("webgl2", { preserveDrawingBuffer: true }) ||
       this.canvas.getContext("webgl", { preserveDrawingBuffer: true });
+  }
+  detectClickThrough() {
     const detect = (event) => {
       this.context.readPixels(
         event.clientX * this.resolution,

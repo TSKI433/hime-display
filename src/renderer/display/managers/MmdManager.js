@@ -39,7 +39,7 @@ export class MmdManager extends ModelManager3D {
     this.renderer = new THREE.WebGLRenderer({
       antialias: this.antialias,
       aplpha: true,
-      canvas: this.canvas,
+      canvas: document.getElementById("display-canvas"),
     });
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.setPixelRatio(this.resolution);

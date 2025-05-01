@@ -12,19 +12,24 @@ export class SpineManager extends ModelManager {
     this.app = null;
     this.model = null;
     this.internalModel = null;
+    this.PIXI = window.PIXI;
   }
-  switchIn() {
-    this.app = new PIXI.Application({
+  getApplicationConfig() {
+    return {
       // 之后手动触发渲染
       autoStart: false,
-      view: this.canvas,
+      view: document.getElementById("display-canvas"),
       // 即使canvas已经通过CSS配置占满全屏，不做这一影响设置依旧会使得画面拉伸
       resizeTo: window,
       antialias: this.antialias,
       autoDensity: true,
       transparent: true,
       resolution: this.resolution,
-    });
+    };
+  }
+
+  switchIn() {
+    this.app = new this.PIXI.Application(this.getApplicationConfig());
   }
   switchOut() {
     // this._removeEventListeners();
@@ -59,38 +64,41 @@ export class SpineManager extends ModelManager {
         )
         .load((loader, resources) => {
           // 不清除缓存的话，重复加载时天天报warn看着不舒服
-          PIXI.utils.clearTextureCache();
+          this.PIXI.utils.clearTextureCache();
           // 学着pixi-live2d-display开始套娃……
-          this.internalModel = new PIXI.spine.Spine(
+          this.internalModel = new this.PIXI.spine.Spine(
             resources.spineCharacter.spineData
           );
-          // 官方的setSkinByName函数有点问题，自己重新写了一个强制切换皮肤的函数
-          this.internalModel.skeleton.setSkinByNameForce =
-            function setSkinByNameForce(name) {
-              for (let i = 0; i < this.slots.length; i++) {
-                this.slots[i].attachment = null;
-              }
-              this.skin = undefined;
-              this.setSkinByName(name);
-            };
-          const localRect = this.internalModel.getLocalBounds();
-          this.internalModel.position.set(-localRect.x, -localRect.y);
-          this.model = new PIXI.Container();
-          this.model.addChild(this.internalModel);
-          this.app.stage.addChild(this.model);
-          setModelBaseTransfrom(this.model, this.config.display, "spine");
-          this.model.interactive = true;
-          if (this.config.display["spine-draggable"]) {
-            draggable(this.model);
-          }
-          this.model.on("dragging", this._updateModelTransform.bind(this));
-          this._bindEventAnimation();
-          if (!this.shouldRender) {
-            this._startRender();
-          }
+          this._setupModel();
           resolve(this._buildModelControlInfo(modelInfo));
         });
     });
+  }
+  _setupModel() {
+    // 官方的setSkinByName函数有点问题，自己重新写了一个强制切换皮肤的函数
+    this.internalModel.skeleton.setSkinByNameForce =
+      function setSkinByNameForce(name) {
+        for (let i = 0; i < this.slots.length; i++) {
+          this.slots[i].attachment = null;
+        }
+        this.skin = undefined;
+        this.setSkinByName(name);
+      };
+    const localRect = this.internalModel.getLocalBounds();
+    this.internalModel.position.set(-localRect.x, -localRect.y);
+    this.model = new this.PIXI.Container();
+    this.model.addChild(this.internalModel);
+    this.app.stage.addChild(this.model);
+    setModelBaseTransfrom(this.model, this.config.display, "spine");
+    this.model.interactive = true;
+    if (this.config.display["spine-draggable"]) {
+      draggable(this.model);
+    }
+    this.model.on("dragging", this._updateModelTransform.bind(this));
+    this._bindEventAnimation();
+    if (!this.shouldRender) {
+      this._startRender();
+    }
   }
   _initInstantConfig() {
     this.instantConfig = {

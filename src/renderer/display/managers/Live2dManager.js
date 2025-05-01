@@ -20,7 +20,7 @@ export class Live2dManager extends ModelManager {
   switchIn() {
     this.app = new PIXI.Application({
       autoStart: true,
-      view: this.canvas,
+      view: document.getElementById("display-canvas"),
       // 即使canvas已经通过CSS配置占满全屏，不做这一影响设置依旧会使得画面拉伸
       resizeTo: window,
       antialias: this.antialias,

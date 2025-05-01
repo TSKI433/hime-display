@@ -51,7 +51,6 @@
 </head>
 
 <body>
-	<canvas id="display-canvas"></canvas>
 	<!-- 放弃希望了，我感觉做不到让vite能够正确引入pixi-live2d-display的了
 	pixi-live2d-display的自动载入依赖于window下的PIXI对象，这意味着一定要在import pixi.js后将其挂到window后再引入pixi-live2d-display
 	参考文档中防止import被提升，通过require的特性，使用webpack打包实现，然而，vite的开发服务器使用的是真的ESM……require直接无法解析

@@ -26,9 +26,9 @@
             show-overflow-tooltip
             sortable
           />
-          <el-table-column :label="'版本'" prop="name">
+          <el-table-column :label="'版本'" prop="name" align="center">
             <template #default="props">
-              {{ props.row.version ?? "" }}
+              {{ props.row.version ?? "--" }}
             </template>
           </el-table-column>
           <el-table-column
