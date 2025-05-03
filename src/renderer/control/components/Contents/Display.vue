@@ -107,7 +107,6 @@
           <config-item :label="$t('display.background-color')">
             <el-color-picker
               v-model="appStore.config.display.background"
-              show-alpha
               color-format="hex"
             />
           </config-item>
@@ -220,7 +219,7 @@
         <span>{{ $t("display.display-window-state") }}</span>
         <el-tag
           effect="light"
-          :type="appStore.displayWindowId === -1 ? 'warning' : ''"
+          :type="appStore.displayWindowId === -1 ? 'warning' : 'primary'"
         >
           {{
             appStore.displayWindowId !== -1
