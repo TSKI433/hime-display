@@ -230,6 +230,13 @@
         </el-tag>
       </div>
       <div class="display-option__control">
+        <el-button
+          @click="ipcAPI.screenshot"
+          :disabled="appStore.displayWindowId === -1"
+          plain
+        >
+          截图
+        </el-button>
         <el-button @click="launchDisplayWindow" plain>{{
           appStore.displayWindowId !== -1
             ? $t("display.reload")

@@ -2,6 +2,8 @@ import { EventEmitter } from "events";
 import { WindowManager } from "./ui/WindowManager";
 import { ThemeManager } from "./ui/ThemeManager";
 import { TrayManager } from "./ui/TrayManager";
+import fs from "fs";
+import { Buffer } from "buffer";
 import low from "lowdb";
 import lowFileSync from "lowdb/adapters/FileSync";
 import {
@@ -170,6 +172,27 @@ export class Application extends EventEmitter {
       i18next.changeLanguage(language);
       this.trayManager.buildMenu();
     });
+    ipcMain.on(
+      "display2main:save-image",
+      async (event, arrayBuffer, screenshotName) => {
+        console.log("[Hime Display] Save image");
+        const { canceled, filePath } = await dialog.showSaveDialog({
+          title: "保存模型截图",
+          defaultPath: `${screenshotName}.png`,
+          filters: [{ name: "PNG 图片", extensions: ["png"] }],
+        });
+
+        if (!canceled && filePath) {
+          fs.writeFile(filePath, Buffer.from(arrayBuffer), (err) => {
+            if (err) {
+              console.error("保存失败:", err);
+            } else {
+              console.log("保存成功:", filePath);
+            }
+          });
+        }
+      }
+    );
 
     // 窗口之间的消息中转
     const routes = [
@@ -180,6 +203,7 @@ export class Application extends EventEmitter {
       ["control2display:load-model", "display"],
       ["control2display:send-to-model-manager", "display"],
       ["control2display:query-display-window-state", "display"],
+      ["control2display:screenshot", "display"],
     ];
     routes.forEach(([channel, targetWindowKey]) => {
       ipcMain.on(channel, (event, ...args) => {

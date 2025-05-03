@@ -3,6 +3,7 @@ import { MmdManager } from "@display/managers/MmdManager";
 import { VroidManager } from "@display/managers/VroidManager";
 import { SpineManager } from "@display/managers/SpineManager";
 import { SpineManager42 } from "@display/managers/SpineManager42";
+import { getCurrentDateString } from "./utils/common";
 export class Application {
   constructor() {
     this.init();
@@ -27,6 +28,7 @@ export class Application {
       // 由于控制面板不会关闭，缓存不会清除，模型的基础信息就不必在这里发过去了
       // modelControlInfo: null,
     };
+    this.currentModelInfo = null;
     this.setBackgroundColor();
     this.initStats();
     this.initManagers();
@@ -63,11 +65,12 @@ export class Application {
       console.log(
         `[Hime Display] Load model: name:${modelInfo.name}, modelType:${modelInfo.modelType}`
       );
+      this.currentModelInfo = modelInfo;
       let managerType;
       if (modelInfo.modelType === "Spine") {
         const version = modelInfo.version;
         if (version === undefined) {
-          modelType = "Spine";
+          managerType = "Spine";
         } else {
           const versionNumber = version.split(".").slice(0, 2).join(".");
           switch (versionNumber) {
@@ -114,6 +117,20 @@ export class Application {
     });
     this.nodeAPI.ipc.handleQueryDisplayWindowState(() => {
       this.nodeAPI.ipc.sendDisplayWindowState(this.state);
+    });
+    this.nodeAPI.ipc.handleScreenshot((event) => {
+      console.log("[Hime Display] Screenshot");
+      this.canvas.toBlob((blob) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const buffer = event.target.result;
+          const screenshotName = `HimeDisplay ${
+            this.currentModelInfo.name
+          } ${getCurrentDateString()}`;
+          this.nodeAPI.ipc.saveImage(buffer, screenshotName);
+        };
+        reader.readAsArrayBuffer(blob);
+      }, "image/png");
     });
   }
   setBackgroundColor() {

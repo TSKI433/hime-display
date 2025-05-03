@@ -51,3 +51,6 @@ export function sendToModelManager(message) {
 export function queryDisplayWindowState() {
   ipcRenderer.send("control2display:query-display-window-state");
 }
+export function screenshot() {
+  ipcRenderer.send("control2display:screenshot");
+}
