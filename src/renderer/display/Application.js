@@ -22,14 +22,6 @@ export class Application {
         ? 2
         : 1;
     this.antialias = this.config.display["antialias"];
-    if (
-      this.windowName === "displayFullScreen" &&
-      this.config.display["click-through"] === "transparent"
-    ) {
-      this.rgba = new Uint8Array(4);
-      this.ignoreFlag = true;
-      this.detectClickThrough();
-    }
     this.state = {
       modelLoaded: false,
       // 由于控制面板不会关闭，缓存不会清除，模型的基础信息就不必在这里发过去了
@@ -162,6 +154,14 @@ export class Application {
     this.context =
       this.canvas.getContext("webgl2", { preserveDrawingBuffer: true }) ||
       this.canvas.getContext("webgl", { preserveDrawingBuffer: true });
+    if (
+      this.windowName === "displayFullScreen" &&
+      this.config.display["click-through"] === "transparent"
+    ) {
+      this.rgba = new Uint8Array(4);
+      this.ignoreFlag = true;
+      this.detectClickThrough();
+    }
   }
   detectClickThrough() {
     const detect = (event) => {
