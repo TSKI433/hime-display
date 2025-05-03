@@ -136,6 +136,8 @@ export class Live2dManager extends ModelManager {
       this.model.destroy();
     }
     this.model = null;
+    this.parameterMonitor.clear();
+    this.partMonitor.clear();
   }
   _updateModelTransform() {
     this._sendToModelControl({

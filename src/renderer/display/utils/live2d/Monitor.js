@@ -43,6 +43,11 @@ class ParameterMonitor {
     }
     return changed;
   }
+  clear() {
+    this.value = 0;
+    this.model = null;
+    this.isJustBined = false;
+  }
 }
 class PartMonitor {
   constructor() {
@@ -82,6 +87,11 @@ class PartMonitor {
       }
     }
     return changed;
+  }
+  clear() {
+    this.value = 0;
+    this.model = null;
+    this.isJustBined = false;
   }
 }
 export { ParameterMonitor, PartMonitor };
