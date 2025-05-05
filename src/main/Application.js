@@ -172,28 +172,6 @@ export class Application extends EventEmitter {
       i18next.changeLanguage(language);
       this.trayManager.buildMenu();
     });
-    ipcMain.on(
-      "display2main:save-image",
-      async (event, arrayBuffer, screenshotName) => {
-        console.log("[Hime Display] Save image");
-        const { canceled, filePath } = await dialog.showSaveDialog({
-          title: "保存模型截图",
-          defaultPath: `${screenshotName}.png`,
-          filters: [{ name: "PNG 图片", extensions: ["png"] }],
-        });
-
-        if (!canceled && filePath) {
-          fs.writeFile(filePath, Buffer.from(arrayBuffer), (err) => {
-            if (err) {
-              console.error("保存失败:", err);
-            } else {
-              console.log("保存成功:", filePath);
-            }
-          });
-        }
-      }
-    );
-
     // 窗口之间的消息中转
     const routes = [
       ["display2control:model-control-info", "control"],

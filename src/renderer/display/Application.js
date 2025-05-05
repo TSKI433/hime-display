@@ -1,9 +1,10 @@
-import { Live2dManager } from "@display/managers/Live2dManager";
-import { MmdManager } from "@display/managers/MmdManager";
-import { VroidManager } from "@display/managers/VroidManager";
-import { SpineManager } from "@display/managers/SpineManager";
-import { SpineManager42 } from "@display/managers/SpineManager42";
-import { getCurrentDateString } from "./utils/common";
+import { Live2dManager } from "@display/modelManagers/Live2dManager";
+import { MmdManager } from "@display/modelManagers/MmdManager";
+import { VroidManager } from "@display/modelManagers/VroidManager";
+import { SpineManager } from "@display/modelManagers/SpineManager";
+import { SpineManager42 } from "@display/modelManagers/SpineManager42";
+import { RecordManager } from "@display/utils/record/RecordManager";
+
 export class Application {
   constructor() {
     this.init();
@@ -29,9 +30,10 @@ export class Application {
       // modelControlInfo: null,
     };
     this.currentModelInfo = null;
+    this.recordManager = new RecordManager(this);
     this.setBackgroundColor();
     this.initStats();
-    this.initManagers();
+    this.initModelManagers();
     this.handleWindowResize();
     // 在发送windowsID之前处理好其他的事情才能实现启动时加载模型
     this.initControlWindowId();
@@ -50,15 +52,15 @@ export class Application {
       this.controlWindowId = windowIds.control;
     });
   }
-  initManagers() {
-    this.managers = {
+  initModelManagers() {
+    this.modelManagers = {
       now: null,
     };
-    this.managers.Live2D = new Live2dManager(this);
-    this.managers.MMD = new MmdManager(this);
-    this.managers.VRoid = new VroidManager(this);
-    this.managers.Spine = new SpineManager(this);
-    this.managers.Spine42 = new SpineManager42(this);
+    this.modelManagers.Live2D = new Live2dManager(this);
+    this.modelManagers.MMD = new MmdManager(this);
+    this.modelManagers.VRoid = new VroidManager(this);
+    this.modelManagers.Spine = new SpineManager(this);
+    this.modelManagers.Spine42 = new SpineManager42(this);
   }
   handleIpcMessages() {
     this.nodeAPI.ipc.handleLoadModel((event, modelInfo) => {
@@ -93,16 +95,16 @@ export class Application {
         managerType = modelInfo.modelType;
       }
       // 通过managers.now切换的一大优势就是，事件监听无需手动切换
-      if (this.managers.now?.modelType !== managerType) {
-        this.managers.now?.switchOut();
+      if (this.modelManagers.now?.modelType !== managerType) {
+        this.modelManagers.now?.switchOut();
         this.resetCanvas();
-        this.managers.now = this.managers[managerType];
-        this.managers.now.switchIn();
-        this.managers.now.onSendToModelControl((message) => {
+        this.modelManagers.now = this.modelManagers[managerType];
+        this.modelManagers.now.switchIn();
+        this.modelManagers.now.onSendToModelControl((message) => {
           this.nodeAPI.ipc.sendToModelControl(message);
         });
       }
-      this.managers.now.loadModel(modelInfo).then((modelControlInfo) => {
+      this.modelManagers.now.loadModel(modelInfo).then((modelControlInfo) => {
         this.state.modelLoaded = true;
         // this.state.modelControlInfo = modelControlInfo;
         this.nodeAPI.ipc.sendModelControlInfo(modelControlInfo);
@@ -113,24 +115,14 @@ export class Application {
         `[Hime Display] Receive message from control: ${message.channel}, data:`,
         message.data
       );
-      this.managers.now.handleMessage(message);
+      this.modelManagers.now.handleMessage(message);
     });
     this.nodeAPI.ipc.handleQueryDisplayWindowState(() => {
       this.nodeAPI.ipc.sendDisplayWindowState(this.state);
     });
     this.nodeAPI.ipc.handleScreenshot((event) => {
       console.log("[Hime Display] Screenshot");
-      this.canvas.toBlob((blob) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const buffer = event.target.result;
-          const screenshotName = `HimeDisplay ${
-            this.currentModelInfo.name
-          } ${getCurrentDateString()}`;
-          this.nodeAPI.ipc.saveImage(buffer, screenshotName);
-        };
-        reader.readAsArrayBuffer(blob);
-      }, "image/png");
+      this.recordManager.takeScreenshot();
     });
   }
   setBackgroundColor() {
@@ -148,8 +140,11 @@ export class Application {
   }
   handleWindowResize() {
     window.addEventListener("resize", () => {
-      if (this.managers.now !== null && this.managers.now.onWindowResize) {
-        this.managers.now.onWindowResize();
+      if (
+        this.modelManagers.now !== null &&
+        this.modelManagers.now.onWindowResize
+      ) {
+        this.modelManagers.now.onWindowResize();
       }
     });
   }

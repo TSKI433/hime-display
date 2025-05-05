@@ -54,6 +54,3 @@ export function throwError(message) {
 export function handleScreenshot(callback) {
   ipcRenderer.on("control2display:screenshot", callback);
 }
-export function saveImage(arrayBuffer, screenshotName) {
-  ipcRenderer.send("display2main:save-image", arrayBuffer, screenshotName);
-}

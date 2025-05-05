@@ -62,7 +62,7 @@ export class Live2dManager extends ModelManager {
     });
     this.model.pose = function () {
       const coreModel = this.internalModel.coreModel;
-      coreModel._model.parameters.defaultValues.forEach((value, index) => {
+      coreModel._model?.parameters.defaultValues.forEach((value, index) => {
         coreModel._parameterValues[index] = value;
       });
     };
@@ -174,7 +174,10 @@ export class Live2dManager extends ModelManager {
       description: [
         { label: "name", value: modelInfo.name },
         { label: "extension-name", value: modelInfo.extensionName },
-        { label: "vertex-count", value: coreModel._model.drawables.count },
+        {
+          label: "vertex-count",
+          value: coreModel._model?.drawables.count ?? "未知",
+        },
         {
           label: "group-count",
           value: internalModel.settings.groups
@@ -206,8 +209,11 @@ export class Live2dManager extends ModelManager {
                 `Model ${modelInfo.name} has not motion count info.`
               ) && null,
         },
-        { label: "part-count", value: coreModel._model.parts.count },
-        { label: "parameter-count", value: coreModel._model.parameters.count },
+        { label: "part-count", value: coreModel._model?.parts.count ?? "未知" },
+        {
+          label: "parameter-count",
+          value: coreModel._model?.parameters.count ?? "未知",
+        },
       ],
       parameter: {
         // live2d的parameter没有固定值域
