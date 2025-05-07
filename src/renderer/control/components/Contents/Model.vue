@@ -28,7 +28,7 @@
           />
           <el-table-column :label="'版本'" prop="name" align="center">
             <template #default="props">
-              {{ props.row.version ?? "--" }}
+              {{ calcModelVersion(props.row) }}
             </template>
           </el-table-column>
           <el-table-column
@@ -157,6 +157,19 @@ const filterModelData = computed(() =>
       data.name.toLowerCase().includes(searchModelText.value.toLowerCase())
   )
 );
+const calcModelVersion = (modelInfo) => {
+  if (modelInfo.version) {
+    return modelInfo.version;
+  } else if (modelInfo.modelType === "Live2D") {
+    if (modelInfo.extensionName === "moc") {
+      return "2.x";
+    } else if (modelInfo.extensionName === "moc3") {
+      return "3.x/4.x";
+    }
+  } else {
+    return "--";
+  }
+};
 </script>
 
 <style lang="scss">
