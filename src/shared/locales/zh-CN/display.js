@@ -2,7 +2,7 @@ export default {
   window: "窗口",
   "window-type": "类型",
   fullscreen: "全屏",
-  windowed: "边框",
+  windowed: "窗口",
   show: "显示",
   "pixel-ratio": "像素比",
   "show-fps": "显示FPS",

@@ -2,7 +2,7 @@ export default {
   window: "Window",
   "window-type": "Window Type",
   fullscreen: "Fullscreen",
-  windowed: "Border",
+  windowed: "Windowed",
   show: "Show",
   "pixel-ratio": "Pixel Ratio",
   "show-fps": "Show FPS",

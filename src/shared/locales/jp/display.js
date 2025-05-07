@@ -2,7 +2,7 @@ export default {
   window: "ウィンドウ",
   "window-type": "ジャンル",
   fullscreen: "フルスクリーン",
-  windowed: "ボ＝ダー",
+  windowed: "ウィンドウ",
   show: "表示",
   "pixel-ratio": "ピクセル比",
   "show-fps": "FPSを表示",
