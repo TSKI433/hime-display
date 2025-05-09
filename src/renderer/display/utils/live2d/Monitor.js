@@ -32,9 +32,9 @@ class ParameterMonitor {
     }
     if (this.value !== null && this.model !== null) {
       const newParameterValue = Number(
-        this.model.internalModel.coreModel._parameterValues[
-          this.parameterIndex
-        ].toFixed(2)
+        this.model.internalModel.coreModel
+          .getParameterValueByIndex(this.parameterIndex)
+          .toFixed(2)
       );
       if (this.value !== newParameterValue) {
         this.value = newParameterValue;
@@ -77,9 +77,9 @@ class PartMonitor {
     }
     if (this.value !== null && this.model !== null) {
       const newPartOpacity = Number(
-        this.model.internalModel.coreModel._partOpacities[
-          this.partIndex
-        ].toFixed(2)
+        this.model.internalModel.coreModel
+          .getPartOpacityByIndex(this.partIndex)
+          .toFixed(2)
       );
       if (this.value !== newPartOpacity) {
         this.value = newPartOpacity;

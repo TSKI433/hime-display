@@ -2,6 +2,10 @@ import { ModelManager } from "./ModelManager";
 import { ParameterMonitor, PartMonitor } from "@display/utils/live2d/Monitor";
 import { Live2DFaceMeshCaptureManager as FaceMeshCaptureManager } from "@display/utils/capture/Live2DFaceMeshCaptureManager";
 import { setModelBaseTransfrom, draggable } from "@display/utils/2d/utils";
+import {
+  LIVE2D_VERSION,
+  AddCubism2Shim,
+} from "@display/utils/live2d/Cubism2Shim";
 export class Live2dManager extends ModelManager {
   constructor(parentApp) {
     super(parentApp);
@@ -59,11 +63,22 @@ export class Live2dManager extends ModelManager {
       // 更新和交互都交由之后手动控制
       autoUpdate: false,
       autoInteract: false,
+      // 阻止默认动作加载，在不更改库的情况下，只能传递一个基本不可能的group名进去了……
+      idleMotionGroup: "[永遠に$null]",
+      // idleMotionGroup: "motion",
     });
+    if (this.model.internalModel instanceof PIXI.live2d.Cubism2InternalModel) {
+      this.model.sdkVersion = LIVE2D_VERSION.CUBISM2;
+      AddCubism2Shim(this.model.internalModel.coreModel);
+    } else if (
+      this.model.internalModel instanceof PIXI.live2d.Cubism4InternalModel
+    ) {
+      this.model.sdkVersion = LIVE2D_VERSION.CUBISM4;
+    }
     this.model.pose = function () {
       const coreModel = this.internalModel.coreModel;
-      coreModel._model?.parameters.defaultValues.forEach((value, index) => {
-        coreModel._parameterValues[index] = value;
+      coreModel._model.parameters.defaultValues.forEach((value, index) => {
+        coreModel.setParameterValueByIndex(index, value);
       });
     };
     this.app.stage.addChild(this.model);
@@ -173,11 +188,8 @@ export class Live2dManager extends ModelManager {
     const modelControlInfo = {
       description: [
         { label: "name", value: modelInfo.name },
+        { label: "sdk-version", value: this.model.sdkVersion },
         { label: "extension-name", value: modelInfo.extensionName },
-        {
-          label: "vertex-count",
-          value: coreModel._model?.drawables.count ?? "未知",
-        },
         {
           label: "group-count",
           value: internalModel.settings.groups
@@ -209,11 +221,8 @@ export class Live2dManager extends ModelManager {
                 `Model ${modelInfo.name} has not motion count info.`
               ) && null,
         },
-        { label: "part-count", value: coreModel._model?.parts.count ?? "未知" },
-        {
-          label: "parameter-count",
-          value: coreModel._model?.parameters.count ?? "未知",
-        },
+        { label: "part-count", value: coreModel._partIds.length },
+        { label: "parameter-count", value: coreModel._parameterIds.length },
       ],
       parameter: {
         // live2d的parameter没有固定值域
@@ -326,9 +335,10 @@ export class Live2dManager extends ModelManager {
     this.parameterMonitor.bind(parameterId, this.model);
   }
   _setParameter({ parameterId, value }) {
-    const parameterIndex =
-      this.model.internalModel.coreModel._parameterIds.indexOf(parameterId);
-    this.model.internalModel.coreModel._parameterValues[parameterIndex] = value;
+    this.model.internalModel.coreModel.setParameterValueById(
+      parameterId,
+      value
+    );
     // 直接手动更新Monitor的数值，防止checkUpdate机制循环发送更新消息
     this.parameterMonitor.value = value;
   }
@@ -336,9 +346,7 @@ export class Live2dManager extends ModelManager {
     this.partMonitor.bind(partId, this.model);
   }
   _setPart({ partId, value }) {
-    const partIndex =
-      this.model.internalModel.coreModel._partIds.indexOf(partId);
-    this.model.internalModel.coreModel._partOpacities[partIndex] = value;
+    this.model.internalModel.coreModel.setPartOpacityById(partId, value);
     // 直接手动更新Monitor的数值，防止checkUpdate机制循环发送更新消息
     this.partMonitor.value = value;
   }
