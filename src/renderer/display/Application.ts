@@ -4,8 +4,50 @@ import { VroidManager } from "@display/modelManagers/VroidManager";
 import { SpineManager } from "@display/modelManagers/SpineManager";
 import { SpineManager42 } from "@display/modelManagers/SpineManager42";
 import { RecordManager } from "@display/utils/record/RecordManager";
+import { DisplayConfig } from "@shared/types";
+import Stats from "stats.js"
+
+export enum ModelManagerType {
+  Live2D = "Live2D",
+  MMD = "MMD",
+  VRoid = "VRoid",
+  Spine = "Spine",
+  Spine42 = "Spine42",
+}
+
+export enum ModelType {
+  Live2D = "Live2D",
+  MMD = "MMD",
+  VRoid = "VRoid",
+  Spine = "Spine",
+}
+export interface ApplicationState {
+  modelLoaded: boolean;
+}
 
 export class Application {
+  nodeAPI!: NodeAPI;
+  config!: DisplayConfig;
+  windowName!: string;
+  resolution!: number;
+  antialias!: boolean;
+  state!: ApplicationState;
+  currentModelInfo: ModelInfo | null = null;
+  recordManager!: RecordManager;
+  controlWindowId!: number;
+  modelManagers!: {
+    Live2D: Live2dManager;
+    MMD: MmdManager;
+    VRoid: VroidManager;
+    Spine: SpineManager;
+    Spine42: SpineManager42;
+    now: null | Live2dManager | MmdManager | VroidManager | SpineManager | SpineManager42;
+  };
+  stats!: Stats;
+  canvas!: HTMLCanvasElement;
+  context!: WebGL2RenderingContext | WebGLRenderingContext;
+  rgba!: Uint8Array<ArrayBuffer>;
+  ignoreFlag!: boolean;
   constructor() {
     this.init();
   }
@@ -21,8 +63,8 @@ export class Application {
       pixelRatioConfig === "system"
         ? window.devicePixelRatio
         : pixelRatioConfig === "retina"
-        ? 2
-        : 1;
+          ? 2
+          : 1;
     this.antialias = this.config.display["antialias"];
     this.state = {
       modelLoaded: false,
@@ -54,25 +96,25 @@ export class Application {
   }
   initModelManagers() {
     this.modelManagers = {
-      now: null,
+      Live2D: new Live2dManager(this),
+      MMD: new MmdManager(this),
+      VRoid: new VroidManager(this),
+      Spine: new SpineManager(this),
+      Spine42: new SpineManager42(this),
+      now: null, // 当前使用的模型管理器
     };
-    this.modelManagers.Live2D = new Live2dManager(this);
-    this.modelManagers.MMD = new MmdManager(this);
-    this.modelManagers.VRoid = new VroidManager(this);
-    this.modelManagers.Spine = new SpineManager(this);
-    this.modelManagers.Spine42 = new SpineManager42(this);
   }
   handleIpcMessages() {
-    this.nodeAPI.ipc.handleLoadModel((event, modelInfo) => {
+    this.nodeAPI.ipc.handleLoadModel((_, modelInfo: ModelInfo) => {
       console.log(
         `[Hime Display] Load model: name:${modelInfo.name}, modelType:${modelInfo.modelType}`
       );
       this.currentModelInfo = modelInfo;
-      let managerType;
-      if (modelInfo.modelType === "Spine") {
+      let managerType: ModelManagerType;
+      if (modelInfo.modelType === ModelType.Spine) {
         const version = modelInfo.version;
         if (version === undefined) {
-          managerType = "Spine";
+          managerType = ModelManagerType.Spine;
         } else {
           const versionNumber = version.split(".").slice(0, 2).join(".");
           switch (versionNumber) {
@@ -80,10 +122,10 @@ export class Application {
             case "3.8":
             case "4.0":
             case "4.1":
-              managerType = "Spine";
+              managerType = ModelManagerType.Spine;
               break;
             case "4.2":
-              managerType = "Spine42";
+              managerType = ModelManagerType.Spine42;
               break;
             default:
               throw new Error(
@@ -92,7 +134,7 @@ export class Application {
           }
         }
       } else {
-        managerType = modelInfo.modelType;
+        managerType = modelInfo.modelType as unknown as ModelManagerType;
       }
       // 通过managers.now切换的一大优势就是，事件监听无需手动切换
       if (this.modelManagers.now?.modelType !== managerType) {
@@ -115,12 +157,12 @@ export class Application {
         `[Hime Display] Receive message from control: ${message.channel}, data:`,
         message.data
       );
-      this.modelManagers.now.handleMessage(message);
+      this.modelManagers.now?.handleMessage(message);
     });
     this.nodeAPI.ipc.handleQueryDisplayWindowState(() => {
       this.nodeAPI.ipc.sendDisplayWindowState(this.state);
     });
-    this.nodeAPI.ipc.handleScreenshot((event) => {
+    this.nodeAPI.ipc.handleScreenshot(() => {
       console.log("[Hime Display] Screenshot");
       this.recordManager.takeScreenshot();
     });
@@ -132,7 +174,6 @@ export class Application {
     }
   }
   initStats() {
-    this.stats = null;
     if (this.config.display["show-fps"]) {
       this.stats = new Stats();
       document.body.appendChild(this.stats.domElement);
@@ -165,7 +206,7 @@ export class Application {
     // 然后关于获取上下文，相当于是第一次获取时进行一个初始化，之后全是返回第一次获取到的实例，换句话说，如果运行了this.canvas.getContext("webgl2")后再运行this.canvas.getContext("webgl2", { preserveDrawingBuffer: true })的话，这个preserveDrawingBuffer根本就没有被正确配置，而且一点提示都没有
     this.context =
       this.canvas.getContext("webgl2", { preserveDrawingBuffer: true }) ||
-      this.canvas.getContext("webgl", { preserveDrawingBuffer: true });
+      this.canvas.getContext("webgl", { preserveDrawingBuffer: true })!;
     if (
       this.windowName === "displayFullScreen" &&
       this.config.display["click-through"] === "transparent"
@@ -176,7 +217,7 @@ export class Application {
     }
   }
   detectClickThrough() {
-    const detect = (event) => {
+    const detect = (event: MouseEvent) => {
       this.context.readPixels(
         event.clientX * this.resolution,
         this.canvas.height - event.clientY * this.resolution, //2d坐标系和3d坐标系的转换，坐标原点由左上角变为屏幕左下角

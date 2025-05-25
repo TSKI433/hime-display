@@ -1,4 +1,4 @@
-import { ModelManager } from "./ModelManager";
+import { ModelManager, ModelControlInfo } from "./ModelManager";
 import { ParameterMonitor, PartMonitor } from "@display/utils/live2d/Monitor";
 import { Live2DFaceMeshCaptureManager as FaceMeshCaptureManager } from "@display/utils/capture/Live2DFaceMeshCaptureManager";
 import { setModelBaseTransfrom, draggable } from "@display/utils/2d/utils";
@@ -56,7 +56,7 @@ export class Live2dManager extends ModelManager {
     gl.clear(gl.STENCIL_BUFFER_BIT);
     this.app = null;
   }
-  async loadModel(modelInfo) {
+  async loadModel(modelInfo: ModelInfo): Promise<ModelControlInfo> {
     this._initInstantConfig();
     this._clearModel();
     this.model = await PIXI.live2d.Live2DModel.from(modelInfo.entranceFile, {
@@ -195,8 +195,8 @@ export class Live2dManager extends ModelManager {
           value: internalModel.settings.groups
             ? Object.keys(internalModel.settings.groups).length
             : console.warn(
-                `Model ${modelInfo.name} has not group count info.`
-              ) && null,
+              `Model ${modelInfo.name} has not group count info.`
+            ) && null,
         },
         {
           label: "hit-area-count",
@@ -207,19 +207,19 @@ export class Live2dManager extends ModelManager {
           value: internalModel.settings.motions
             ? Object.keys(internalModel.settings.motions).length
             : console.warn(
-                `Model ${modelInfo.name} has not motion group count info.`
-              ) && null,
+              `Model ${modelInfo.name} has not motion group count info.`
+            ) && null,
         },
         {
           label: "motion-count",
           value: internalModel.settings.motions
             ? Object.keys(internalModel.settings.motions).reduce(
-                (acc, cur) => acc + internalModel.settings.motions[cur].length,
-                0
-              )
+              (acc, cur) => acc + internalModel.settings.motions[cur].length,
+              0
+            )
             : console.warn(
-                `Model ${modelInfo.name} has not motion count info.`
-              ) && null,
+              `Model ${modelInfo.name} has not motion count info.`
+            ) && null,
         },
         { label: "part-count", value: coreModel._partIds.length },
         { label: "parameter-count", value: coreModel._parameterIds.length },
@@ -358,8 +358,8 @@ export class Live2dManager extends ModelManager {
       motionInfo.File
         ? motion.File === motionInfo.File
         : motionInfo.file
-        ? motion.file === motionInfo.file
-        : false
+          ? motion.file === motionInfo.file
+          : false
     );
     this.model.motion(motionInfo.group, motionIndex);
   }
@@ -392,8 +392,8 @@ export class Live2dManager extends ModelManager {
           motion.File
             ? motion.File === motionPath
             : motion.file
-            ? motion.file === motionPath
-            : false
+              ? motion.file === motionPath
+              : false
         );
         if (motionIndex !== -1) {
           motionGroup = groupName;

@@ -13,6 +13,7 @@ import {
   VRMExpressionPresetName,
   VRMLoaderPlugin,
 } from "@pixiv/three-vrm";
+import { ModelControlInfo } from "./ModelManager";
 
 // 用于转头……VRM使用的坐标系和THREE是反的，不转的话模型永远是后脑勺对着你
 const turnHeadQuaternion = new THREE.Quaternion().setFromEuler(
@@ -61,7 +62,7 @@ export class VroidManager extends ModelManager3D {
     directionalLight.position.set(1.0, 1.0, 1.0).normalize();
     this.scene.add(directionalLight);
   }
-  loadModel(modelInfo) {
+  loadModel(modelInfo: ModelInfo): Promise<ModelControlInfo> {
     return new Promise((resolve, reject) => {
       this._initInstantConfig();
       const modelFile = modelInfo.entranceFile;

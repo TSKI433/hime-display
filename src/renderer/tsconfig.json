@@ -17,9 +17,10 @@
     "paths": {
       "@control/*": ["control/*"],
       "@display/*": ["display/*"],
-      "@shared/*": ["../shared/*"]
+      "@shared/*": ["../shared/*"],
+      "@preload/*": ["../preload/*"]
     }
   },
-  "include": [".", "../shared"],
+  "include": [".", "../shared", "../preload"],
   "exclude": ["../main", "../node_modules", "../dist"]
 }

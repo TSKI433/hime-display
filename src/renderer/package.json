@@ -16,10 +16,13 @@
     "lodash": "^4.17.21",
     "pinia": "^3.0.2",
     "pixi.js": "^8.9.1",
+    "stats.js": "^0.17.0",
     "three": "^0.169.0",
     "vue": "^3.2.37"
   },
   "devDependencies": {
+    "@types/stats.js": "^0.17.4",
+    "@types/three": "^0.176.0",
     "@vitejs/plugin-vue": "^5.2.3",
     "fast-glob": "^3.3.3",
     "sass": "^1.53.0",

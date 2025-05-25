@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { Spine } from "@esotericsoftware/spine-pixi-v8";
 import { SpineManager } from "./SpineManager";
+import { ModelControlInfo } from "./ModelManager";
 export class SpineManager42 extends SpineManager {
   constructor(parentApp) {
     super(parentApp);
@@ -32,7 +33,7 @@ export class SpineManager42 extends SpineManager {
     this.internalModel = null;
   }
 
-  loadModel(modelInfo) {
+  loadModel(modelInfo: ModelInfo): Promise<ModelControlInfo> {
     return new Promise(async (resolve, reject) => {
       try {
         this._initInstantConfig();

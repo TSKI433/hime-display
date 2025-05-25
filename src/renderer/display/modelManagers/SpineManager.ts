@@ -1,4 +1,4 @@
-import { ModelManager } from "./ModelManager";
+import { ModelControlInfo, ModelManager } from "./ModelManager";
 import { setModelBaseTransfrom, draggable } from "@display/utils/2d/utils";
 import imageLoaderAdapter from "@display/utils/spine/premultipliedImageLoader";
 // 由于live2d的特殊需求，没用模块系统载入pixi.js，pixi-spine模块的载入依赖于模块化pixi.js，因此暂时用成umd版本吧
@@ -47,7 +47,7 @@ export class SpineManager extends ModelManager {
     this.model = null;
     this.internalModel = null;
   }
-  loadModel(modelInfo) {
+  loadModel(modelInfo: ModelInfo): Promise<ModelControlInfo> {
     return new Promise((resolve, reject) => {
       this._initInstantConfig();
       this._clearModel();
@@ -58,8 +58,8 @@ export class SpineManager extends ModelManager {
           modelFile,
           this.config.display["spine-premultiply-alpha"]
             ? {
-                metadata: { imageLoader: imageLoaderAdapter },
-              }
+              metadata: { imageLoader: imageLoaderAdapter },
+            }
             : undefined
         )
         .load((loader, resources) => {

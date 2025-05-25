@@ -9,6 +9,7 @@ import { MorphMonitor } from "@display/utils/mmd/Monitor";
 import { AnimationManager } from "@display/utils/mmd/AnimationManager";
 import { MMDFaceMeshCaptureManager as FaceMeshCaptureManager } from "@display/utils/capture/MMDFaceMeshCaptureManager";
 import { MMDHolisticCaptureManager as HolisticCaptureManager } from "@display/utils/capture/MMDHolisticCaptureManager";
+import { ModelControlInfo } from "./ModelManager";
 export class MmdManager extends ModelManager3D {
   constructor(parentApp) {
     super(parentApp);
@@ -67,7 +68,7 @@ export class MmdManager extends ModelManager3D {
     directionalLight.position.set(-1, 1, 1).normalize();
     this.scene.add(directionalLight);
   }
-  loadModel(modelInfo) {
+  loadModel(modelInfo: ModelInfo): Promise<ModelControlInfo> {
     return new Promise((resolve, reject) => {
       this._initInstantConfig();
       this.ModelLoader.load(
