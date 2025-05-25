@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "lib": ["ESNext", "DOM"],
+    "jsx": "preserve",
+    "strict": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@control/*": ["control/*"],
+      "@display/*": ["display/*"],
+      "@shared/*": ["../shared/*"]
+    }
+  },
+  "include": [".", "../shared"],
+  "exclude": ["../main", "../node_modules", "../dist"]
+}
