@@ -9,11 +9,13 @@ import { MorphMonitor } from "@display/utils/mmd/Monitor";
 import { AnimationManager } from "@display/utils/mmd/AnimationManager";
 import { MMDFaceMeshCaptureManager as FaceMeshCaptureManager } from "@display/utils/capture/MMDFaceMeshCaptureManager";
 import { MMDHolisticCaptureManager as HolisticCaptureManager } from "@display/utils/capture/MMDHolisticCaptureManager";
-import { ModelControlInfo } from "./ModelManager";
+import { ManagerMessage, ModelControlInfo } from "./ModelManager";
+import { Application, ModelManagerType } from "@display/Application";
 export class MmdManager extends ModelManager3D {
-  constructor(parentApp) {
+  modelType: ModelManagerType;
+  constructor(parentApp: Application) {
     super(parentApp);
-    this.modelType = "MMD";
+    this.modelType = ModelManagerType.MMD;
     this._initObjects();
   }
   switchIn() {
@@ -39,8 +41,8 @@ export class MmdManager extends ModelManager3D {
     //renderer
     this.renderer = new THREE.WebGLRenderer({
       antialias: this.antialias,
-      aplpha: true,
-      canvas: document.getElementById("display-canvas"),
+      alpha: true,
+      canvas: document.getElementById("display-canvas") as HTMLCanvasElement,
     });
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.setPixelRatio(this.resolution);
@@ -52,6 +54,9 @@ export class MmdManager extends ModelManager3D {
     this._addEventListeners();
   }
   _addLight() {
+    if (!this.scene) {
+      throw new Error("Scene is not initialized.");
+    }
     // 旧版exmaple的光照
     // const ambient = new THREE.AmbientLight(0x666666);
     // this.scene.add(ambient);
@@ -70,6 +75,9 @@ export class MmdManager extends ModelManager3D {
   }
   loadModel(modelInfo: ModelInfo): Promise<ModelControlInfo> {
     return new Promise((resolve, reject) => {
+      if (!this.ModelLoader) {
+        throw new Error("ModelLoader is not initialized.");
+      }
       this._initInstantConfig();
       this.ModelLoader.load(
         modelInfo.entranceFile,
@@ -109,7 +117,7 @@ export class MmdManager extends ModelManager3D {
           // 震惊！！！setImmediate居然不是标准特性……
           // https://developer.mozilla.org/zh-CN/docs/Web/API/Window/setImmediate
           // 直接给我来个ReferenceError: setImmediate is not defined
-          this.scene.add(this.model);
+          this.scene!.add(this.model);
           // 后来发现又个windows下的cancelAnimationFrame的API，但这是一个这是一个实验中的功能，所以还是不用了
           if (!this.shouldRender) {
             this.shouldRender = true;
@@ -125,7 +133,7 @@ export class MmdManager extends ModelManager3D {
           this._initMouceFocusHelper();
           resolve(this._buildModelControlInfo(modelInfo));
         },
-        null,
+        undefined,
         (error) => {
           console.error(`[Hime Display] MMD Load Error: ${error}`);
         }
@@ -161,11 +169,11 @@ export class MmdManager extends ModelManager3D {
   }
   _initMouceFocusHelper() {
     this.mouseFocusHelper = new MouseFocusHelper(
-      this.model.skeleton.bones.find((bone) => bone.name === "頭"),
+      this.model.skeleton.bones.find((bone: THREE.Bone) => bone.name === "頭"),
       this.camera
     );
   }
-  _buildModelControlInfo(modelInfo) {
+  _buildModelControlInfo(modelInfo: ModelInfo) {
     const mmdUserData = this.model.geometry.userData.MMD;
     const modelControlInfo = {
       description: [
@@ -227,7 +235,7 @@ export class MmdManager extends ModelManager3D {
       this.mouseFocusHelper?.focus();
     }
   }
-  handleMessage(message) {
+  handleMessage(message: ManagerMessage) {
     switch (message.channel) {
       case "control:bind-node-transform": {
         this._bindNodeTransform(message.data.nodeId);
@@ -254,7 +262,7 @@ export class MmdManager extends ModelManager3D {
               "physics",
               this.instantConfig.physicsSimulation
             );
-            this._sendToModelControl({
+            this._sendToModelControl?.({
               channel: "manager:update-motion-info",
               data: { durantion: this.animationManager.clip.duration },
             });
@@ -285,7 +293,7 @@ export class MmdManager extends ModelManager3D {
               "physics",
               this.instantConfig.physicsSimulation
             );
-            this._sendToModelControl({
+            this._sendToModelControl?.({
               channel: "manager:update-motion-info",
               data: { durantion: this.animationManager.clip.duration },
             });
@@ -339,7 +347,7 @@ export class MmdManager extends ModelManager3D {
       }
     }
   }
-  _setMorphWeight({ morphName, weight }) {
+  _setMorphWeight({ morphName, weight }: { morphName: string; weight: number }) {
     const morphIndex = this.model.morphTargetDictionary[morphName];
     if (morphIndex === undefined) {
       throw new Error(`MmdManager: Morph ${morphName} not found in the model`);
@@ -357,7 +365,7 @@ export class MmdManager extends ModelManager3D {
     }
   }
   // 不使用箭头函数会导致this的指向出错，若使用bind更改this指向，会导致返回的function和原函数不同，无法移出事件监听器
-  _onPointerMove = (event) => {
+  _onPointerMove = (event: PointerEvent) => {
     // 加上?，防止没载入模型时出错
     this.mouseFocusHelper?.update(event.clientX, event.clientY);
   };

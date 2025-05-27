@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@types/stats.js": "^0.17.4",
-    "@types/three": "^0.176.0",
+    "@types/three": "0.169.0",
     "@vitejs/plugin-vue": "^5.2.3",
     "fast-glob": "^3.3.3",
     "sass": "^1.53.0",

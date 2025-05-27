@@ -18,7 +18,7 @@ export abstract class ModelManager {
   antialias: boolean;
   abstract modelType: ModelManagerType;
   _sendToModelControl: SendToModelControlCallback | null = null;
-  abstract onWindowResize: () => void;
+  abstract onWindowResize(): void;
   abstract loadModel(modelInfo: ModelInfo): Promise<ModelControlInfo>;
   constructor(parentApp: Application) {
     this.config = parentApp.config;
