@@ -54,3 +54,17 @@ export function throwError(message) {
 export function handleScreenshot(callback) {
   ipcRenderer.on("control2display:screenshot", callback);
 }
+// 保存模型配置
+export function saveModelConfig(modelName, config) {
+  return ipcRenderer.invoke("display2main:save-model-config", { modelName, config });
+}
+
+// 加载模型配置
+export function loadModelConfig(modelName) {
+  return ipcRenderer.invoke("display2main:load-model-config", modelName);
+}
+
+// 获取参数保存配置
+export function getParamSaveConfig() {
+  return ipcRenderer.invoke('display2main:get-param-config');
+}

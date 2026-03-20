@@ -2,6 +2,7 @@ import { EventEmitter } from "events";
 import { WindowManager } from "./ui/WindowManager";
 import { ThemeManager } from "./ui/ThemeManager";
 import { TrayManager } from "./ui/TrayManager";
+import { defaultConfig } from "../shared/defaults/defaultConfig.js";
 import fs from "fs";
 import { Buffer } from "buffer";
 import low from "lowdb";
@@ -9,9 +10,10 @@ import lowFileSync from "lowdb/adapters/FileSync";
 import {
   APP_CONFIG_PATH,
   APP_DATA_PATH,
+  APP_DATABASE_PATH,
   CHROMIUM_PREFERENCE_PATH,
-} from "./options/paths";
-import { defaultConfig } from "@shared/defaults/defaultConfig";
+}from "./options/paths.js";
+import { defalutDatabase } from "../shared/defaults/defalutDatabase.js";
 import { ipcMain, dialog, systemPreferences, app } from "electron";
 import is from "electron-is";
 import i18next from "@shared/locales/i18next";
@@ -25,6 +27,7 @@ export class Application extends EventEmitter {
   init() {
     this.setChromiumPreference();
     this.initConfigDB();
+    this.initDatabaseDB();
     this.initLanguage();
     this.initWindowManager();
     this.initThemeManager();
@@ -41,6 +44,10 @@ export class Application extends EventEmitter {
     // this.isReady = true;
     // this.emit("ready");
     // });
+  }
+  initDatabaseDB() {
+    this.databaseDB = low(new lowFileSync(APP_DATABASE_PATH));
+    this.databaseDB.defaults(defalutDatabase).write();
   }
   openWindow(windowName) {
     return this.windowManager.openWindow(windowName);
@@ -171,6 +178,54 @@ export class Application extends EventEmitter {
       console.log("[Hime Display] change language to", language);
       i18next.changeLanguage(language);
       this.trayManager.buildMenu();
+    });
+// 获取参数保存配置
+ipcMain.handle('display2main:get-param-config', () => {
+  if (!this.databaseDB) {
+    console.error('>>> databaseDB 未初始化');
+    return { enabled: true, selectedParams: [] };
+  }
+  const config = this.databaseDB.get('paramSaveConfig').value();
+  return config || { enabled: true, selectedParams: [] };
+});
+  // 保存参数保存配置
+  ipcMain.handle('control2main:save-param-config', (event, config) => {
+    if (!this.databaseDB) {
+      console.error('>>> databaseDB 未初始化');
+      return;
+    }
+    this.databaseDB.set('paramSaveConfig', config).write();
+  });
+
+  // 加载参数保存配置
+  ipcMain.handle('control2main:load-param-config', () => {
+    if (!this.databaseDB) return { enabled: true, selectedParams: [] };
+    return this.databaseDB.get('paramSaveConfig').value() || { 
+      enabled: true, 
+      selectedParams: [] 
+    };
+  });
+    ipcMain.handle("display2main:save-model-config", (event, { modelName, config }) => {
+  
+  if (!this.databaseDB) {
+    return;
+  }
+  
+  try {
+    // 检查当前值
+    const before = this.databaseDB.get('modelConfig').value();
+    
+    // 执行保存
+    this.databaseDB.set(["modelConfig", modelName], config).write();
+    
+    // 验证
+    const after = this.databaseDB.get(["modelConfig", modelName]).value();
+  } catch (error) {
+    console.error('>>> [主进程] 保存出错:', error);
+  }
+});
+    ipcMain.handle("display2main:load-model-config", (event, modelName) => {
+      return this.databaseDB.get(["modelConfig", modelName]).value();
     });
     // 窗口之间的消息中转
     const routes = [

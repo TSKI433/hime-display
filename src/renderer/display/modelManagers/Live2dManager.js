@@ -17,6 +17,10 @@ export class Live2dManager extends ModelManager {
     this.partMonitor = null;
     this.captureManagerNow = null;
     this.focusPosition = null;
+    this._cacheParamSelection = null;
+
+    //保存parentApp的引用，方便在其他方法中通过this.parentApp.nodeAPI.ipc调用ipc方法
+    this.parentApp = parentApp;
 
     this.app = null;
     this.model = null;
@@ -81,8 +85,9 @@ export class Live2dManager extends ModelManager {
         coreModel.setParameterValueByIndex(index, value);
       });
     };
+    this.currentModelInfo = modelInfo;
+    await this._loadModelConfig(modelInfo);
     this.app.stage.addChild(this.model);
-    setModelBaseTransfrom(this.model, this.config.display, "live2d");
     // 折磨死我了，终于找到了问题所在，之前使用pixi-live2d-display都是直接用自动的interact，现在加载模型时设定为autoInteract: false就不一样了，本以为这个参数也就控制了个hit事件和鼠标跟踪，结果一看源码发现这也给模型的interactive设定为true了，进一步追溯，发现这是一个pixi.js的属性，设定为true才能正常响应事件，若为false，即使模型的_events可以看到事件，依旧是无法正常响应的。然后spine那边根本就没有对这个属性进行操作，所以自然也不能响应事件
     this.model.interactive = true;
     if (this.config.display["live2d-draggable"]) {
@@ -164,6 +169,88 @@ export class Live2dManager extends ModelManager {
         scale: this.model.scale.x,
       },
     });
+    //保存模型配置
+    this._saveModelConfig(this.currentModelInfo);
+  }
+  async _saveModelConfig(modelInfo) {
+  if (!modelInfo || !this.model) return;
+  
+  const savedParams = {};
+  
+  try {
+    const paramConfig = await this.parentApp.nodeAPI.ipc.getParamSaveConfig?.();
+    
+    if (paramConfig?.enabled && paramConfig.selectedParams?.length > 0) {
+      const coreModel = this.model.internalModel.coreModel;
+      
+      // 先看看模型有多少参数
+      
+      paramConfig.selectedParams.forEach(paramId => {
+        try {
+          const value = coreModel.getParameterValueById(paramId);
+          if (value !== undefined) {
+            savedParams[paramId] = value;
+          }
+        } catch (e) {
+          console.warn(`>>> 读取失败 ${paramId}:`, e);
+        }
+      });
+    }
+    
+    
+    const modelConfig = {
+      position: { x: this.model.x, y: this.model.y },
+      scale: this.model.scale.x,
+      autoEyeBlink: this.instantConfig.autoEyeBlink,
+      autoBreath: this.instantConfig.autoBreath,
+      trackMouse: this.instantConfig.trackMouse,
+      parameters: savedParams,
+    };
+    
+    await this.parentApp.nodeAPI.ipc.saveModelConfig(modelInfo.name, modelConfig);
+  } catch (error) {
+    console.error('>>>保存失败:', error);
+  }
+}
+  async _loadModelConfig(modelInfo) {
+    try {
+      const modelConfig = await this.parentApp.nodeAPI.ipc.loadModelConfig(modelInfo.name);
+      if (!modelConfig) return;
+      
+      // 恢复位置和缩放
+      if (modelConfig.position) {
+        this.model.x = modelConfig.position.x;
+        this.model.y = modelConfig.position.y;
+      }
+      if (modelConfig.scale !== undefined) {
+        this.model.scale.set(modelConfig.scale);
+      }
+      
+      // 恢复设置
+      if (modelConfig.autoEyeBlink !== undefined) {
+        this.instantConfig.autoEyeBlink = modelConfig.autoEyeBlink;
+      }
+      if (modelConfig.autoBreath !== undefined) {
+        this.instantConfig.autoBreath = modelConfig.autoBreath;
+      }
+      if (modelConfig.trackMouse !== undefined) {
+        this.instantConfig.trackMouse = modelConfig.trackMouse;
+      }
+      
+      // 恢复保存的参数
+      if (modelConfig.parameters) {
+        const coreModel = this.model.internalModel.coreModel;
+        Object.entries(modelConfig.parameters).forEach(([paramId, value]) => {
+          try {
+            coreModel.setParameterValueById(paramId, value);
+          } catch (e) {
+            console.warn('>>> 恢复参数失败:', paramId);
+          }
+        });
+      }
+    } catch (error) {
+      console.error('>>> Failed to load model config:', error);
+    }
   }
   _bindEventAnimation() {
     this.model.on("click", () => {
@@ -279,6 +366,17 @@ export class Live2dManager extends ModelManager {
   }
   handleMessage(message) {
     switch (message.channel) {
+      case "control:update-param-selection": {
+        this._cachedParamSelection = message.data;
+        this._saveModelConfig(this.currentModelInfo);
+        break;
+      }
+      case "control:save-model-config": {
+        if (message.data?.manual) {
+          this._saveModelConfig(this.currentModelInfo);
+        }
+        break;
+      }
       case "control:bind-parameter": {
         this._bindParameter(message.data.parameterId);
         break;

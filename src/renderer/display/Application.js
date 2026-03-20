@@ -187,11 +187,11 @@ export class Application {
         this.rgba
       );
       if (this.rgba[3] != 0 && this.ignoreFlag == true) {
-        console.log("[Hime Display] Click through detected", false);
+        // console.log("[Hime Display] Click through detected", false);
         this.nodeAPI.ipc.setIgnoreMouseEvents(false);
         this.ignoreFlag = false;
       } else if (this.rgba[3] == 0 && this.ignoreFlag == false) {
-        console.log("[Hime Display] Click through detected", true);
+        // console.log("[Hime Display] Click through detected", true);
         this.nodeAPI.ipc.setIgnoreMouseEvents(true, { forward: true });
         this.ignoreFlag = true;
       }
