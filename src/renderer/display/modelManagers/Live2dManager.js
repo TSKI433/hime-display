@@ -18,7 +18,7 @@ export class Live2dManager extends ModelManager {
     this.captureManagerNow = null;
     this.focusPosition = null;
     this._cacheParamSelection = null;
-    this.headOffset = { x: 0, y: -2800 };
+    this.headOffset = null;
 
     //保存parentApp的引用，方便在其他方法中通过this.parentApp.nodeAPI.ipc调用ipc方法
     this.parentApp = parentApp;

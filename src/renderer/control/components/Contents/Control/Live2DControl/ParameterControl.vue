@@ -152,7 +152,7 @@ const showParamSelector = ref(false);
 const selectedParams = ref([]);
 // 头部偏移相关
 const headOffsetX = ref(0);
-const headOffsetY = ref(-2800);
+const headOffsetY = ref(0);
 const fineTuneStep = 50;
 onMounted(async () => {
   try {
@@ -200,19 +200,6 @@ function fineTune(direction) {
   }
   applyHeadOffset();
 }
-// 加载已保存的配置
-onMounted(async () => {
-  try {
-    const config = await ipcAPI.loadParamSaveConfig?.();
-    if (config) {
-      paramSaveEnabled.value = config.enabled ?? true;
-      selectedParams.value = config.selectedParams ?? [];
-    }
-  } catch (error) {
-    console.warn("加载参数保存配置失败:", error);
-  }
-});
-
 function onParamSaveChange() {
   saveParamSelection();
 }
