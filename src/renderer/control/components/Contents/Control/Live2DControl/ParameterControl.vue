@@ -98,9 +98,44 @@
   <config-item :label="$t('control.parameter.auto-eye-blink')">
     <el-switch v-model="autoEyeBlink.value" />
   </config-item>
+  <el-divider style="margin: 12px 0" />
+  <config-item label="头部视线校准">
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+      <span style="font-size: 12px;">X:</span>
+      <el-input-number 
+        v-model="headOffsetX" 
+        :step="100" 
+        :min="-4000" 
+        :max="4000"
+        size="small"
+        controls-position="right"
+        style="width: 90px"
+      />
+      <span style="font-size: 12px;">Y:</span>
+      <el-input-number 
+        v-model="headOffsetY" 
+        :step="100" 
+        :min="-6000" 
+        :max="4000"
+        size="small"
+        controls-position="right"
+        style="width: 90px"
+      />
+      <el-button size="small" type="primary" @click="applyHeadOffset">应用</el-button>
+      <el-button size="small" @click="showHeadOffset">显示基准点</el-button>
+      <el-button size="small" @click="fineTune('up')">↑</el-button>
+      <el-button size="small" @click="fineTune('down')">↓</el-button>
+      <el-button size="small" @click="fineTune('left')">←</el-button>
+      <el-button size="small" @click="fineTune('right')">→</el-button>
+    </div>
+    <div style="font-size: 12px; color: #909399; margin-top: 8px;">
+      当前偏移: X={{ headOffsetX }} | Y={{ headOffsetY }}
+    </div>
+  </config-item>
 </template>
 
 <script setup>
+import { ElMessage } from "element-plus";
 import ConfigItem from "@control/components/Common/ConfigItem.vue";
 import { computed, ref, watch, reactive, toRaw, onMounted } from "vue";
 import { useAppStore } from "@control/store/app";
@@ -115,7 +150,56 @@ const props = defineProps({
 const paramSaveEnabled = ref(true);
 const showParamSelector = ref(false);
 const selectedParams = ref([]);
+// 头部偏移相关
+const headOffsetX = ref(0);
+const headOffsetY = ref(-2800);
+const fineTuneStep = 50;
+onMounted(async () => {
+  try {
+    const config = await ipcAPI.loadParamSaveConfig?.();
+    if (config) {
+      paramSaveEnabled.value = config.enabled ?? true;
+      selectedParams.value = config.selectedParams ?? [];
+    }
+    
+    // 加载头部偏移（需要从模型配置获取）
+    const modelConfig = await ipcAPI.loadModelConfig?.(appStore.currentModel?.name);
+    if (modelConfig?.headOffset) {
+      headOffsetX.value = modelConfig.headOffset.x;
+      headOffsetY.value = modelConfig.headOffset.y;
+    }
+  } catch (error) {
+    console.warn("加载配置失败:", error);
+  }
+});
+function showHeadOffset() {
+  ipcAPI.sendToModelManager({
+    channel: "control:show-head-offset",
+    data: {}
+  });
+}
+// 应用头部偏移
+function applyHeadOffset() {
+  ipcAPI.sendToModelManager({
+    channel: "control:set-head-offset",
+    data: {
+      x: headOffsetX.value,
+      y: headOffsetY.value
+    }
+  });
+  ElMessage.success('头部基准点已更新');
+}
 
+// 微调
+function fineTune(direction) {
+  switch(direction) {
+    case 'up': headOffsetY.value -= fineTuneStep; break;
+    case 'down': headOffsetY.value += fineTuneStep; break;
+    case 'left': headOffsetX.value -= fineTuneStep; break;
+    case 'right': headOffsetX.value += fineTuneStep; break;
+  }
+  applyHeadOffset();
+}
 // 加载已保存的配置
 onMounted(async () => {
   try {
