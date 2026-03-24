@@ -227,7 +227,7 @@ export class Live2dManager extends ModelManager {
     
     
     const modelConfig = {
-      position: { x: this.model.x, y: this.model.y },
+      position: { x: this.model.x/ window.innerWidth, y: this.model.y / window.innerHeight },
       scale: this.model.scale.x,
       autoEyeBlink: this.instantConfig.autoEyeBlink,
       autoBreath: this.instantConfig.autoBreath,
@@ -248,8 +248,8 @@ export class Live2dManager extends ModelManager {
       
       // 恢复位置和缩放
       if (modelConfig.position) {
-        this.model.x = modelConfig.position.x;
-        this.model.y = modelConfig.position.y;
+        this.model.x = modelConfig.position.x* window.innerWidth;
+        this.model.y = modelConfig.position.y* window.innerHeight;
       }
       if (modelConfig.scale !== undefined) {
         this.model.scale.set(modelConfig.scale);
