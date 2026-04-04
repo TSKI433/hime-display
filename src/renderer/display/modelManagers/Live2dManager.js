@@ -17,6 +17,11 @@ export class Live2dManager extends ModelManager {
     this.partMonitor = null;
     this.captureManagerNow = null;
     this.focusPosition = null;
+    this._cacheParamSelection = null;
+    this.headOffset = null;
+
+    //保存parentApp的引用，方便在其他方法中通过this.parentApp.nodeAPI.ipc调用ipc方法
+    this.parentApp = parentApp;
 
     this.app = null;
     this.model = null;
@@ -81,10 +86,38 @@ export class Live2dManager extends ModelManager {
         coreModel.setParameterValueByIndex(index, value);
       });
     };
+    this.currentModelInfo = modelInfo;
+    await this._loadModelConfig(modelInfo);
     this.app.stage.addChild(this.model);
-    setModelBaseTransfrom(this.model, this.config.display, "live2d");
     // 折磨死我了，终于找到了问题所在，之前使用pixi-live2d-display都是直接用自动的interact，现在加载模型时设定为autoInteract: false就不一样了，本以为这个参数也就控制了个hit事件和鼠标跟踪，结果一看源码发现这也给模型的interactive设定为true了，进一步追溯，发现这是一个pixi.js的属性，设定为true才能正常响应事件，若为false，即使模型的_events可以看到事件，依旧是无法正常响应的。然后spine那边根本就没有对这个属性进行操作，所以自然也不能响应事件
     this.model.interactive = true;
+    //window.__currentModel = this.model;
+    //window.__live2dManager = this;
+    //重定义逻辑错误的focus函数，改成以头部为中心进行鼠标跟踪，避免因为模型设计的关系导致的眼睛跟踪不自然的问题
+    const originalToModelPosition = this.model.toModelPosition.bind(this.model);
+    const originalFocusController = this.model.internalModel.focusController;
+    this.model.focus = (screenX, screenY, immediate = false) => {
+    // 获取鼠标在模型局部坐标中的位置
+    const pos = { x: screenX, y: screenY };
+    originalToModelPosition(pos, pos, true);
+    
+    // 头部偏移（模型高度8000，头部大约在中心偏上200像素）
+    const headOffsetX = this.headOffset.x;
+    const headOffsetY = this.headOffset.y;
+    
+    // 计算鼠标相对于头部中心的偏移
+    const headCenterX = this.model.internalModel.originalWidth / 2 + headOffsetX;
+    const headCenterY = this.model.internalModel.originalHeight / 2 + headOffsetY;
+    const dx = pos.x - headCenterX;
+    const dy = pos.y - headCenterY;
+    
+    if (Math.abs(dx) < 0.01 && Math.abs(dy) < 0.01) {
+        originalFocusController.focus(0, -1, immediate);
+    } else {
+        const len = Math.sqrt(dx * dx + dy * dy);
+        originalFocusController.focus(dx / len, -dy / len, immediate);
+    }
+};
     if (this.config.display["live2d-draggable"]) {
       draggable(this.model);
     }
@@ -164,6 +197,92 @@ export class Live2dManager extends ModelManager {
         scale: this.model.scale.x,
       },
     });
+    //保存模型配置
+    this._saveModelConfig(this.currentModelInfo);
+  }
+  async _saveModelConfig(modelInfo) {
+  if (!modelInfo || !this.model) return;
+  
+  const savedParams = {};
+  
+  try {
+    const paramConfig = await this.parentApp.nodeAPI.ipc.getParamSaveConfig?.();
+    
+    if (paramConfig?.enabled && paramConfig.selectedParams?.length > 0) {
+      const coreModel = this.model.internalModel.coreModel;
+      
+      // 先看看模型有多少参数
+      
+      paramConfig.selectedParams.forEach(paramId => {
+        try {
+          const value = coreModel.getParameterValueById(paramId);
+          if (value !== undefined) {
+            savedParams[paramId] = value;
+          }
+        } catch (e) {
+          console.warn(`>>> 读取失败 ${paramId}:`, e);
+        }
+      });
+    }
+    
+    
+    const modelConfig = {
+      position: { x: this.model.x/ window.innerWidth, y: this.model.y / window.innerHeight },
+      scale: this.model.scale.x,
+      autoEyeBlink: this.instantConfig.autoEyeBlink,
+      autoBreath: this.instantConfig.autoBreath,
+      trackMouse: this.instantConfig.trackMouse,
+      parameters: savedParams,
+      headOffset: this.headOffset
+    };
+    
+    await this.parentApp.nodeAPI.ipc.saveModelConfig(modelInfo.name, modelConfig);
+  } catch (error) {
+    console.error('>>>保存失败:', error);
+  }
+}
+  async _loadModelConfig(modelInfo) {
+    try {
+      const modelConfig = await this.parentApp.nodeAPI.ipc.loadModelConfig(modelInfo.name);
+      if (!modelConfig) return;
+      
+      // 恢复位置和缩放
+      if (modelConfig.position) {
+        this.model.x = modelConfig.position.x* window.innerWidth;
+        this.model.y = modelConfig.position.y* window.innerHeight;
+      }
+      if (modelConfig.scale !== undefined) {
+        this.model.scale.set(modelConfig.scale);
+      }
+      // 恢复头部偏移
+      if (modelConfig.headOffset) {
+          this.headOffset = modelConfig.headOffset;
+      }
+      // 恢复设置
+      if (modelConfig.autoEyeBlink !== undefined) {
+        this.instantConfig.autoEyeBlink = modelConfig.autoEyeBlink;
+      }
+      if (modelConfig.autoBreath !== undefined) {
+        this.instantConfig.autoBreath = modelConfig.autoBreath;
+      }
+      if (modelConfig.trackMouse !== undefined) {
+        this.instantConfig.trackMouse = modelConfig.trackMouse;
+      }
+      
+      // 恢复保存的参数
+      if (modelConfig.parameters) {
+        const coreModel = this.model.internalModel.coreModel;
+        Object.entries(modelConfig.parameters).forEach(([paramId, value]) => {
+          try {
+            coreModel.setParameterValueById(paramId, value);
+          } catch (e) {
+            console.warn('>>> 恢复参数失败:', paramId);
+          }
+        });
+      }
+    } catch (error) {
+      console.error('>>> Failed to load model config:', error);
+    }
   }
   _bindEventAnimation() {
     this.model.on("click", () => {
@@ -279,6 +398,29 @@ export class Live2dManager extends ModelManager {
   }
   handleMessage(message) {
     switch (message.channel) {
+      case "control:update-param-selection": {
+        this._cachedParamSelection = message.data;
+        this._saveModelConfig(this.currentModelInfo);
+        break;
+      }
+      case "control:set-head-offset": {
+        this.headOffset = {
+          x: message.data.x,
+          y: message.data.y
+        };
+        this._saveModelConfig(this.currentModelInfo);
+        break;
+      }
+      case "control:show-head-offset": {
+        this.showHeadOffsetMarker();
+        break;
+      }
+      case "control:save-model-config": {
+        if (message.data?.manual) {
+          this._saveModelConfig(this.currentModelInfo);
+        }
+        break;
+      }
       case "control:bind-parameter": {
         this._bindParameter(message.data.parameterId);
         break;
@@ -419,4 +561,73 @@ export class Live2dManager extends ModelManager {
     this.focusPosition.x = event.clientX;
     this.focusPosition.y = event.clientY;
   };
+  showHeadOffsetMarker() {
+    if (!this.model) return;
+    
+    // 移除旧标记
+    const oldMarker = document.getElementById('head-offset-marker');
+    if (oldMarker) oldMarker.remove();
+    
+    // 获取模型在屏幕上的位置
+    const modelScreenX = window.screenX + this.model.x;
+    const modelScreenY = window.screenY + this.model.y;
+    
+    // 计算头部中心在屏幕上的位置
+    // 模型原始尺寸 4000x8000，缩放后实际显示大小
+    const scale = this.model.scale.x;
+    const headCenterLocalX = this.model.internalModel.originalWidth / 2 + this.headOffset.x;
+    const headCenterLocalY = this.model.internalModel.originalHeight / 2 + this.headOffset.y;
+    
+    // 屏幕坐标 = 模型屏幕位置 + 局部坐标 * 缩放
+    const screenX = modelScreenX + headCenterLocalX * scale;
+    const screenY = modelScreenY + headCenterLocalY * scale;
+    
+    // 创建标记
+    const marker = document.createElement('div');
+    marker.id = 'head-offset-marker';
+    marker.style.position = 'fixed';
+    marker.style.left = screenX - 15 + 'px';
+    marker.style.top = screenY - 15 + 'px';
+    marker.style.width = '30px';
+    marker.style.height = '30px';
+    marker.style.border = '2px solid #ff6e2d';
+    marker.style.borderRadius = '50%';
+    marker.style.backgroundColor = 'rgba(255,110,45,0.2)';
+    marker.style.zIndex = '9999';
+    marker.style.pointerEvents = 'none';
+    marker.style.boxShadow = '0 0 10px rgba(255,110,45,0.5)';
+    
+    // 添加中心点
+    const dot = document.createElement('div');
+    dot.style.position = 'absolute';
+    dot.style.left = '13px';
+    dot.style.top = '13px';
+    dot.style.width = '4px';
+    dot.style.height = '4px';
+    dot.style.backgroundColor = '#ff6e2d';
+    dot.style.borderRadius = '50%';
+    marker.appendChild(dot);
+    
+    // 添加文字标签
+    const label = document.createElement('div');
+    label.style.position = 'absolute';
+    label.style.left = '35px';
+    label.style.top = '-5px';
+    label.style.fontSize = '12px';
+    label.style.color = '#ff6e2d';
+    label.style.backgroundColor = 'rgba(0,0,0,0.6)';
+    label.style.padding = '2px 6px';
+    label.style.borderRadius = '12px';
+    label.style.whiteSpace = 'nowrap';
+    label.innerText = `头部基准点 X:${this.headOffset.x} Y:${this.headOffset.y}`;
+    marker.appendChild(label);
+    
+    document.body.appendChild(marker);
+    
+    // 5秒后自动隐藏
+    setTimeout(() => {
+        const m = document.getElementById('head-offset-marker');
+        if (m) m.remove();
+    }, 5000);
+  }
 }

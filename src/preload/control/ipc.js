@@ -54,3 +54,10 @@ export function queryDisplayWindowState() {
 export function screenshot() {
   ipcRenderer.send("control2display:screenshot");
 }
+
+export function saveParamSaveConfig(config) {
+  return ipcRenderer.invoke('control2main:save-param-config', config);
+}
+export function loadParamSaveConfig() {
+  return ipcRenderer.invoke('control2main:load-param-config');
+}

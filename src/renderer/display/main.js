@@ -1,4 +1,7 @@
+// 路径修复补丁 - 必须在所有代码之前运行
+import '../../patches/fixLive2DModuleFilePath.js';
 import { Application } from "@display/Application";
+
 window.app = new Application();
 const ipcAPI = window.nodeAPI.ipc;
 window.onerror = function (message) {
